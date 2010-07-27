@@ -10,14 +10,49 @@
 </head>
 
 <body>
-<form action="#" method="get">
-  <input type="text" name="query" id="query" />
-  <input type="submit" value="Search Twitter" />
-</form>
-
+<div id="twit_search">
+  <form action="#" method="get">
+    <input type="text" name="query" id="query" />
+    <input type="submit" value="Search Twitter" />
+  </form>
+</div>
+<ul id="results"></ul>
 <script type="text/javascript">
+
+  function display_search_results(results) {
+    var result_str = ""
+
+    results.each(function(result) {
+      result_str += search_result(result)
+    });
+
+    $("results").update(result_str);
+  }
+
+  function search_result(result) {
+    return  "<li><img src='" + result.profile_image_url + "' alt='" + result.from_user + " profile image' />" +
+            "<p>" + result.from_user + "</p>" +
+            "<p>" + result.text + "</p>";
+  }
+
   document.observe('dom:loaded', function(){
-    
+    $$("#twit_search form").first().observe("submit", function(event) {
+      var search_query = $("query").value
+      new Ajax.Request('http://search.twitter.com/search.json', {
+        method: 'get',
+        parameters: {
+          q: search_query
+        },
+        onSuccess: function(response) {
+
+          var responseBody = response.responseText.evalJSON(true);
+
+          display_search_results($A(responseBody.results));
+
+        }
+      });
+      event.preventDefault();
+    });
   });
 </script>
 </body>
