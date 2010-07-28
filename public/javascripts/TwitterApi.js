@@ -1,6 +1,7 @@
 function TwitterApi () {
   this.base_url = "http://search.twitter.com/search.json"
 }
+
 TwitterApi.prototype.search = function(query, callbacks) {
   new Ajax.Request(this.base_url, {
     method: 'get',
@@ -9,18 +10,7 @@ TwitterApi.prototype.search = function(query, callbacks) {
     },
     onSuccess:  callbacks.onSuccess,
     onFailure:  callbacks.onFailure,
-    onComplete: callbacks.onComplete
+    onComplete: callbacks.onComplete,
+    on403:      callbacks.onRateLimit
   });
-}
-
-TwitterApi.prototype.displaySearchResults = function(results) {
-  
-}
-
-TwitterApi.prototype.searchComplete = function(){
-  
-}
-
-TwitterApi.prototype.searchError = function(response){
-  
 }

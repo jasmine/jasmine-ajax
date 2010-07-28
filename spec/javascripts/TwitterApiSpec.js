@@ -1,22 +1,23 @@
 describe("TwitterApi#search", function(){
   var twitter, request;
-  var onSuccess, onFailure, onComplete;
+  var onSuccess, onFailure, onComplete, onRateLimit;
 
   beforeEach(function(){
     onSuccess = jasmine.createSpy('onSuccess');
     onFailure = jasmine.createSpy('onFailure');
     onComplete = jasmine.createSpy('onComplete');
+    onRateLimit = jasmine.createSpy('onRateLimit');
 
     twitter = new TwitterApi();
 
     twitter.search('basketball', {
       onSuccess: onSuccess,
       onFailure: onFailure,
-      onComplete: onComplete
+      onComplete: onComplete,
+      onRateLimit: onRateLimit
     });
 
     request = AjaxRequests.activeRequest();
-
   });
 
   it("calls Twitter with the correct url", function(){
@@ -31,56 +32,49 @@ describe("TwitterApi#search", function(){
     it("calls onSuccess", function(){
       expect(onSuccess).toHaveBeenCalled();
     });
-    
-    it("calls #searchComplete", function(){
-      expect(twitter.searchComplete).toHaveBeenCalled();
+
+    it("calls onComplete", function(){
+      expect(onComplete).toHaveBeenCalled();
     });
 
-    it("does not call #searchError", function(){
-      expect(twitter.searchError).not.toHaveBeenCalled();
+    it("does not call onFailure", function(){
+      expect(onFailure).not.toHaveBeenCalled();
     })
   });
 
-  describe('onFailure', function(){
-    
-  });
-  // beforeEach(function(){
-  //   twitter = new TwitterApi();
-  // 
-  //   spyOn(twitter, 'displaySearchResults');
-  // 
-  //   request = new Ajax.Request(twitter.BASE_URL, {
-  //     onSuccess: function(response) {
-  //       twitter.displaySearchResults(response);
-  //     }
-  //   });
-  // 
-  // });
-  // 
-  // it("should work", function(){
-  //   request.response({status: 200, contentType: "text/json", responseText: "should be the results"});
-  //   // expect(twitter.displaySearchResults).not.toHaveBeenCalled();
-  //   // fails, but gives me the message "Expected spy displaySearchResults to have been called."
-  //   expect(twitter.displaySearchResults).toHaveBeenCalled();
-  // });
-});
+  describe('on failure', function(){
+    beforeEach(function(){
+      request.response(TestResponses.search.failure);
+    });
 
-// describe("TwitterApi", function(){
-//   beforeEach(function(){
-//     twitter = new TwitterAPI();
-//     request = new Ajax.Request(twitter.BASE_URL, {
-//       // is this necessary?
-//       onSuccess: function() {
-//         // twitter.displaySearchResults(response)
-//         alert("Sup");
-//     });
-// 
-//     // spyOn(twitter, 'displaySearchResults');
-//   });
-// 
-//   it("calls displaySearchResults on successful requests", function(){
-//     sdfsdfsd
-//     // request.response({status: 200, contentType: "text/json", responseText: "should be the results"});
-//     // expect(twitter.displaySearchResults).toHaveBeenCalled();
-//   });
-// });
+    it("calls onFailure", function() {
+      expect(onFailure).toHaveBeenCalled();
+    });
+
+    it("call onComplete", function(){
+      expect(onComplete).toHaveBeenCalled();
+    });
+
+    it("does not call onSuccess", function(){
+      expect(onSuccess).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("on rate limit", function(){
+    beforeEach(function(){
+      request.response(TestResponses.search.rateLimitReached);
+    });
+
+    it("calls onRateLimit", function(){
+      expect(onRateLimit).toHaveBeenCalled();
+    });
+
+    it("does not call onSuccess", function(){
+      expect(onSuccess).not.toHaveBeenCalled();
+    });
+
+    it("calls onComplete", function(){
+      expect(onComplete).toHaveBeenCalled();
+    });
+  });
+});
