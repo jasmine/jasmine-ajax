@@ -1,42 +1,37 @@
-describe("TwitterApi", function(){
+describe("TwitterApi#search", function(){
+  var twitter, request;
+  var onSuccess, onFailure, onComplete;
+
   beforeEach(function(){
+    onSuccess = jasmine.createSpy('onSuccess');
+    onFailure = jasmine.createSpy('onFailure');
+    onComplete = jasmine.createSpy('onComplete');
+
     twitter = new TwitterApi();
 
-    spyOn(twitter, 'displaySearchResults');
-    spyOn(twitter, 'searchComplete');
-    spyOn(twitter, 'searchError');
-
-    
-
-    request = new Ajax.Request(twitter.base_url, {
-      method: 'get',
-      // is this anonymous function necessary?
-      onSuccess: function(response){
-        twitter.displaySearchResults(response);
-      },
-      onComplete: function(){
-        twitter.searchComplete();
-      },
-      onError: function(response){
-        twitter.searchError(response);
-      }
+    twitter.search('basketball', {
+      onSuccess: onSuccess,
+      onFailure: onFailure,
+      onComplete: onComplete
     });
+
+    request = AjaxRequests.activeRequest();
+
   });
 
-  it("has a base url", function(){
-    expect(twitter.base_url).toEqual("http://search.twitter.com/search.json")
+  it("calls Twitter with the correct url", function(){
+    expect(request.url).toEqual("http://search.twitter.com/search.json?q=basketball")
   });
 
-  describe("when searching Twitter is successful", function(){
+  describe("on success", function(){
     beforeEach(function(){
-      request.response({status: 200, contentType: "text/json", responseText: "should be the results"});
+      request.response(TestResponses.search.success);
     });
 
-    it("calls #displaySearchResults", function(){
-      // request.response({status: 200, contentType: "text/json", responseText: "should be the results"});
-      expect(twitter.displaySearchResults).toHaveBeenCalled();
+    it("calls onSuccess", function(){
+      expect(onSuccess).toHaveBeenCalled();
     });
-
+    
     it("calls #searchComplete", function(){
       expect(twitter.searchComplete).toHaveBeenCalled();
     });
@@ -46,6 +41,9 @@ describe("TwitterApi", function(){
     })
   });
 
+  describe('onFailure', function(){
+    
+  });
   // beforeEach(function(){
   //   twitter = new TwitterApi();
   // 
