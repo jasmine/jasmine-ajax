@@ -11,6 +11,10 @@ var TestResponses = {
     rateLimitReached: {
       status: 403,
       responseText: '{"error":"Chill out with the requests."}'
+    },
+    failWhale: {
+      status: 503,
+      responseText: '{"error":"Too many tweets!"}'
     }
   }
 }

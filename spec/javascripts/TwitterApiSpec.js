@@ -1,12 +1,13 @@
 describe("TwitterApi#search", function(){
   var twitter, request;
-  var onSuccess, onFailure, onComplete, onRateLimit;
+  var onSuccess, onFailure, onComplete, onRateLimit, onFailWhale;
 
   beforeEach(function(){
     onSuccess = jasmine.createSpy('onSuccess');
     onFailure = jasmine.createSpy('onFailure');
     onComplete = jasmine.createSpy('onComplete');
     onRateLimit = jasmine.createSpy('onRateLimit');
+    onFailWhale = jasmine.createSpy('onFailWhale');
 
     twitter = new TwitterApi();
 
@@ -14,7 +15,8 @@ describe("TwitterApi#search", function(){
       onSuccess: onSuccess,
       onFailure: onFailure,
       onComplete: onComplete,
-      onRateLimit: onRateLimit
+      onRateLimit: onRateLimit,
+      onFailWhale: onFailWhale
     });
 
     request = AjaxRequests.activeRequest();
@@ -77,4 +79,23 @@ describe("TwitterApi#search", function(){
       expect(onComplete).toHaveBeenCalled();
     });
   });
+
+  describe("on fail whale", function(){
+    beforeEach(function(){
+      request.response(TestResponses.search.failWhale);
+    });
+
+    it("calls onFailWhale", function(){
+      expect(onFailWhale).toHaveBeenCalled();
+    });
+
+    it("does not call onSuccess", function(){
+      expect(onSuccess).not.toHaveBeenCalled();
+    });
+
+    it("calls onComplete", function(){
+      expect(onComplete).toHaveBeenCalled();
+    });
+  });
+
 });

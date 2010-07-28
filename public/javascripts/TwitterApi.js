@@ -11,6 +11,7 @@ TwitterApi.prototype.search = function(query, callbacks) {
     onSuccess:  callbacks.onSuccess,
     onFailure:  callbacks.onFailure,
     onComplete: callbacks.onComplete,
-    on403:      callbacks.onRateLimit
+    on403:      callbacks.onRateLimit,
+    on503:      callbacks.onFailWhale
   });
 }
