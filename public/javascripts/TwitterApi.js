@@ -1,9 +1,9 @@
 function TwitterApi () {
-  this.base_url = "http://search.twitter.com/search.json"
+  this.baseUrl = "http://search.twitter.com/search.json"
 }
 
 TwitterApi.prototype.search = function(query, callbacks) {
-  new Ajax.Request(this.base_url, {
+  new Ajax.Request(this.baseUrl, {
     method: 'get',
     parameters: {
       q: query
