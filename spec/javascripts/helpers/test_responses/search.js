@@ -8,10 +8,6 @@ var TestResponses = {
       status: 500,
       responseText: '{"error":"You broke Twitter."}'
     },
-    rateLimitReached: {
-      status: 403,
-      responseText: '{"error":"Chill out with the requests."}'
-    },
     failWhale: {
       status: 503,
       responseText: '{"error":"Too many tweets!"}'

@@ -1,12 +1,11 @@
 describe("TwitterApi#search", function(){
   var twitter, request;
-  var onSuccess, onFailure, onComplete, onRateLimit, onFailWhale;
+  var onSuccess, onFailure, onComplete, onFailWhale;
 
   beforeEach(function(){
     onSuccess = jasmine.createSpy('onSuccess');
     onFailure = jasmine.createSpy('onFailure');
     onComplete = jasmine.createSpy('onComplete');
-    onRateLimit = jasmine.createSpy('onRateLimit');
     onFailWhale = jasmine.createSpy('onFailWhale');
 
     twitter = new TwitterApi();
@@ -15,7 +14,6 @@ describe("TwitterApi#search", function(){
       onSuccess: onSuccess,
       onFailure: onFailure,
       onComplete: onComplete,
-      onRateLimit: onRateLimit,
       onFailWhale: onFailWhale
     });
 
@@ -28,14 +26,13 @@ describe("TwitterApi#search", function(){
 
   describe("on success", function(){
     beforeEach(function(){
-      // say something about it was called with an array of Tweet objects
       request.response(TestResponses.search.success);
     });
 
     it("calls onSuccess with an array of Tweets", function(){
       var successArgs = onSuccess.mostRecentCall.args[0];
 
-      expect(onSuccess).toHaveBeenCalledWith(jasmine.any(Array  ));
+      expect(onSuccess).toHaveBeenCalledWith(jasmine.any(Array));
       expect(successArgs.length).toEqual(15);
       expect(successArgs[0]).toEqual(jasmine.any(Tweet));
     });

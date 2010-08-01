@@ -2,26 +2,31 @@ var TwitSearch = function(){
 
   return {
     displayResults: function(tweets){
-
       var update_str = "";
 
       tweets.each(function(tweet) {
-        update_str += "<li><img src='" + tweet.profile_image_url + "' alt='" + tweet.from_user + " profile image' />" +
+        update_str += "<li><img src='" + tweet.imageUrl + "' alt='" + tweet.user + " profile image' />" +
                       "<p>" + tweet.text + "</p>" +
-                      "<p class='user'>" + tweet.from_user + "</p>" +
-                      "<p class='timestamp'>" + tweet.created_at + "</p>";
+                      "<p class='user'>" + tweet.user + "</p>" +
+                      "<p class='timestamp'>" + tweet.postedAt + "</p>";
+
       });
 
-      $("tweets").update(update_str);
+      $("results").update(update_str);
     },
+
     searchFailure: function(response){
-      console.log(response.status);
+      $("results").update("<h2>Oops. Something went wrong.</h2>");
     },
-    cleanup: function(){
-      console.log("cleaning");
-    },
+
+    cleanup: function(){},
+
     rateLimitReached: function(){
       console.log("rate limited");
+    },
+
+    failWhale: function(){
+      $("results").update("<img src='images/fail-whale.png' />");
     }
   }
 }();

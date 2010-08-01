@@ -31,13 +31,10 @@
       var search_query = $("query").value
       new TwitterApi().search(
         search_query, {
-          // onSuccess should parse the JSON, then hand off the array of tweet objects to this method
           onSuccess: TwitSearch.displayResults,
           onFailure: TwitSearch.searchFailure,
           onComplete: TwitSearch.cleanup,
-          on403: function(){
-            alert("fail whale");
-          }
+          onFailWhale: TwitSearch.failWhale
         }
       );
     });
