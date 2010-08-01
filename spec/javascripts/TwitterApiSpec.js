@@ -65,24 +65,6 @@ describe("TwitterApi#search", function(){
     });
   });
 
-  describe("on rate limit", function(){
-    beforeEach(function(){
-      request.response(TestResponses.search.rateLimitReached);
-    });
-
-    it("calls onRateLimit", function(){
-      expect(onRateLimit).toHaveBeenCalled();
-    });
-
-    it("does not call onSuccess", function(){
-      expect(onSuccess).not.toHaveBeenCalled();
-    });
-
-    it("calls onComplete", function(){
-      expect(onComplete).toHaveBeenCalled();
-    });
-  });
-
   describe("on fail whale", function(){
     beforeEach(function(){
       request.response(TestResponses.search.failWhale);
