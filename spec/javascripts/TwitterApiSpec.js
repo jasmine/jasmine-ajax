@@ -28,11 +28,16 @@ describe("TwitterApi#search", function(){
 
   describe("on success", function(){
     beforeEach(function(){
+      // say something about it was called with an array of Tweet objects
       request.response(TestResponses.search.success);
     });
 
-    it("calls onSuccess", function(){
-      expect(onSuccess).toHaveBeenCalled();
+    it("calls onSuccess with an array of Tweets", function(){
+      var successArgs = onSuccess.mostRecentCall.args[0];
+
+      expect(onSuccess).toHaveBeenCalledWith(jasmine.any(Array  ));
+      expect(successArgs.length).toEqual(15);
+      expect(successArgs[0]).toEqual(jasmine.any(Tweet));
     });
 
     it("calls onComplete", function(){
@@ -42,6 +47,7 @@ describe("TwitterApi#search", function(){
     it("does not call onFailure", function(){
       expect(onFailure).not.toHaveBeenCalled();
     })
+
   });
 
   describe('on failure', function(){

@@ -8,7 +8,15 @@ TwitterApi.prototype.search = function(query, callbacks) {
     parameters: {
       q: query
     },
-    onSuccess:  callbacks.onSuccess,
+
+    onSuccess: function(response){
+      var tweets = [];
+      response.responseJSON.results.each(function(result){
+        tweets.push(new Tweet(result));
+      });
+
+      callbacks.onSuccess(tweets);
+    },
     onFailure:  callbacks.onFailure,
     onComplete: callbacks.onComplete,
     on403:      callbacks.onRateLimit,

@@ -6,10 +6,16 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
   <title>Jasmine BDD</title>
+  <link rel="stylesheet" type="text/css" href="css/reset.css" />
+  <link rel="stylesheet" type="text/css" href="css/master.css" />
   <script type="text/javascript" src="javascripts/prototype.js"></script>
+  <script type="text/javascript" src="javascripts/TwitSearch.js"></script>
+  <script type="text/javascript" src="javascripts/TwitterApi.js"></script>
+  <script type="text/javascript" src="javascripts/Tweet.js"></script>
 </head>
 
 <body>
+<div id="wrap">
 <div id="twit_search">
   <form action="#" method="get">
     <input type="text" name="query" id="query" />
@@ -19,41 +25,24 @@
 <ul id="results"></ul>
 <script type="text/javascript">
 
-  function display_search_results(results) {
-    var result_str = ""
-
-    results.each(function(result) {
-      result_str += search_result(result)
-    });
-
-    $("results").update(result_str);
-  }
-
-  function search_result(result) {
-    return  "<li><img src='" + result.profile_image_url + "' alt='" + result.from_user + " profile image' />" +
-            "<p>" + result.from_user + "</p>" +
-            "<p>" + result.text + "</p>";
-  }
-
   document.observe('dom:loaded', function(){
     $$("#twit_search form").first().observe("submit", function(event) {
-      var search_query = $("query").value
-      new Ajax.Request('http://search.twitter.com/search.json', {
-        method: 'get',
-        parameters: {
-          q: search_query
-        },
-        onSuccess: function(response) {
-
-          var responseBody = response.responseText.evalJSON(true);
-
-          display_search_results($A(responseBody.results));
-
-        }
-      });
       event.preventDefault();
+      var search_query = $("query").value
+      new TwitterApi().search(
+        search_query, {
+          // onSuccess should parse the JSON, then hand off the array of tweet objects to this method
+          onSuccess: TwitSearch.displayResults,
+          onFailure: TwitSearch.searchFailure,
+          onComplete: TwitSearch.cleanup,
+          on403: function(){
+            alert("fail whale");
+          }
+        }
+      );
     });
   });
 </script>
+</div>
 </body>
 </html>
