@@ -1,5 +1,7 @@
 Test Driving APIs with Jasmine
 ============
+**Update**: Added a mock that can be used with jQuery. The example project is the same one as the Prototype example. If you are interested in using the jQuery mock, be sure to check out `jquery/spec/javascripts/helpers/jquery-mock-ajax.js` and `jquery/spec/javascripts/helpers/SpecHelper.js`.
+
 This shows an example JavaScript app that uses Jasmine to mock Ajax requests/responses and spy on callbacks related with various responses. In particular, this project provides an Ajax mock that can easily be used in a project that uses Prototype. Eventually we would like to provide a single mock that can be used for both Prototype and jQuery projects.
 
 Interesting Parts
