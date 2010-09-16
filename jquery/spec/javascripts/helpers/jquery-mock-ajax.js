@@ -16,13 +16,13 @@ function decodeParams(string) {
   return hash;
 }
 
-function replaceNextXhr(xhrHash) {
-  xhrSpy.andCallFake(function() {
-    var newXhr = stubXhr(xhrHash);
-    xhrs.push(newXhr);
-    return newXhr;
-  });
-}
+// function replaceNextXhr(xhrHash) {
+//   xhrSpy.andCallFake(function() {
+//     var newXhr = stubXhr(xhrHash);
+//     xhrs.push(newXhr);
+//     return newXhr;
+//   });
+// }
 
 function stubXhr(options) {
   var xhr = {
