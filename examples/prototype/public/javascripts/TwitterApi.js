@@ -3,7 +3,7 @@ function TwitterApi () {
 }
 
 TwitterApi.prototype.search = function(query, callbacks) {
-  new Ajax.Request(this.baseUrl, {
+  this.currentRequest = new Ajax.Request(this.baseUrl, {
     method: 'get',
     parameters: {
       q: query
@@ -21,4 +21,4 @@ TwitterApi.prototype.search = function(query, callbacks) {
     onComplete: callbacks.onComplete,
     on503:      callbacks.onFailWhale
   });
-}
+};
