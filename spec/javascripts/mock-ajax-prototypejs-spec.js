@@ -214,7 +214,7 @@ describe("Jasmine Mock Ajax (for Prototype.js)", function() {
       sharedAjaxResponseBehavior(sharedContext);
     });
 
-    describe("and the response is null", function () {
+    describe("and the status/response code is null", function () {
       var on0;
       beforeEach(function() {
         on0 = jasmine.createSpy('on0');

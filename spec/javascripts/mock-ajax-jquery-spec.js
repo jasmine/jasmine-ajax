@@ -1,5 +1,6 @@
 describe("Jasmine Mock Ajax (for jQuery)", function() {
-  var request, anotherRequest, success, error, complete;
+  var request, anotherRequest, response;
+  var success, error, complete;
   var sharedContext = {};
 
   beforeEach(function() {
@@ -98,20 +99,21 @@ describe("Jasmine Mock Ajax (for jQuery)", function() {
     });
   });
 
-  xdescribe("when simulating a response with request.response", function () {
-    beforeEach(function() {
-      request = new Ajax.Request("idontcare", {
-        method: 'get',
-        onSuccess: success,
-        onFailure: error,
-        onComplete: complete
-      });
-    });
-
+  describe("when simulating a response with request.response", function () {
     describe("and the response is Success", function () {
       beforeEach(function() {
-        var response = {status: 200, contentType: "text/html", responseText: "OK!"};
+        request = jQuery.ajax({
+          url: "example.com/someApi",
+          type: "GET",
+          dataType: 'text',
+          success: success,
+          complete: complete,
+          error: error
+        });
+
+        response = {status: 200, contentType: "text/html", responseText: "OK!"};
         request.response(response);
+
         sharedContext.responseCallback = success;
         sharedContext.status = response.status;
         sharedContext.contentType = response.contentType;
@@ -130,38 +132,21 @@ describe("Jasmine Mock Ajax (for jQuery)", function() {
         expect(complete).toHaveBeenCalled();
       });
 
-      sharedAjaxResponseBehavior(sharedContext);
-    });
-
-    describe("and the response is Failure", function () {
-      beforeEach(function() {
-        var response = {status: 500, contentType: "text/html", responseText: "(._){"};
-        request.response(response);
-        sharedContext.responseCallback = error;
-        sharedContext.status = response.status;
-        sharedContext.contentType = response.contentType;
-        sharedContext.responseText = response.responseText;
-      });
-
-      it("should not call the success handler", function() {
-        expect(success).not.toHaveBeenCalled();
-      });
-
-      it("should call the failure handler", function() {
-        expect(error).toHaveBeenCalled();
-      });
-
-      it("should call the complete handler", function() {
-        expect(complete).toHaveBeenCalled();
-      });
-
-      sharedAjaxResponseBehavior(sharedContext);
+      sharedAjaxResponseBehaviorForJQuery_Success(sharedContext);
     });
 
     describe("and the response is Success, but with JSON", function () {
-      var response;
       beforeEach(function() {
-        var responseObject = {status: 200, contentType: "application/json", responseText: "{'foo':'bar'}"};
+        request = jQuery.ajax({
+          url: "example.com/someApi",
+          type: "GET",
+          dataType: 'json',
+          success: success,
+          complete: complete,
+          error: error
+        });
+
+        var responseObject = {status: 200, contentType: "application/json", responseText: '{"foo":"bar"}'};
 
         request.response(responseObject);
 
@@ -169,8 +154,8 @@ describe("Jasmine Mock Ajax (for jQuery)", function() {
         sharedContext.status = responseObject.status;
         sharedContext.contentType = responseObject.contentType;
         sharedContext.responseText = responseObject.responseText;
-
-        response = success.mostRecentCall.args[0];
+        
+        response = success.mostRecentCall.args[2];
       });
 
       it("should call the success handler", function() {
@@ -186,16 +171,24 @@ describe("Jasmine Mock Ajax (for jQuery)", function() {
       });
 
       it("should return a JavaScript object", function() {
-        window.response = response;
-        expect(response.responseJSON).toEqual({foo: "bar"});
+        expect(success.mostRecentCall.args[0]).toEqual({foo: "bar"});
       });
 
-      sharedAjaxResponseBehavior(sharedContext);
+      sharedAjaxResponseBehaviorForJQuery_Success(sharedContext);
     });
 
     describe("the content type defaults to application/json", function () {
       beforeEach(function() {
-        var response = {status: 200, responseText: "OK!"};
+        request = jQuery.ajax({
+          url: "example.com/someApi",
+          type: "GET",
+          dataType: 'json',
+          success: success,
+          complete: complete,
+          error: error
+        });
+
+        response = {status: 200, responseText: '{"foo": "valid JSON, dammit."}'};
         request.response(response);
 
         sharedContext.responseCallback = success;
@@ -216,67 +209,121 @@ describe("Jasmine Mock Ajax (for jQuery)", function() {
         expect(complete).toHaveBeenCalled();
       });
 
-      sharedAjaxResponseBehavior(sharedContext);
+      sharedAjaxResponseBehaviorForJQuery_Success(sharedContext);
     });
 
-    describe("and the response is null", function () {
+    describe("and the status/response code is 0", function () {
       beforeEach(function() {
-
         request = jQuery.ajax({
           url: "example.com/someApi",
           type: "GET",
+          dataType: "text",
           success: success,
           complete: complete,
           error: error
         });
 
-        var response = {status: null, responseText: "whoops!"};
+        response = {status: 0, responseText: '{"foo": "whoops!"}'};
         request.response(response);
 
-        sharedContext.responseCallback = on0;
+        sharedContext.responseCallback = success;
         sharedContext.status = 0;
         sharedContext.contentType = 'application/json';
         sharedContext.responseText = response.responseText;
       });
 
-      it("should not call the success handler", function() {
-        expect(success).not.toHaveBeenCalled();
+      it("should call the success handler", function() {
+        expect(success).toHaveBeenCalled();
       });
 
       it("should not call the failure handler", function() {
         expect(error).not.toHaveBeenCalled();
       });
-
-      it("should call the on0 handler", function() {
-        expect(on0).toHaveBeenCalled();
-      });
-
+      
       it("should call the complete handler", function() {
         expect(complete).toHaveBeenCalled();
       });
 
-      sharedAjaxResponseBehavior(sharedContext);
+      sharedAjaxResponseBehaviorForJQuery_Success(sharedContext);
     });
+  });
+
+  describe("and the response is error", function () {
+    beforeEach(function() {
+      request = jQuery.ajax({
+        url: "example.com/someApi",
+        type: "GET",
+        dataType: "text",
+        success: success,
+        complete: complete,
+        error: error
+      });
+
+      response = {status: 500, contentType: "text/html", responseText: "(._){"};
+      request.response(response);
+
+      sharedContext.responseCallback = error;
+      sharedContext.status = response.status;
+      sharedContext.contentType = response.contentType;
+      sharedContext.responseText = response.responseText;
+    });
+
+    it("should not call the success handler", function() {
+      expect(success).not.toHaveBeenCalled();
+    });
+
+    it("should call the failure handler", function() {
+      expect(error).toHaveBeenCalled();
+    });
+
+    it("should call the complete handler", function() {
+      expect(complete).toHaveBeenCalled();
+    });
+
+    sharedAjaxResponseBehaviorForJQuery_Failure(sharedContext);
   });
 });
 
-function sharedAjaxResponseBehavior(context) {
-  describe("the response", function () {
-    var response;
+
+function sharedAjaxResponseBehaviorForJQuery_Success(context) {
+  describe("the success response", function () {
+    var xhr;
     beforeEach(function() {
-      response = context.responseCallback.mostRecentCall.args[0];
+      xhr = context.responseCallback.mostRecentCall.args[2];
     });
 
     it("should have the expected status code", function() {
-      expect(response.status).toEqual(context.status);
+      expect(xhr.status).toEqual(context.status);
     });
 
     it("should have the expected content type", function() {
-      expect(response.getHeader('Content-type')).toEqual(context.contentType);
+      expect(xhr.getResponseHeader('Content-type')).toEqual(context.contentType);
     });
 
     it("should have the expected response text", function() {
-      expect(response.responseText).toEqual(context.responseText);
+      expect(xhr.responseText).toEqual(context.responseText);
+    });
+  });
+}
+
+function sharedAjaxResponseBehaviorForJQuery_Failure(context) {
+  describe("the failure response", function () {
+    var xhr;
+    beforeEach(function() {
+      xhr = context.responseCallback.mostRecentCall.args[0];
+      console.error("=============> xhr: ", xhr);
+    });
+
+    it("should have the expected status code", function() {
+      expect(xhr.status).toEqual(context.status);
+    });
+
+    it("should have the expected content type", function() {
+      expect(xhr.getResponseHeader('Content-type')).toEqual(context.contentType);
+    });
+
+    it("should have the expected response text", function() {
+      expect(xhr.responseText).toEqual(context.responseText);
     });
   });
 }
