@@ -4,11 +4,11 @@ beforeEach(function() {
   clearAjaxRequests();
 
   spyOn(Ajax, "getTransport").andCallFake(function() {
-    return new FakeAjaxTransport();
+    return new FakeXMLHttpRequest();
   });
 
   spyOn(jQuery.ajaxSettings, 'xhr').andCallFake(function() {
-    var newXhr = stubXhr();
+    var newXhr = new FakeXMLHttpRequest();
     ajaxRequests.push(newXhr);
     return newXhr;
   });
