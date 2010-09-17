@@ -11,7 +11,7 @@
 #   - dist/**/*.js
 #
 src_files:
-    - lib/prototype.js
+    - frameworks/prototype.js
     - examples/prototype/public/javascripts/**/*.js
 
 # stylesheets
@@ -38,8 +38,8 @@ stylesheets:
 #   - helpers/**/*.js
 #
 helpers:
+  - lib/spec-helper.js
   - examples/prototype/spec/javascripts/helpers/**/*.js
-  - spec/javascripts/helpers/spec-helper.js
 
 # spec_files
 #
