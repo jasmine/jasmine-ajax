@@ -3,7 +3,7 @@ function TwitterApi () {
 }
 
 TwitterApi.prototype.search = function(query, callbacks) {
-  $.ajax({
+  jQuery.ajax({
     url: this.baseUrl,
     data: {
       q: query
@@ -11,7 +11,7 @@ TwitterApi.prototype.search = function(query, callbacks) {
     type: "GET",
     success: function(data, status, request) {
       var tweets = [];
-      $($.parseJSON(data).results).each(function(index, result){
+      jQuery(jQuery.parseJSON(data).results).each(function(index, result){
         tweets.push(new Tweet(result));
       });
 
