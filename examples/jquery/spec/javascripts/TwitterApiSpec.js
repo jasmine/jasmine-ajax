@@ -17,7 +17,7 @@ describe("TwitterApi#search", function(){
       onFailWhale: onFailWhale
     });
 
-    request = mostRecentXhr();
+    request = mostRecentAjaxRequest();
   });
 
   it("calls Twitter with the correct url", function(){
