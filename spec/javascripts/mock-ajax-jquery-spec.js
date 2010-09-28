@@ -311,7 +311,6 @@ function sharedAjaxResponseBehaviorForJQuery_Failure(context) {
     var xhr;
     beforeEach(function() {
       xhr = context.responseCallback.mostRecentCall.args[0];
-      console.error("=============> xhr: ", xhr);
     });
 
     it("should have the expected status code", function() {
