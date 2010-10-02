@@ -17,7 +17,7 @@ describe("TwitterApi#search", function(){
       onFailWhale: onFailWhale
     });
 
-    request = mostRecentXhr();
+    request = mostRecentAjaxRequest();
   });
 
   it("calls Twitter with the correct url", function(){
@@ -49,7 +49,6 @@ describe("TwitterApi#search", function(){
 
   describe('on failure', function(){
     beforeEach(function(){
-      // simulateAjaxResponse(TestResponses.search.failure.status, TestResponses.search.failure.responseText, request);
       request.response(TestResponses.search.failure);
     });
 
