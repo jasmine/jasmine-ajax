@@ -11,7 +11,7 @@ TwitterApi.prototype.search = function(query, callbacks) {
     type: "GET",
     success: function(data, status, request) {
       var tweets = [];
-      $($.parseJSON(data).results).each(function(index, result){
+      $(data.results).each(function(index, result){
         tweets.push(new Tweet(result));
       });
 
