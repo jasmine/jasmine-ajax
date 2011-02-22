@@ -286,6 +286,41 @@ describe("Jasmine Mock Ajax (for jQuery)", function() {
 
     sharedAjaxResponseBehaviorForJQuery_Failure(sharedContext);
   });
+
+  describe('when simulating a response with request.responseTimeout', function() {
+    beforeEach(function() {
+      jasmine.Clock.useMock();
+
+      jQuery.ajax({
+        url: "example.com/someApi",
+        type: "GET",
+        dataType: "text",
+        success: success,
+        complete: complete,
+        error: error
+      });
+      request = mostRecentAjaxRequest();
+      response = {contentType: "text/html", responseText: "(._){"};
+      request.responseTimeout(response);
+
+      sharedContext.responseCallback = error;
+      sharedContext.status = response.status;
+      sharedContext.contentType = response.contentType;
+      sharedContext.responseText = response.responseText;
+    });
+
+    it("should not call the success handler", function() {
+      expect(success).not.toHaveBeenCalled();
+    });
+
+    it("should call the failure handler", function() {
+      expect(error).toHaveBeenCalled();
+    });
+
+    it("should call the complete handler", function() {
+      expect(complete).toHaveBeenCalled();
+    });
+  });
 });
 
 
