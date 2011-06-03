@@ -111,7 +111,7 @@ describe("Jasmine Mock Ajax (for jQuery)", function() {
           dataType: 'text',
           success: success,
           complete: complete,
-          error: error,
+          error: error
         });
         request = mostRecentAjaxRequest();
         response = {status: 200, contentType: "text/html", responseText: "OK!"};
