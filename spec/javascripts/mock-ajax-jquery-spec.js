@@ -11,13 +11,14 @@ describe("Jasmine Mock Ajax (for jQuery)", function() {
 
   describe("when making a request", function () {
     beforeEach(function() {
-      request = jQuery.ajax({
+      jQuery.ajax({
         url: "example.com/someApi",
         type: "GET",
         success: success,
         complete: complete,
         error: error
       });
+      request = mostRecentAjaxRequest();
     });
 
     it("should store URL and transport", function() {
@@ -34,13 +35,14 @@ describe("Jasmine Mock Ajax (for jQuery)", function() {
 
     describe("and then another request", function () {
       beforeEach(function() {
-        anotherRequest = jQuery.ajax({
+        jQuery.ajax({
           url: "example.com/someApi",
           type: "GET",
           success: success,
           complete: complete,
           error: error
         });
+        anotherRequest = mostRecentAjaxRequest();
       });
 
       it("should queue the next request", function() {
@@ -62,13 +64,14 @@ describe("Jasmine Mock Ajax (for jQuery)", function() {
 
       describe("when there is more than one request", function () {
         beforeEach(function() {
-          anotherRequest = jQuery.ajax({
+          jQuery.ajax({
             url: "example.com/someApi",
             type: "GET",
             success: success,
             complete: complete,
             error: error
           });
+          anotherRequest = mostRecentAjaxRequest();
         });
 
         it("should return the most recent request", function() {
@@ -102,7 +105,7 @@ describe("Jasmine Mock Ajax (for jQuery)", function() {
   describe("when simulating a response with request.response", function () {
     describe("and the response is Success", function () {
       beforeEach(function() {
-        request = jQuery.ajax({
+        jQuery.ajax({
           url: "example.com/someApi",
           type: "GET",
           dataType: 'text',
@@ -110,7 +113,7 @@ describe("Jasmine Mock Ajax (for jQuery)", function() {
           complete: complete,
           error: error
         });
-
+        request = mostRecentAjaxRequest();
         response = {status: 200, contentType: "text/html", responseText: "OK!"};
         request.response(response);
 
@@ -137,7 +140,7 @@ describe("Jasmine Mock Ajax (for jQuery)", function() {
 
     describe("and the response is Success, but with JSON", function () {
       beforeEach(function() {
-        request = jQuery.ajax({
+        jQuery.ajax({
           url: "example.com/someApi",
           type: "GET",
           dataType: 'json',
@@ -145,7 +148,7 @@ describe("Jasmine Mock Ajax (for jQuery)", function() {
           complete: complete,
           error: error
         });
-
+        request = mostRecentAjaxRequest();
         var responseObject = {status: 200, contentType: "application/json", responseText: '{"foo":"bar"}'};
 
         request.response(responseObject);
@@ -179,7 +182,7 @@ describe("Jasmine Mock Ajax (for jQuery)", function() {
 
     describe("the content type defaults to application/json", function () {
       beforeEach(function() {
-        request = jQuery.ajax({
+        jQuery.ajax({
           url: "example.com/someApi",
           type: "GET",
           dataType: 'json',
@@ -187,7 +190,7 @@ describe("Jasmine Mock Ajax (for jQuery)", function() {
           complete: complete,
           error: error
         });
-
+        request = mostRecentAjaxRequest();
         response = {status: 200, responseText: '{"foo": "valid JSON, dammit."}'};
         request.response(response);
 
@@ -214,7 +217,7 @@ describe("Jasmine Mock Ajax (for jQuery)", function() {
 
     describe("and the status/response code is 0", function () {
       beforeEach(function() {
-        request = jQuery.ajax({
+        jQuery.ajax({
           url: "example.com/someApi",
           type: "GET",
           dataType: "text",
@@ -222,12 +225,13 @@ describe("Jasmine Mock Ajax (for jQuery)", function() {
           complete: complete,
           error: error
         });
-
+        request = mostRecentAjaxRequest();
+        console.log(request);
         response = {status: 0, responseText: '{"foo": "whoops!"}'};
         request.response(response);
 
         sharedContext.responseCallback = success;
-        sharedContext.status = 0;
+        sharedContext.status = 304; /* jQuery detects status code zero as 304 when headers are present */
         sharedContext.contentType = 'application/json';
         sharedContext.responseText = response.responseText;
       });
@@ -250,7 +254,7 @@ describe("Jasmine Mock Ajax (for jQuery)", function() {
 
   describe("and the response is error", function () {
     beforeEach(function() {
-      request = jQuery.ajax({
+      jQuery.ajax({
         url: "example.com/someApi",
         type: "GET",
         dataType: "text",
@@ -258,7 +262,7 @@ describe("Jasmine Mock Ajax (for jQuery)", function() {
         complete: complete,
         error: error
       });
-
+      request = mostRecentAjaxRequest();
       response = {status: 500, contentType: "text/html", responseText: "(._){"};
       request.response(response);
 
@@ -281,6 +285,41 @@ describe("Jasmine Mock Ajax (for jQuery)", function() {
     });
 
     sharedAjaxResponseBehaviorForJQuery_Failure(sharedContext);
+  });
+
+  describe('when simulating a response with request.responseTimeout', function() {
+    beforeEach(function() {
+      jasmine.Clock.useMock();
+
+      jQuery.ajax({
+        url: "example.com/someApi",
+        type: "GET",
+        dataType: "text",
+        success: success,
+        complete: complete,
+        error: error
+      });
+      request = mostRecentAjaxRequest();
+      response = {contentType: "text/html", responseText: "(._){"};
+      request.responseTimeout(response);
+
+      sharedContext.responseCallback = error;
+      sharedContext.status = response.status;
+      sharedContext.contentType = response.contentType;
+      sharedContext.responseText = response.responseText;
+    });
+
+    it("should not call the success handler", function() {
+      expect(success).not.toHaveBeenCalled();
+    });
+
+    it("should call the failure handler", function() {
+      expect(error).toHaveBeenCalled();
+    });
+
+    it("should call the complete handler", function() {
+      expect(complete).toHaveBeenCalled();
+    });
   });
 });
 
