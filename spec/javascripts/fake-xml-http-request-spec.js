@@ -35,4 +35,11 @@ describe("FakeXMLHttpRequest", function() {
       });
     });
   });
+
+	it("can be extended", function(){
+		FakeXMLHttpRequest.prototype.foo = function(){
+			return "foo";
+		}
+		expect(new FakeXMLHttpRequest().foo()).toEqual("foo");
+	});
 });
