@@ -3,6 +3,8 @@ describe("TwitterApi#search", function(){
   var onSuccess, onFailure, onComplete, onFailWhale;
 
   beforeEach(function(){
+    jasmine.Ajax.useMock();
+
     onSuccess = jasmine.createSpy('onSuccess');
     onFailure = jasmine.createSpy('onFailure');
     onComplete = jasmine.createSpy('onComplete');
