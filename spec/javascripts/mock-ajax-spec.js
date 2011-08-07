@@ -39,7 +39,7 @@ describe("jasmine.Ajax", function() {
       it("installs the mock", function() {
         withoutPrototype(function() {
           jasmine.Ajax.installMock();
-          expect(jQuery.ajaxSettings.xhr).toBe(FakeXMLHttpRequest);
+          expect(jQuery.ajaxSettings.xhr).toBe(jasmine.Ajax.jQueryMock);
         });
       });
 
@@ -63,7 +63,7 @@ describe("jasmine.Ajax", function() {
       it("installs the mock", function() {
         withoutJquery(function() {
           jasmine.Ajax.installMock();
-          expect(Ajax.getTransport).toBe(FakeXMLHttpRequest);
+          expect(Ajax.getTransport).toBe(jasmine.Ajax.prototypeMock);
         });
       });
 
