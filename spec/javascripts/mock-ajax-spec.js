@@ -38,23 +38,29 @@ describe("jasmine.Ajax", function() {
 
       it("installs the mock", function() {
         withoutPrototype(function() {
-          jasmine.Ajax.installMock();
-          expect(jQuery.ajaxSettings.xhr).toBe(jasmine.Ajax.jQueryMock);
+          withoutZepto(function() {
+            jasmine.Ajax.installMock();
+            expect(jQuery.ajaxSettings.xhr).toBe(jasmine.Ajax.jQueryMock);
+          });
         });
       });
 
       it("saves a reference to jQuery.ajaxSettings.xhr", function() {
         withoutPrototype(function() {
-          var jqueryAjax = jQuery.ajaxSettings.xhr;
-          jasmine.Ajax.installMock();
-          expect(jasmine.Ajax.real).toBe(jqueryAjax);
+          withoutZepto(function() {
+            var jqueryAjax = jQuery.ajaxSettings.xhr;
+            jasmine.Ajax.installMock();
+            expect(jasmine.Ajax.real).toBe(jqueryAjax);
+          });
         });
       });
 
       it("sets mode to 'jQuery'", function() {
         withoutPrototype(function() {
-          jasmine.Ajax.installMock();
-          expect(jasmine.Ajax.mode).toEqual("jQuery");
+          withoutZepto(function() {
+            jasmine.Ajax.installMock();
+            expect(jasmine.Ajax.mode).toEqual("jQuery");
+          });
         });
       })
     });
@@ -62,24 +68,30 @@ describe("jasmine.Ajax", function() {
     describe("when using Prototype", function() {
       it("installs the mock", function() {
         withoutJquery(function() {
-          jasmine.Ajax.installMock();
-          expect(Ajax.getTransport).toBe(jasmine.Ajax.prototypeMock);
+          withoutZepto(function() {
+            jasmine.Ajax.installMock();
+            expect(Ajax.getTransport).toBe(jasmine.Ajax.prototypeMock);
+          });
         });
       });
 
       it("stores a reference to Ajax.getTransport", function() {
         withoutJquery(function(){
-          var prototypeAjax = Ajax.getTransport;
+          withoutZepto(function() {
+            var prototypeAjax = Ajax.getTransport;
 
-          jasmine.Ajax.installMock();
-          expect(jasmine.Ajax.real).toBe(prototypeAjax);
+            jasmine.Ajax.installMock();
+            expect(jasmine.Ajax.real).toBe(prototypeAjax);
+          });
         });
       });
 
       it("sets mode to 'Prototype'", function() {
         withoutJquery(function() {
-          jasmine.Ajax.installMock();
-          expect(jasmine.Ajax.mode).toEqual("Prototype");
+          withoutZepto(function() {
+            jasmine.Ajax.installMock();
+            expect(jasmine.Ajax.mode).toEqual("Prototype");
+          });
         });
       });
     });
@@ -109,12 +121,14 @@ describe("jasmine.Ajax", function() {
     describe("when using jQuery", function() {
       it("returns ajax control to jQuery", function() {
         withoutPrototype(function() {
-          var jqueryAjax = jQuery.ajaxSettings.xhr;
+          withoutZepto(function() {
+            var jqueryAjax = jQuery.ajaxSettings.xhr;
 
-          jasmine.Ajax.installMock();
-          jasmine.Ajax.uninstallMock();
+            jasmine.Ajax.installMock();
+            jasmine.Ajax.uninstallMock();
 
-          expect(jQuery.ajaxSettings.xhr).toBe(jqueryAjax);
+            expect(jQuery.ajaxSettings.xhr).toBe(jqueryAjax);
+          });
         });
 
 
@@ -125,11 +139,13 @@ describe("jasmine.Ajax", function() {
     describe("when using Prototype", function() {
       it("returns Ajax control to Ajax.getTransport", function() {
         withoutJquery(function() {
-          var prototypeAjax = Ajax.getTransport;
-          jasmine.Ajax.installMock();
-          jasmine.Ajax.uninstallMock();
+          withoutZepto(function() {
+            var prototypeAjax = Ajax.getTransport;
+            jasmine.Ajax.installMock();
+            jasmine.Ajax.uninstallMock();
 
-          expect(Ajax.getTransport).toBe(prototypeAjax);
+            expect(Ajax.getTransport).toBe(prototypeAjax);
+          });
         });
         // so uninstallMock doesn't throw error when spec.after runs
         jasmine.Ajax.installMock();
