@@ -192,3 +192,10 @@ function withoutPrototype(spec) {
   spec.apply(this);
   Prototype = prototypeRef;
 }
+
+function withoutZepto(spec) {
+  var zeptoRef = Zepto;
+  Zepto = undefined;
+  spec.apply(this);
+  Zepto = zeptoRef;
+}
