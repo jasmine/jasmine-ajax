@@ -96,17 +96,46 @@ describe("jasmine.Ajax", function() {
       });
     });
 
+    describe("when using Zepto.js", function() {
+
+      it("installs the mock", function() {
+        withoutPrototype(function() {
+          withoutJquery(function() {
+            jasmine.Ajax.installMock();
+            expect(Zepto.ajaxSettings.xhr).toBe(jasmine.Ajax.zeptoMock);
+          });
+        });
+      });
+
+      it("saves a reference to Zepto.ajaxSettings.xhr", function() {
+        withoutPrototype(function() {
+          withoutJquery(function() {
+            var zeptoAjax = Zepto.ajaxSettings.xhr;
+            jasmine.Ajax.installMock();
+            expect(jasmine.Ajax.real).toBe(zeptoAjax);
+          });
+        });
+      });
+
+      it("sets mode to 'Zepto.js'", function() {
+        withoutPrototype(function() {
+          withoutJquery(function() {
+            jasmine.Ajax.installMock();
+            expect(jasmine.Ajax.mode).toEqual("Zepto.js");
+          });
+        });
+      })
+    });
+
     describe("when using any other library", function() {
       it("raises an exception", function() {
-        var jquery = jQuery;
-        var prototype = Prototype;
-        jQuery = undefined;
-        Prototype = undefined;
-
-        expect(function(){ jasmine.Ajax.installMock() }).toThrow("jasmine.Ajax currently only supports jQuery and Prototype");
-
-        jQuery = jquery;
-        Prototype = prototype;
+        withoutPrototype(function() {
+          withoutJquery(function() {
+            withoutZepto(function() {
+              expect(function(){ jasmine.Ajax.installMock() }).toThrow("jasmine.Ajax currently only supports jQuery, Prototype and Zepto.js");
+            });
+          });
+        });
       });
     });
 
