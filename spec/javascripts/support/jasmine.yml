@@ -3,6 +3,7 @@ src_dir: .
 src_files:
     - frameworks/prototype.js
     - frameworks/jquery.js
+    - frameworks/zepto.js
     - lib/mock-ajax.js
 
 spec_dir:
