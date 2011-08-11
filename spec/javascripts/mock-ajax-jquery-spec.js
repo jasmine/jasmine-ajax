@@ -3,9 +3,11 @@ describe("Jasmine Mock Ajax (for jQuery)", function() {
   var success, error, complete;
   var sharedContext = {};
   var prototype = Prototype;
+  var zepto = Zepto;
 
   beforeEach(function() {
     Prototype = undefined;
+    Zepto = undefined;
     jasmine.Ajax.useMock();
 
     success = jasmine.createSpy("onSuccess");
@@ -15,6 +17,7 @@ describe("Jasmine Mock Ajax (for jQuery)", function() {
 
   afterEach(function() {
     Prototype = prototype;
+    Zepto = zepto;
   });
 
   describe("when making a request", function () {
@@ -165,7 +168,7 @@ describe("Jasmine Mock Ajax (for jQuery)", function() {
         sharedContext.status = responseObject.status;
         sharedContext.contentType = responseObject.contentType;
         sharedContext.responseText = responseObject.responseText;
-        
+
         response = success.mostRecentCall.args[2];
       });
 
@@ -250,7 +253,7 @@ describe("Jasmine Mock Ajax (for jQuery)", function() {
       it("should not call the failure handler", function() {
         expect(error).not.toHaveBeenCalled();
       });
-      
+
       it("should call the complete handler", function() {
         expect(complete).toHaveBeenCalled();
       });

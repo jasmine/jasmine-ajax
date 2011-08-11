@@ -2,9 +2,11 @@ describe("Jasmine Mock Ajax (for Prototype.js)", function() {
   var request, anotherRequest, onSuccess, onFailure, onComplete;
   var sharedContext = {};
   var jquery = jQuery;
+  var zepto = Zepto;
 
   beforeEach(function() {
     jQuery = undefined;
+    Zepto = undefined;
     jasmine.Ajax.useMock();
 
     onSuccess = jasmine.createSpy("onSuccess");
@@ -14,6 +16,7 @@ describe("Jasmine Mock Ajax (for Prototype.js)", function() {
 
   afterEach(function() {
     jQuery = jquery;
+    Zepto = zepto;
   });
 
   describe("when making a request", function () {
@@ -237,7 +240,7 @@ describe("Jasmine Mock Ajax (for Prototype.js)", function() {
 
         var response = {status: null, responseText: "whoops!"};
         request.response(response);
-        
+
         sharedContext.responseCallback = on0;
         sharedContext.status = 0;
         sharedContext.contentType = 'application/json';
