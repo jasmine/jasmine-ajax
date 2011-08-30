@@ -1,16 +1,168 @@
-Test Driving APIs with Jasmine
-============
-**Update**: Added a mock that can be used with jQuery. The example project is the same one as the Prototype example. If you are interested in using the jQuery mock, be sure to check out `jquery/spec/javascripts/helpers/jquery-mock-ajax.js` and `jquery/spec/javascripts/helpers/SpecHelper.js`.
+jasmine-ajax - Faking Ajax responses in your Jasmine suite.
+===
+jasmine-ajax is a library that lets you define a set of fake responses for Ajax requests made by your application, specify per spec which response should be used, and keep track of the Ajax requests you make so you can make assertions about the results.
 
-This shows an example JavaScript app that uses Jasmine to mock Ajax requests/responses and spy on callbacks related with various responses. We are currently using separate mocks for Prototype and jQuery but will soon be adding a single mock that can be used with either.
+Libraries Supported
+---
+jasmine-ajax is currently compatible with jQuery and Prototype. Support for other libraries planned.
 
-Interesting Parts
-------------
-* `spec/javascripts/helpers/mock-ajax.js`: In order to mock out the actual HTTP requests, you'll want to include this file in your project and put it somewhere on Jasmine's helper lookup path. Including this file will do a number of things, including a way for you to define your own responses and tell your requests which one to use, as well as keep a list of Ajax requests for later inspection.
-* `spec/javascripts/helpers/test_responses/search.js`: By defining responses with various status codes and content, you can set expectations with Jasmine about what should happen in each of those situations. For example, you might create test responses for status codes of 200, 404, 500, and whatever other responses codes are relevant to the API you are working with. You can then hand these test responses to the Ajax mocks you create, then set expectations on which callbacks should be called in each of those contexts.
+Installing
+---
+Download [mock-ajax.js](http://cloud.github.com/downloads/pivotal/jasmine-ajax/mock-ajax.js) and add it to your project. If you are using the jasmine gem, be sure the location you put mock-ajax.js is included in your src_files path in jasmine.yml. If you are using Jasmine standalone, make sure you add it to your spec runner.
+
+Setup
+---
+Using the library in your Jasmine specs consists of four parts:
+
+1. Defining test responses
+2. Installing the mock
+3. Defining the response for each request
+4. Inspecting Ajax requests and setting expectations on them
+
+Example
+---
+Let's use a simple Foursquare venue search app to show each of these steps.
+
+### 1. Defining Test Responses ###
+After signing up for an API key and playing around with curl a bit you should have an idea of what API resources you are interested in and what sample responses look like. Once you do, you can define simple JavaScripts objects that will be used to build XMLHttpRequest objects later.
+
+For example, if you have a response that looks like this:
+
+    {
+        "meta":{
+            "code":200,
+            "errorType":"deprecated",
+            "errorDetail":"This endpoint will stop returning groups in the future. Please use a current version, see http://bit.ly/lZx3NU."
+        },
+        "response":{
+            "groups":[{
+                    "type":"nearby",
+                    "name":"Nearby",
+                    "items":[{
+                            "id":"4bb9fd9f3db7b7138dbd229a",
+                            "name":"Pivotal Labs",
+                            "contact":{
+                                "twitter":"pivotalboulder"
+                            },
+                            "location":{
+                                "address":"1701 Pearl St.",
+                                "crossStreet":"at 17th St.",
+                                "city":"Boulder",
+                                "state":"CO",
+                                "lat":40.019461,
+                                "lng":-105.273296,
+                                "distance":0
+                            },
+                            "categories":[{
+                                    "id":"4bf58dd8d48988d124941735",
+                                    "name":"Office",
+                                    "pluralName":"Offices",
+                                    "icon":"https://foursquare.com/img/categories/building/default.png",
+                                    "parents":["Homes, Work, Others"
+                                    ],
+                                    "primary":true
+                                }
+                            ],
+                            "verified":false,
+                            "stats":{
+                                "checkinsCount":223,
+                                "usersCount":62
+                            },
+                            "hereNow":{
+                                "count":0
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+
+Then you'd define a mock response that looks something like this:
+
+        var TestResponses = {
+          search: {
+            success: {
+              status: 200,
+              responseText: '{"response":{"groups":[{"type":"nearby","name":"Nearby","items":[{"id":"4bb9fd9f3db7b7138dbd229a","name":"Pivotal Labs","contact":{"twitter":"pivotalboulder"},"location":{"address":"1701 Pearl St.","crossStreet":"at 17th St.","city":"Boulder","state":"CO","lat":40.019461,"lng":-105.273296,"distance":0},"categories":[{"id":"4bf58dd8d48988d124941735","name":"Office","pluralName":"Offices","icon":"https://foursquare.com/img/categories/building/default.png","parents":["Homes, Work, Others"],"primary":true}],"verified":false,"stats":{"checkinsCount":223,"usersCount":62},"hereNow":{"count":0}},{"id":"4af2eccbf964a5203ae921e3","name":"Laughing Goat Café","contact":{},"location":{"address":"1709 Pearl St.","crossStreet":"btw 16th & 17th","city":"Boulder","state":"CO","postalCode":"80302","country":"USA","lat":40.019321,"lng":-105.27311982,"distance":21},"categories":[{"id":"4bf58dd8d48988d1e0931735","name":"Coffee Shop","pluralName":"Coffee Shops","icon":"https://foursquare.com/img/categories/food/coffeeshop.png","parents":["Food"],"primary":true},{"id":"4bf58dd8d48988d1a7941735","name":"College Library","pluralName":"College Libraries","icon":"https://foursquare.com/img/categories/education/default.png","parents":["Colleges & Universities"]}],"verified":false,"stats":{"checkinsCount":1314,"usersCount":517},"hereNow":{"count":0}},{"id":"4ca777a597c8a1cdf7bc7aa5","name":"Ted\'s Montana Grill","contact":{"phone":"3034495546","formattedPhone":"(303) 449-5546","twitter":"TedMontanaGrill"},"location":{"address":"1701 Pearl St.","crossStreet":"17th and Pearl","city":"Boulder","state":"CO","postalCode":"80302","country":"USA","lat":40.019376,"lng":-105.273311,"distance":9},"categories":[{"id":"4bf58dd8d48988d1cc941735","name":"Steakhouse","pluralName":"Steakhouses","icon":"https://foursquare.com/img/categories/food/steakhouse.png","parents":["Food"],"primary":true}],"verified":true,"stats":{"checkinsCount":197,"usersCount":150},"url":"http://www.tedsmontanagrill.com/","hereNow":{"count":0}},{"id":"4d3cac5a8edf3704e894b2a5","name":"Pizzeria Locale","contact":{},"location":{"address":"1730 Pearl St","city":"Boulder","state":"CO","postalCode":"80302","country":"USA","lat":40.0193746,"lng":-105.2726744,"distance":53},"categories":[{"id":"4bf58dd8d48988d1ca941735","name":"Pizza Place","pluralName":"Pizza Places","icon":"https://foursquare.com/img/categories/food/pizza.png","parents":["Food"],"primary":true}],"verified":false,"stats":{"checkinsCount":511,"usersCount":338},"hereNow":{"count":2}},{"id":"4d012cd17c56370462a6b4f0","name":"The Pinyon","contact":{},"location":{"address":"1710 Pearl St.","city":"Boulder","state":"CO","country":"USA","lat":40.019219,"lng":-105.2730563,"distance":33},"categories":[{"id":"4bf58dd8d48988d14e941735","name":"American Restaurant","pluralName":"American Restaurants","icon":"https://foursquare.com/img/categories/food/default.png","parents":["Food"],"primary":true}],"verified":true,"stats":{"checkinsCount":163,"usersCount":98},"hereNow":{"count":1}}]}]}'
+            }
+          }
+        };
+
+A good place to define this is in `spec/javascripts/helpers/test_responses`. You can also define failure responses, for whatever status codes the API you are working with supports.
+
+### 2. Installing the mock ###
+Install the mock using `jasmine.Ajax.useMock()`:
+
+    beforeEach(function() {
+      jasmine.Ajax.useMock();
+      ...
+After this, all Ajax requests will be captured by jasmine-ajax. If you want to do things like load fixtures, do it before you install the mock (see below).
+
+### 3. Set responses ###
+Now that you've defined some test responses and installed the mock, you need to tell jasmine-ajax which response to use for a given spec. If you want to use your success response for a set of related success specs, you might use:
+
+    describe("on success", function() {
+      beforeEach(function() {
+        request.response(TestResponses.search.success);
+      });
+
+Now for all the specs in this example group, whenever an Ajax response is sent, it will use the `TestResponses.search.success` object defined in your test responses to build the XMLHttpRequest object.
+
+### 4. Inspect Ajax requests ###
+Putting it all together, you can install the mock, pass some spies as callbacks to your search object, and make expectations about the expected behavior.
+
+    describe("FoursquareVenueSearch", function() {
+      var foursquare, request;
+      var onSuccess, onFailure;
+
+      beforeEach(function() {
+        jasmine.Ajax.useMock();
+
+        onSuccess = jasmine.createSpy('onSuccess');
+        onFailure = jasmine.createSpy('onFailure');
+
+        foursquare = new FoursquareVenueSearch();
+
+        foursquare.search('40.019461,-105.273296', {
+          onSuccess: onSuccess,
+          onFailure: onFailure
+        });
+
+        request = mostRecentAjaxRequest();
+      });
+
+      describe("on success", function() {
+        beforeEach(function() {
+          request.response(TestResponses.search.success);
+        });
+
+        it("calls onSuccess with an array of Locations", function() {
+          expect(onSuccess).toHaveBeenCalled();
+
+          var successArgs = onSuccess.mostRecentCall.args[0];
+
+          expect(successArgs.length).toEqual(1);
+          expect(successArgs[0]).toEqual(jasmine.any(Venue));
+        });
+      });
+    });
+
+
+Loading Fixtures
+---
+Most third-party Jasmine extensions use Ajax to load HTML fixtures into the DOM. Since jasmine-ajax intercepts all Ajax calls after it is installed, you need to load your fixtures before installing the mock. If you are using jasmine-jquery, that looks like this:
+
+    beforeEach(function){
+      // first load your fixtures
+      loadFixtures('fixture.html');
+
+      // then install the mock
+      jasmine.Ajax.useMock();
+    });
 
 Jasmine
 ------------
 http://github.com/pivotal/jasmine
 
-Copyright (c) 2010 Pivotal Labs. This software is licensed under the MIT License.
+Copyright (c) 2011 Pivotal Labs. This software is licensed under the MIT License.
