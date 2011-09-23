@@ -137,7 +137,6 @@ describe("jasmine.Ajax", function() {
     });
 
     it("raises an exception if jasmine.Ajax is not installed", function() {
-      console.log(jasmine.Ajax.installed + 'dd');
       expect(function(){ jasmine.Ajax.uninstallMock() }).toThrow("Mock ajax is not installed, use jasmine.Ajax.useMock()");
     });
 
