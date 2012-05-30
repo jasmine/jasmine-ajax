@@ -1,13 +1,13 @@
-describe("Jasmine Mock Ajax (for jQuery)", function() {
+describe("Jasmine Mock Ajax (for Zepto.js)", function() {
   var request, anotherRequest, response;
   var success, error, complete;
   var sharedContext = {};
   var prototype = Prototype;
-  var zepto = Zepto;
+  var jquery = jQuery;
 
   beforeEach(function() {
     Prototype = undefined;
-    Zepto = undefined;
+    jQuery = undefined;
     jasmine.Ajax.useMock();
 
     success = jasmine.createSpy("onSuccess");
@@ -17,12 +17,12 @@ describe("Jasmine Mock Ajax (for jQuery)", function() {
 
   afterEach(function() {
     Prototype = prototype;
-    Zepto = zepto;
+    jQuery = jquery;
   });
 
   describe("when making a request", function () {
     beforeEach(function() {
-      jQuery.ajax({
+      Zepto.ajax({
         url: "example.com/someApi",
         type: "GET",
         success: success,
@@ -46,7 +46,7 @@ describe("Jasmine Mock Ajax (for jQuery)", function() {
 
     describe("and then another request", function () {
       beforeEach(function() {
-        jQuery.ajax({
+        Zepto.ajax({
           url: "example.com/someApi",
           type: "GET",
           success: success,
@@ -75,7 +75,7 @@ describe("Jasmine Mock Ajax (for jQuery)", function() {
 
       describe("when there is more than one request", function () {
         beforeEach(function() {
-          jQuery.ajax({
+          Zepto.ajax({
             url: "example.com/someApi",
             type: "GET",
             success: success,
@@ -116,7 +116,7 @@ describe("Jasmine Mock Ajax (for jQuery)", function() {
   describe("when simulating a response with request.response", function () {
     describe("and the response is Success", function () {
       beforeEach(function() {
-        jQuery.ajax({
+        Zepto.ajax({
           url: "example.com/someApi",
           type: "GET",
           dataType: 'text',
@@ -146,12 +146,12 @@ describe("Jasmine Mock Ajax (for jQuery)", function() {
         expect(complete).toHaveBeenCalled();
       });
 
-      sharedAjaxResponseBehaviorForJQuery_Success(sharedContext);
+      sharedAjaxResponseBehaviorForZepto_Success(sharedContext);
     });
 
     describe("and the response is Success, but with JSON", function () {
       beforeEach(function() {
-        jQuery.ajax({
+        Zepto.ajax({
           url: "example.com/someApi",
           type: "GET",
           dataType: 'json',
@@ -188,12 +188,12 @@ describe("Jasmine Mock Ajax (for jQuery)", function() {
         expect(success.mostRecentCall.args[0]).toEqual({foo: "bar"});
       });
 
-      sharedAjaxResponseBehaviorForJQuery_Success(sharedContext);
+      sharedAjaxResponseBehaviorForZepto_Success(sharedContext);
     });
 
     describe("the content type defaults to application/json", function () {
       beforeEach(function() {
-        jQuery.ajax({
+        Zepto.ajax({
           url: "example.com/someApi",
           type: "GET",
           dataType: 'json',
@@ -223,12 +223,12 @@ describe("Jasmine Mock Ajax (for jQuery)", function() {
         expect(complete).toHaveBeenCalled();
       });
 
-      sharedAjaxResponseBehaviorForJQuery_Success(sharedContext);
+      sharedAjaxResponseBehaviorForZepto_Success(sharedContext);
     });
 
     describe("and the status/response code is 0", function () {
       beforeEach(function() {
-        jQuery.ajax({
+        Zepto.ajax({
           url: "example.com/someApi",
           type: "GET",
           dataType: "text",
@@ -241,7 +241,7 @@ describe("Jasmine Mock Ajax (for jQuery)", function() {
         request.response(response);
 
         sharedContext.responseCallback = success;
-        sharedContext.status = 304; /* jQuery detects status code zero as 304 when headers are present */
+        sharedContext.status = 0;
         sharedContext.contentType = 'application/json';
         sharedContext.responseText = response.responseText;
       });
@@ -258,13 +258,13 @@ describe("Jasmine Mock Ajax (for jQuery)", function() {
         expect(complete).toHaveBeenCalled();
       });
 
-      sharedAjaxResponseBehaviorForJQuery_Success(sharedContext);
+      sharedAjaxResponseBehaviorForZepto_Success(sharedContext);
     });
   });
 
   describe("and the response is error", function () {
     beforeEach(function() {
-      jQuery.ajax({
+      Zepto.ajax({
         url: "example.com/someApi",
         type: "GET",
         dataType: "text",
@@ -294,47 +294,13 @@ describe("Jasmine Mock Ajax (for jQuery)", function() {
       expect(complete).toHaveBeenCalled();
     });
 
-    sharedAjaxResponseBehaviorForJQuery_Failure(sharedContext);
+    sharedAjaxResponseBehaviorForZepto_Failure(sharedContext);
   });
 
-  describe('when simulating a response with request.responseTimeout', function() {
-    beforeEach(function() {
-      jasmine.Clock.useMock();
-
-      jQuery.ajax({
-        url: "example.com/someApi",
-        type: "GET",
-        dataType: "text",
-        success: success,
-        complete: complete,
-        error: error
-      });
-      request = mostRecentAjaxRequest();
-      response = {contentType: "text/html", responseText: "(._){"};
-      request.responseTimeout(response);
-
-      sharedContext.responseCallback = error;
-      sharedContext.status = response.status;
-      sharedContext.contentType = response.contentType;
-      sharedContext.responseText = response.responseText;
-    });
-
-    it("should not call the success handler", function() {
-      expect(success).not.toHaveBeenCalled();
-    });
-
-    it("should call the failure handler", function() {
-      expect(error).toHaveBeenCalled();
-    });
-
-    it("should call the complete handler", function() {
-      expect(complete).toHaveBeenCalled();
-    });
-  });
 });
 
 
-function sharedAjaxResponseBehaviorForJQuery_Success(context) {
+function sharedAjaxResponseBehaviorForZepto_Success(context) {
   describe("the success response", function () {
     var xhr;
     beforeEach(function() {
@@ -355,7 +321,7 @@ function sharedAjaxResponseBehaviorForJQuery_Success(context) {
   });
 }
 
-function sharedAjaxResponseBehaviorForJQuery_Failure(context) {
+function sharedAjaxResponseBehaviorForZepto_Failure(context) {
   describe("the failure response", function () {
     var xhr;
     beforeEach(function() {
