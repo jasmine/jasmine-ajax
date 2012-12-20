@@ -1,7 +1,6 @@
 src_dir: .
 
 src_files:
-    - frameworks/prototype.js
     - frameworks/jquery.js
     - lib/mock-ajax.js
 

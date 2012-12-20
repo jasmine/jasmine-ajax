@@ -37,64 +37,30 @@ describe("jasmine.Ajax", function() {
     describe("when using jQuery", function() {
 
       it("installs the mock", function() {
-        withoutPrototype(function() {
           jasmine.Ajax.installMock();
           expect(jQuery.ajaxSettings.xhr).toBe(jasmine.Ajax.jQueryMock);
-        });
       });
 
       it("saves a reference to jQuery.ajaxSettings.xhr", function() {
-        withoutPrototype(function() {
           var jqueryAjax = jQuery.ajaxSettings.xhr;
           jasmine.Ajax.installMock();
           expect(jasmine.Ajax.real).toBe(jqueryAjax);
-        });
       });
 
       it("sets mode to 'jQuery'", function() {
-        withoutPrototype(function() {
           jasmine.Ajax.installMock();
           expect(jasmine.Ajax.mode).toEqual("jQuery");
-        });
-      });
-    });
-
-    describe("when using Prototype", function() {
-      it("installs the mock", function() {
-        withoutJquery(function() {
-          jasmine.Ajax.installMock();
-          expect(Ajax.getTransport).toBe(jasmine.Ajax.prototypeMock);
-        });
-      });
-
-      it("stores a reference to Ajax.getTransport", function() {
-        withoutJquery(function(){
-          var prototypeAjax = Ajax.getTransport;
-
-          jasmine.Ajax.installMock();
-          expect(jasmine.Ajax.real).toBe(prototypeAjax);
-        });
-      });
-
-      it("sets mode to 'Prototype'", function() {
-        withoutJquery(function() {
-          jasmine.Ajax.installMock();
-          expect(jasmine.Ajax.mode).toEqual("Prototype");
-        });
       });
     });
 
     describe("when using any other library", function() {
       it("raises an exception", function() {
         var jquery = jQuery;
-        var prototype = Prototype;
         jQuery = undefined;
-        Prototype = undefined;
 
-        expect(function(){ jasmine.Ajax.installMock(); }).toThrow("jasmine.Ajax currently only supports jQuery and Prototype");
+        expect(function(){ jasmine.Ajax.installMock(); }).toThrow("jasmine.Ajax currently only supports jQuery");
 
         jQuery = jquery;
-        Prototype = prototype;
       });
     });
 
@@ -108,31 +74,12 @@ describe("jasmine.Ajax", function() {
   describe("uninstallMock", function() {
     describe("when using jQuery", function() {
       it("returns ajax control to jQuery", function() {
-        withoutPrototype(function() {
           var jqueryAjax = jQuery.ajaxSettings.xhr;
 
           jasmine.Ajax.installMock();
           jasmine.Ajax.uninstallMock();
 
           expect(jQuery.ajaxSettings.xhr).toBe(jqueryAjax);
-        });
-
-
-      });
-
-    });
-
-    describe("when using Prototype", function() {
-      it("returns Ajax control to Ajax.getTransport", function() {
-        withoutJquery(function() {
-          var prototypeAjax = Ajax.getTransport;
-          jasmine.Ajax.installMock();
-          jasmine.Ajax.uninstallMock();
-
-          expect(Ajax.getTransport).toBe(prototypeAjax);
-        });
-        // so uninstallMock doesn't throw error when spec.after runs
-        jasmine.Ajax.installMock();
       });
     });
 
@@ -183,11 +130,4 @@ function withoutJquery(spec) {
   jQuery = undefined;
   spec.apply(this);
   jQuery = jqueryRef;
-}
-
-function withoutPrototype(spec) {
-  var prototypeRef = Prototype;
-  Prototype = undefined;
-  spec.apply(this);
-  Prototype = prototypeRef;
 }
