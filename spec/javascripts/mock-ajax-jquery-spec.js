@@ -165,7 +165,7 @@ describe("Jasmine Mock Ajax (for jQuery)", function() {
         sharedContext.status = responseObject.status;
         sharedContext.contentType = responseObject.contentType;
         sharedContext.responseText = responseObject.responseText;
-        
+
         response = success.mostRecentCall.args[2];
       });
 
@@ -237,25 +237,25 @@ describe("Jasmine Mock Ajax (for jQuery)", function() {
         response = {status: 0, responseText: '{"foo": "whoops!"}'};
         request.response(response);
 
-        sharedContext.responseCallback = success;
-        sharedContext.status = 304; /* jQuery detects status code zero as 304 when headers are present */
+        sharedContext.responseCallback = error;
+        sharedContext.status = 0;
         sharedContext.contentType = 'application/json';
         sharedContext.responseText = response.responseText;
       });
 
       it("should call the success handler", function() {
-        expect(success).toHaveBeenCalled();
+        expect(success).not.toHaveBeenCalled();
       });
 
       it("should not call the failure handler", function() {
-        expect(error).not.toHaveBeenCalled();
+        expect(error).toHaveBeenCalled();
       });
-      
+
       it("should call the complete handler", function() {
         expect(complete).toHaveBeenCalled();
       });
 
-      sharedAjaxResponseBehaviorForJQuery_Success(sharedContext);
+      sharedAjaxResponseBehaviorForJQuery_Failure(sharedContext);
     });
   });
 
