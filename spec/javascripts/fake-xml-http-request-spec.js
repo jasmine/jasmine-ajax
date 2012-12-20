@@ -8,7 +8,7 @@ describe("FakeXMLHttpRequest", function() {
   });
   describe("when opened", function() {
     beforeEach(function() {
-      xhr.open("GET", "http://example.com")
+      xhr.open("GET", "http://example.com");
     });
     it("should have a readyState of 1 (open)", function() {
       expect(xhr.readyState).toEqual(1);
@@ -39,14 +39,14 @@ describe("FakeXMLHttpRequest", function() {
   it("can be extended", function(){
     FakeXMLHttpRequest.prototype.foo = function(){
       return "foo";
-    }
+    };
     expect(new FakeXMLHttpRequest().foo()).toEqual("foo");
   });
 
   describe("data", function() {
     beforeEach(function() {
-      xhr.open("POST", "http://example.com?this=that")
-      xhr.send('3+stooges=shemp&3+stooges=larry%20%26%20moe%20%26%20curly&some%3Dthing=else+entirely')
+      xhr.open("POST", "http://example.com?this=that");
+      xhr.send('3+stooges=shemp&3+stooges=larry%20%26%20moe%20%26%20curly&some%3Dthing=else+entirely');
     });
 
     it("should return request params as a hash of arrays with values sorted alphabetically", function() {

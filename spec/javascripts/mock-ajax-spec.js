@@ -20,7 +20,7 @@ describe("jasmine.Ajax", function() {
       jasmine.Ajax.installed = true;
       expect(
         function() {
-          jasmine.Ajax.assertInstalled()
+          jasmine.Ajax.assertInstalled();
         }).not.toThrow("Mock ajax is not installed, use jasmine.Ajax.useMock()");
     });
 
@@ -28,7 +28,7 @@ describe("jasmine.Ajax", function() {
       jasmine.Ajax.installed = false;
       expect(
         function() {
-          jasmine.Ajax.assertInstalled()
+          jasmine.Ajax.assertInstalled();
         }).toThrow("Mock ajax is not installed, use jasmine.Ajax.useMock()");
     });
   });
@@ -56,7 +56,7 @@ describe("jasmine.Ajax", function() {
           jasmine.Ajax.installMock();
           expect(jasmine.Ajax.mode).toEqual("jQuery");
         });
-      })
+      });
     });
 
     describe("when using Prototype", function() {
@@ -91,7 +91,7 @@ describe("jasmine.Ajax", function() {
         jQuery = undefined;
         Prototype = undefined;
 
-        expect(function(){ jasmine.Ajax.installMock() }).toThrow("jasmine.Ajax currently only supports jQuery and Prototype");
+        expect(function(){ jasmine.Ajax.installMock(); }).toThrow("jasmine.Ajax currently only supports jQuery and Prototype");
 
         jQuery = jquery;
         Prototype = prototype;
@@ -137,7 +137,7 @@ describe("jasmine.Ajax", function() {
     });
 
     it("raises an exception if jasmine.Ajax is not installed", function() {
-      expect(function(){ jasmine.Ajax.uninstallMock() }).toThrow("Mock ajax is not installed, use jasmine.Ajax.useMock()");
+      expect(function(){ jasmine.Ajax.uninstallMock(); }).toThrow("Mock ajax is not installed, use jasmine.Ajax.useMock()");
     });
 
     it("sets the installed flag to false", function() {
