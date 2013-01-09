@@ -4,7 +4,7 @@ jasmine-ajax is a library that lets you define a set of fake responses for Ajax 
 
 Libraries Supported
 ---
-jasmine-ajax is currently compatible with jQuery and Prototype. Support for other libraries planned.
+jasmine-ajax is currently compatible with jQuery. Support for other libraries planned.
 
 Installing
 ---
