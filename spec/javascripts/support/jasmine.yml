@@ -5,10 +5,13 @@ src_files:
     - lib/mock-ajax.js
 
 spec_dir:
+    - spec
 
 spec_files:
+    - javascripts/*-spec.js
 
 helpers:
+    - javascripts/helpers/spec-helper.js
 
 stylesheets:
 
