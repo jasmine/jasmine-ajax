@@ -1,6 +1,7 @@
 src_dir: .
 
 src_files:
+    - frameworks/zepto.js
     - frameworks/jquery.js
     - lib/mock-ajax.js
 
