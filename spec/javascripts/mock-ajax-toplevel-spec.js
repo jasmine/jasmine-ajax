@@ -1,6 +1,7 @@
-describe("Jasmine Mock Ajax (for Zepto)", function() {
+describe("Jasmine Mock Ajax (for toplevel)", function() {
   var request, anotherRequest, response;
   var success, error, complete;
+  var client, onreadystatechange;
   var sharedContext = {};
 
   beforeEach(function() {
@@ -9,17 +10,31 @@ describe("Jasmine Mock Ajax (for Zepto)", function() {
     success = jasmine.createSpy("onSuccess");
     error = jasmine.createSpy("onFailure");
     complete = jasmine.createSpy("onComplete");
+
+    onreadystatechange = function() {
+      if (this.readyState == this.DONE) {
+        if (this.status == 200) {
+          if (this.responseHeaders['Content-type'] === 'application/json') {
+            this.response = JSON.parse(this.responseText);
+          } else {
+            this.response = this.responseText;
+          }
+          success(this.response, this.textStatus, this);
+        } else {
+          error(this, this.textStatus, '');
+        }
+
+        complete(this, this.textStatus);
+      }
+    };
   });
 
   describe("when making a request", function () {
     beforeEach(function() {
-      Zepto.ajax({
-        url: "example.com/someApi",
-        type: "GET",
-        success: success,
-        complete: complete,
-        error: error
-      });
+      client = new XMLHttpRequest();
+      client.onreadystatechange = onreadystatechange;
+      client.open("GET", "example.com/someApi");
+      client.send();
       request = mostRecentAjaxRequest();
     });
 
@@ -37,13 +52,11 @@ describe("Jasmine Mock Ajax (for Zepto)", function() {
 
     describe("and then another request", function () {
       beforeEach(function() {
-        Zepto.ajax({
-          url: "example.com/someApi",
-          type: "GET",
-          success: success,
-          complete: complete,
-          error: error
-        });
+        client = new XMLHttpRequest();
+        client.onreadystatechange = onreadystatechange;
+        client.open("GET", "example.com/someApi");
+        client.send();
+
         anotherRequest = mostRecentAjaxRequest();
       });
 
@@ -66,13 +79,10 @@ describe("Jasmine Mock Ajax (for Zepto)", function() {
 
       describe("when there is more than one request", function () {
         beforeEach(function() {
-          Zepto.ajax({
-            url: "example.com/someApi",
-            type: "GET",
-            success: success,
-            complete: complete,
-            error: error
-          });
+          client = new XMLHttpRequest();
+          client.onreadystatechange = onreadystatechange;
+          client.open("GET", "example.com/someApi");
+          client.send();
           anotherRequest = mostRecentAjaxRequest();
         });
 
@@ -107,14 +117,12 @@ describe("Jasmine Mock Ajax (for Zepto)", function() {
   describe("when simulating a response with request.response", function () {
     describe("and the response is Success", function () {
       beforeEach(function() {
-        Zepto.ajax({
-          url: "example.com/someApi",
-          type: "GET",
-          dataType: 'text',
-          success: success,
-          complete: complete,
-          error: error
-        });
+        client = new XMLHttpRequest();
+        client.onreadystatechange = onreadystatechange;
+        client.open("GET", "example.com/someApi");
+        client.setRequestHeader("Content-Type", "text/plain")
+        client.send();
+
         request = mostRecentAjaxRequest();
         response = {status: 200, contentType: "text/html", responseText: "OK!"};
         request.response(response);
@@ -142,14 +150,12 @@ describe("Jasmine Mock Ajax (for Zepto)", function() {
 
     describe("and the response is Success, but with JSON", function () {
       beforeEach(function() {
-        Zepto.ajax({
-          url: "example.com/someApi",
-          type: "GET",
-          dataType: 'json',
-          success: success,
-          complete: complete,
-          error: error
-        });
+        client = new XMLHttpRequest();
+        client.onreadystatechange = onreadystatechange;
+        client.open("GET", "example.com/someApi");
+        client.setRequestHeader("Content-Type", "application/json")
+        client.send();
+
         request = mostRecentAjaxRequest();
         var responseObject = {status: 200, contentType: "application/json", responseText: '{"foo":"bar"}'};
 
@@ -184,14 +190,12 @@ describe("Jasmine Mock Ajax (for Zepto)", function() {
 
     describe("the content type defaults to application/json", function () {
       beforeEach(function() {
-        Zepto.ajax({
-          url: "example.com/someApi",
-          type: "GET",
-          dataType: 'json',
-          success: success,
-          complete: complete,
-          error: error
-        });
+        client = new XMLHttpRequest();
+        client.onreadystatechange = onreadystatechange;
+        client.open("GET", "example.com/someApi");
+        client.setRequestHeader("Content-Type", "application/json")
+        client.send();
+
         request = mostRecentAjaxRequest();
         response = {status: 200, responseText: '{"foo": "valid JSON, dammit."}'};
         request.response(response);
@@ -219,14 +223,12 @@ describe("Jasmine Mock Ajax (for Zepto)", function() {
 
     describe("and the status/response code is 0", function () {
       beforeEach(function() {
-        Zepto.ajax({
-          url: "example.com/someApi",
-          type: "GET",
-          dataType: "text",
-          success: success,
-          complete: complete,
-          error: error
-        });
+        client = new XMLHttpRequest();
+        client.onreadystatechange = onreadystatechange;
+        client.open("GET", "example.com/someApi");
+        client.setRequestHeader("Content-Type", "text/plain")
+        client.send();
+
         request = mostRecentAjaxRequest();
         response = {status: 0, responseText: '{"foo": "whoops!"}'};
         request.response(response);
@@ -255,14 +257,12 @@ describe("Jasmine Mock Ajax (for Zepto)", function() {
 
   describe("and the response is error", function () {
     beforeEach(function() {
-      Zepto.ajax({
-        url: "example.com/someApi",
-        type: "GET",
-        dataType: "text",
-        success: success,
-        complete: complete,
-        error: error
-      });
+      client = new XMLHttpRequest();
+      client.onreadystatechange = onreadystatechange;
+      client.open("GET", "example.com/someApi");
+      client.setRequestHeader("Content-Type", "text/plain")
+      client.send();
+
       request = mostRecentAjaxRequest();
       response = {status: 500, contentType: "text/html", responseText: "(._){"};
       request.response(response);
@@ -292,14 +292,12 @@ describe("Jasmine Mock Ajax (for Zepto)", function() {
     beforeEach(function() {
       jasmine.Clock.useMock();
 
-      Zepto.ajax({
-        url: "example.com/someApi",
-        type: "GET",
-        dataType: "text",
-        success: success,
-        complete: complete,
-        error: error
-      });
+      client = new XMLHttpRequest();
+      client.onreadystatechange = onreadystatechange;
+      client.open("GET", "example.com/someApi");
+      client.setRequestHeader("Content-Type", "text/plain")
+      client.send();
+
       request = mostRecentAjaxRequest();
       response = {contentType: "text/html", responseText: "(._){"};
       request.responseTimeout(response);
