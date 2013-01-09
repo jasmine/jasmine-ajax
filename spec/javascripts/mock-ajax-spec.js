@@ -34,33 +34,22 @@ describe("jasmine.Ajax", function() {
   });
 
   describe("installMock", function() {
-    describe("when using jQuery", function() {
+    describe("when using a top-level replacement", function() {
 
       it("installs the mock", function() {
           jasmine.Ajax.installMock();
-          expect(jQuery.ajaxSettings.xhr).toBe(jasmine.Ajax.jQueryMock);
+          expect(window.XMLHttpRequest).toBe(FakeXMLHttpRequest);
       });
 
-      it("saves a reference to jQuery.ajaxSettings.xhr", function() {
-          var jqueryAjax = jQuery.ajaxSettings.xhr;
+      it("saves a reference to the browser's XHR", function() {
+          var xhr = window.XMLHttpRequest;
           jasmine.Ajax.installMock();
-          expect(jasmine.Ajax.real).toBe(jqueryAjax);
+          expect(jasmine.Ajax.real).toBe(xhr);
       });
 
-      it("sets mode to 'jQuery'", function() {
+      it("sets mode to 'toplevel'", function() {
           jasmine.Ajax.installMock();
-          expect(jasmine.Ajax.mode).toEqual("jQuery");
-      });
-    });
-
-    describe("when using any other library", function() {
-      it("raises an exception", function() {
-        var jquery = jQuery;
-        jQuery = undefined;
-
-        expect(function(){ jasmine.Ajax.installMock(); }).toThrow("jasmine.Ajax currently only supports jQuery");
-
-        jQuery = jquery;
+          expect(jasmine.Ajax.mode).toEqual("toplevel");
       });
     });
 
@@ -72,14 +61,14 @@ describe("jasmine.Ajax", function() {
   });
 
   describe("uninstallMock", function() {
-    describe("when using jQuery", function() {
-      it("returns ajax control to jQuery", function() {
-          var jqueryAjax = jQuery.ajaxSettings.xhr;
+    describe("when using toplevel", function() {
+      it("returns ajax control to the browser object", function() {
+          var xhr = window.XMLHttpRequest;
 
           jasmine.Ajax.installMock();
           jasmine.Ajax.uninstallMock();
 
-          expect(jQuery.ajaxSettings.xhr).toBe(jqueryAjax);
+          expect(window.XMLHttpRequest).toBe(xhr);
       });
     });
 
@@ -124,10 +113,3 @@ describe("jasmine.Ajax", function() {
   });
 
 });
-
-function withoutJquery(spec) {
-  var jqueryRef = jQuery;
-  jQuery = undefined;
-  spec.apply(this);
-  jQuery = jqueryRef;
-}
