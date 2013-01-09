@@ -6,6 +6,7 @@ describe("FakeXMLHttpRequest", function() {
   it("should have an initial readyState of 0 (uninitialized)", function() {
     expect(xhr.readyState).toEqual(0);
   });
+
   describe("when opened", function() {
     beforeEach(function() {
       xhr.open("GET", "http://example.com");
@@ -33,6 +34,20 @@ describe("FakeXMLHttpRequest", function() {
         xhr.abort();
         expect(xhr.readyState).toEqual(0);
       });
+    });
+  });
+
+  describe("when opened with a username/password", function() {
+    beforeEach(function() {
+      xhr.open("GET", "http://example.com", true, "username", "password");
+    });
+
+    it("should store the username", function() {
+      expect(xhr.username).toEqual("username");
+    });
+
+    it("should store the password", function() {
+      expect(xhr.password).toEqual("password");
     });
   });
 
