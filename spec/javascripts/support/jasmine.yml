@@ -2,6 +2,8 @@ src_dir: .
 
 src_files:
     - frameworks/jquery.js
+    - frameworks/underscore.js
+    - frameworks/backbone.js
     - lib/mock-ajax.js
 
 spec_dir:
