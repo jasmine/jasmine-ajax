@@ -123,6 +123,16 @@ describe("jasmine.Ajax", function() {
 
   });
 
+  describe("afterCreate", function() {
+    beforeEach(function(){
+      spyOn(jasmine.Ajax, 'afterCreate');
+      jasmine.Ajax.jQueryMock();
+    });
+    it("calls the afterCreate callback on a new ajax request", function(){
+      expect(jasmine.Ajax.afterCreate).toHaveBeenCalled();
+    });
+  });
+
 });
 
 function withoutJquery(spec) {

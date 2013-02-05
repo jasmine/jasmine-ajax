@@ -9,30 +9,49 @@ describe("FakeXMLHttpRequest", function() {
 
   describe("when opened", function() {
     beforeEach(function() {
+      spyOn(xhr, "onreadystatechange");
       xhr.open("GET", "http://example.com");
     });
     it("should have a readyState of 1 (open)", function() {
       expect(xhr.readyState).toEqual(1);
     });
+    it("should call the onreadystatechange callback", function() {
+       expect(xhr.onreadystatechange).toHaveBeenCalled();
+    });
 
     describe("when sent", function() {
-      it("should have a readyState of 2 (sent)", function() {
+      beforeEach(function() {
         xhr.send(null);
+      });
+      it("should have a readyState of 2 (sent)", function() {
         expect(xhr.readyState).toEqual(2);
+      });
+      it("should call the onreadystatechange callback", function() {
+        expect(xhr.onreadystatechange.callCount).toBe(2);
       });
     });
 
     describe("when a response comes in", function() {
-      it("should have a readyState of 4 (loaded)", function() {
+      beforeEach(function() {
         xhr.response({status: 200});
+      });
+      it("should have a readyState of 4 (loaded)", function() {
         expect(xhr.readyState).toEqual(4);
+      });
+      it("should call the onreadystatechange callback", function() {
+        expect(xhr.onreadystatechange.callCount).toBe(2);
       });
     });
 
     describe("when aborted", function() {
-      it("should have a readyState of 0 (uninitialized)", function() {
+      beforeEach(function() {
         xhr.abort();
+      });
+      it("should have a readyState of 0 (uninitialized)", function() {
         expect(xhr.readyState).toEqual(0);
+      });
+      it("should call the onreadystatechange callback", function() {
+        expect(xhr.onreadystatechange.callCount).toBe(2);
       });
     });
   });
