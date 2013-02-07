@@ -130,6 +130,9 @@ Putting it all together, you can install the mock, pass some spies as callbacks 
         });
 
         request = mostRecentAjaxRequest();
+        expect(request.url).toBe('venues/search');
+        expect(request.data()).toEqual({latLng: ['40.019461, -105.273296']});
+        expect(request.method').toBe('GET');
       });
 
       describe("on success", function() {
