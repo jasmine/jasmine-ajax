@@ -71,5 +71,18 @@ describe("Webmock style mocking", function() {
 
       expect(stub).toBeDefined();
     });
+
+    describe("with another stub for the same url", function() {
+      beforeEach(function() {
+        jasmine.Ajax.stubRequest("http://example.com/someApi").andReturn({responseText: "no", status: 403});
+      });
+
+      it("should use the latest stub", function() {
+        var stub = jasmine.Ajax.matchStub("http://example.com/someApi");
+
+        expect(stub.status).toEqual(403);
+        expect(stub.responseText).toEqual('no');
+      });
+    });
   });
 });

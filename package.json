@@ -1,0 +1,11 @@
+{
+  "name": "jasmine-ajax",
+  "version": "2.0.0",
+  "private": false,
+  "dependencies": {
+  },
+  "devDependencies": {
+    "grunt": "0.4.0"
+    "grunt-contrib-jshint": "~0.1.1"
+  }
+}
