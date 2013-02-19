@@ -1,12 +1,7 @@
 describe("Webmock style mocking", function() {
   var successSpy, errorSpy, response;
 
-  beforeEach(function() {
-    jasmine.Ajax.useMock();
-
-    jasmine.Ajax.stubRequest("http://example.com/someApi").andReturn({reponseText: "hi!"});
-
-
+  var sendRequest = function() {
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function(arguments) {
       if (this.readyState == this.DONE) {
@@ -16,6 +11,23 @@ describe("Webmock style mocking", function() {
 
     xhr.open("GET", "http://example.com/someApi");
     xhr.send();
+  };
+
+  beforeEach(function() {
+    jasmine.Ajax.useMock();
+    jasmine.Ajax.stubRequest("http://example.com/someApi").andReturn({responseText: "hi!"});
+
+    sendRequest();
+  });
+
+  afterEach(function() {
+    clearAjaxStubs();
+  });
+
+  it("should allow you to clear all the ajax stubs", function() {
+    expect(ajaxStubs.length).toEqual(1);
+    clearAjaxStubs();
+    expect(ajaxStubs.length).toEqual(0);
   });
 
   it("should push the new stub on the ajaxStubs", function() {
@@ -31,11 +43,26 @@ describe("Webmock style mocking", function() {
   });
 
   it("should set the responseText", function() {
-    console.log(response);
     expect(response.responseText).toEqual('hi!');
   });
 
-  it("should be able to mock url requests", function() {
+  it("should default the status to 200", function() {
+    expect(response.status).toEqual(200);
+  });
+
+  describe("with another stub for the same url", function() {
+    beforeEach(function() {
+      jasmine.Ajax.stubRequest("http://example.com/someApi").andReturn({responseText: "no", status: 403});
+      sendRequest();
+    });
+
+    it("should set the status", function() {
+      expect(response.status).toEqual(403);
+    });
+
+    it("should allow the latest stub to win", function() {
+      expect(response.responseText).toEqual('no');
+    });
   });
 
   describe(".matchStub", function() {
