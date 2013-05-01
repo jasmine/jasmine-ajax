@@ -16,6 +16,7 @@ Using the library in your Jasmine specs consists of four parts:
 
 1. Defining test responses
 2. Installing the mock
+3. Triggering the ajax request code
 3. Defining the response for each request
 4. Inspecting Ajax requests and setting expectations on them
 
@@ -99,7 +100,19 @@ Install the mock using `jasmine.Ajax.useMock()`:
       ...
 After this, all Ajax requests will be captured by jasmine-ajax. If you want to do things like load fixtures, do it before you install the mock (see below).
 
-### 3. Set responses ###
+### 3. Trigger ajax request code ###
+Before you can specify that a request uses your test response, you must have a handle to the request itself.  This means that the request is made first by the code under test and then you will set your test response (see next step).
+
+        foursquare.search('40.019461,-105.273296', {
+          onSuccess: onSuccess,
+          onFailure: onFailure
+        });
+
+        request = mostRecentAjaxRequest();
+
+The onreadystatechange event isn't fired to complete the ajax request until you set the response in the next step.
+
+### 4. Set responses ###
 Now that you've defined some test responses and installed the mock, you need to tell jasmine-ajax which response to use for a given spec. If you want to use your success response for a set of related success specs, you might use:
 
     describe("on success", function() {
