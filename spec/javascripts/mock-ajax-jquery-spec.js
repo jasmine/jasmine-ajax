@@ -92,6 +92,35 @@ describe("Jasmine Mock Ajax (for jQuery)", function() {
       });
     });
 
+    describe("ajaxRequestsTo", function () {
+      describe("when there are no matching requests", function() {
+        it("should return []", function() {
+          expect(ajaxRequestsTo('example.com/someOtherApi')).toEqual([]);
+        })
+      });
+
+      describe("when there is one matching request", function() {
+        it("should return array with the matching request", function() {
+          expect(ajaxRequestsTo('example.com/someApi').length).toEqual(1);
+        })
+      });
+
+      describe("when there is a non-matching request", function() {
+        beforeEach(function() {
+          jQuery.ajax({
+            url: "example.com/someOtherApi",
+            type: "GET",
+            success: success,
+            complete: complete,
+            error: error
+          });
+        });
+        it("should return just the matching requests", function() {
+          expect(ajaxRequestsTo('example.com/someApi').length).toEqual(1);
+        })
+      })
+    });
+
     describe("clearAjaxRequests()", function () {
       beforeEach(function() {
         clearAjaxRequests();
