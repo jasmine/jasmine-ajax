@@ -5,7 +5,7 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
   var sharedContext = {};
 
   beforeEach(function() {
-    jasmine.Ajax.useMock();
+    jasmine.Ajax.installMock();
 
     success = jasmine.createSpy("onSuccess");
     error = jasmine.createSpy("onFailure");
@@ -27,6 +27,10 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
         complete(this, this.textStatus);
       }
     };
+  });
+
+  afterEach(function() {
+    jasmine.Ajax.uninstallMock();
   });
 
   describe("when making a request", function () {
@@ -166,7 +170,7 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
         sharedContext.contentType = responseObject.contentType;
         sharedContext.responseText = responseObject.responseText;
 
-        response = success.mostRecentCall.args[2];
+        response = success.calls.mostRecent().args[2];
       });
 
       it("should call the success handler", function() {
@@ -182,7 +186,7 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
       });
 
       it("should return a JavaScript object", function() {
-        expect(success.mostRecentCall.args[0]).toEqual({foo: "bar"});
+        expect(success.calls.mostRecent().args[0]).toEqual({foo: "bar"});
       });
 
       sharedAjaxResponseBehaviorForZepto_Success(sharedContext);
@@ -290,7 +294,7 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
 
   describe('when simulating a response with request.responseTimeout', function() {
     beforeEach(function() {
-      jasmine.Clock.useMock();
+      clock.install();
 
       client = new XMLHttpRequest();
       client.onreadystatechange = onreadystatechange;
@@ -306,6 +310,10 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
       sharedContext.status = response.status;
       sharedContext.contentType = response.contentType;
       sharedContext.responseText = response.responseText;
+    });
+
+    afterEach(function() {
+      clock.uninstall();
     });
 
     it("should not call the success handler", function() {
@@ -327,7 +335,7 @@ function sharedAjaxResponseBehaviorForZepto_Success(context) {
   describe("the success response", function () {
     var xhr;
     beforeEach(function() {
-      xhr = context.responseCallback.mostRecentCall.args[2];
+      xhr = context.responseCallback.calls.mostRecent().args[2];
     });
 
     it("should have the expected status code", function() {
@@ -348,7 +356,7 @@ function sharedAjaxResponseBehaviorForZepto_Failure(context) {
   describe("the failure response", function () {
     var xhr;
     beforeEach(function() {
-      xhr = context.responseCallback.mostRecentCall.args[0];
+      xhr = context.responseCallback.calls.mostRecent().args[0];
     });
 
     it("should have the expected status code", function() {

@@ -21,7 +21,7 @@ describe("jasmine.Ajax", function() {
       expect(
         function() {
           jasmine.Ajax.assertInstalled();
-        }).not.toThrow("Mock ajax is not installed, use jasmine.Ajax.useMock()");
+        }).not.toThrowError("Mock ajax is not installed, use jasmine.Ajax.useMock()");
     });
 
     it("raises an error if the mock is not installed", function() {
@@ -29,7 +29,7 @@ describe("jasmine.Ajax", function() {
       expect(
         function() {
           jasmine.Ajax.assertInstalled();
-        }).toThrow("Mock ajax is not installed, use jasmine.Ajax.useMock()");
+        }).toThrowError("Mock ajax is not installed, use jasmine.Ajax.useMock()");
     });
   });
 
@@ -73,7 +73,7 @@ describe("jasmine.Ajax", function() {
     });
 
     it("raises an exception if jasmine.Ajax is not installed", function() {
-      expect(function(){ jasmine.Ajax.uninstallMock(); }).toThrow("Mock ajax is not installed, use jasmine.Ajax.useMock()");
+      expect(function(){ jasmine.Ajax.uninstallMock(); }).toThrowError("Mock ajax is not installed, use jasmine.Ajax.useMock()");
     });
 
     it("sets the installed flag to false", function() {
@@ -94,20 +94,21 @@ describe("jasmine.Ajax", function() {
   });
 
   describe("useMock", function() {
-    it("delegates to installMock", function() {
-      spyOn(jasmine.Ajax, 'installMock').andCallThrough();
-      jasmine.Ajax.useMock();
-      expect(jasmine.Ajax.installMock).toHaveBeenCalled();
-    });
-
-    it("ensures the mock is not already installed", function() {
-      jasmine.Ajax.useMock();
-
-      spyOn(jasmine.Ajax, 'installMock');
-
-      jasmine.Ajax.useMock();
-
-      expect(jasmine.Ajax.installMock).not.toHaveBeenCalled();
+    it("installs the mock and uninstalls when done", function() {
+      var realRequest = spyOn(window, 'XMLHttpRequest'),
+          fakeRequest = spyOn(window, 'FakeXMLHttpRequest');
+      expect(function() {
+        jasmine.Ajax.useMock(function() {
+          window.XMLHttpRequest();
+          throw "function that has an error"
+        });
+      }).toThrow();
+      expect(realRequest).not.toHaveBeenCalled();
+      expect(fakeRequest).toHaveBeenCalled();
+      fakeRequest.calls.reset();
+      window.XMLHttpRequest();
+      expect(realRequest).toHaveBeenCalled();
+      expect(fakeRequest).not.toHaveBeenCalled();
     });
 
   });

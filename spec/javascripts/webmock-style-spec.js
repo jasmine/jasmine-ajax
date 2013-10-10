@@ -14,13 +14,14 @@ describe("Webmock style mocking", function() {
   };
 
   beforeEach(function() {
-    jasmine.Ajax.useMock();
+    jasmine.Ajax.installMock();
     jasmine.Ajax.stubRequest("http://example.com/someApi").andReturn({responseText: "hi!"});
 
     sendRequest();
   });
 
   afterEach(function() {
+    jasmine.Ajax.uninstallMock();
     clearAjaxStubs();
   });
 
