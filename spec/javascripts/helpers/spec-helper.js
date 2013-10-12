@@ -1,3 +1,3 @@
-beforeEach(function() {
-  clearAjaxRequests();
-});
+// beforeEach(function() {
+  // clearAjaxRequests();
+// });

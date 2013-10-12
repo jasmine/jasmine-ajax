@@ -3,9 +3,13 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
   var success, error, complete;
   var client, onreadystatechange;
   var sharedContext = {};
+  var fakeGlobal, mockAjax;
 
   beforeEach(function() {
-    jasmine.Ajax.installMock();
+    var fakeXMLHttpRequest = jasmine.createSpy('realFakeXMLHttpRequest');
+    fakeGlobal = {XMLHttpRequest: fakeXMLHttpRequest};
+    mockAjax = new MockAjax(fakeGlobal);
+    mockAjax.install();
 
     success = jasmine.createSpy("onSuccess");
     error = jasmine.createSpy("onFailure");
@@ -29,17 +33,13 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
     };
   });
 
-  afterEach(function() {
-    jasmine.Ajax.uninstallMock();
-  });
-
   describe("when making a request", function () {
     beforeEach(function() {
-      client = new XMLHttpRequest();
+      client = new fakeGlobal.XMLHttpRequest();
       client.onreadystatechange = onreadystatechange;
       client.open("GET", "example.com/someApi");
       client.send();
-      request = mostRecentAjaxRequest();
+      request = mockAjax.requests.mostRecent();
     });
 
     it("should store URL and transport", function() {
@@ -47,73 +47,74 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
     });
 
     it("should queue the request", function() {
-      expect(ajaxRequests.length).toEqual(1);
+      expect(mockAjax.requests.count()).toEqual(1);
     });
 
     it("should allow access to the queued request", function() {
-      expect(ajaxRequests[0]).toEqual(request);
+      expect(mockAjax.requests.first()).toEqual(request);
     });
 
     describe("and then another request", function () {
       beforeEach(function() {
-        client = new XMLHttpRequest();
+        client = new fakeGlobal.XMLHttpRequest();
         client.onreadystatechange = onreadystatechange;
         client.open("GET", "example.com/someApi");
         client.send();
 
-        anotherRequest = mostRecentAjaxRequest();
+        anotherRequest = mockAjax.requests.mostRecent();
       });
 
       it("should queue the next request", function() {
-        expect(ajaxRequests.length).toEqual(2);
+        expect(mockAjax.requests.count()).toEqual(2);
       });
 
       it("should allow access to the other queued request", function() {
-        expect(ajaxRequests[1]).toEqual(anotherRequest);
+        expect(mockAjax.requests.first()).toEqual(request);
+        expect(mockAjax.requests.mostRecent()).toEqual(anotherRequest);
       });
     });
 
-    describe("mostRecentAjaxRequest", function () {
+    describe("mockAjax.requests.mostRecent()", function () {
 
       describe("when there is one request queued", function () {
         it("should return the request", function() {
-          expect(mostRecentAjaxRequest()).toEqual(request);
+          expect(mockAjax.requests.mostRecent()).toEqual(request);
         });
       });
 
       describe("when there is more than one request", function () {
         beforeEach(function() {
-          client = new XMLHttpRequest();
+          client = new fakeGlobal.XMLHttpRequest();
           client.onreadystatechange = onreadystatechange;
           client.open("GET", "example.com/someApi");
           client.send();
-          anotherRequest = mostRecentAjaxRequest();
+          anotherRequest = mockAjax.requests.mostRecent();
         });
 
         it("should return the most recent request", function() {
-          expect(mostRecentAjaxRequest()).toEqual(anotherRequest);
+          expect(mockAjax.requests.mostRecent()).toEqual(anotherRequest);
         });
       });
 
       describe("when there are no requests", function () {
         beforeEach(function() {
-          clearAjaxRequests();
+          mockAjax.requests.reset();
         });
 
         it("should return null", function() {
-          expect(mostRecentAjaxRequest()).toEqual(null);
+          expect(mockAjax.requests.mostRecent()).toBeUndefined();
         });
       });
     });
 
     describe("clearAjaxRequests()", function () {
       beforeEach(function() {
-        clearAjaxRequests();
+        mockAjax.requests.reset();
       });
 
       it("should remove all requests", function() {
-        expect(ajaxRequests.length).toEqual(0);
-        expect(mostRecentAjaxRequest()).toEqual(null);
+        expect(mockAjax.requests.count()).toEqual(0);
+        expect(mockAjax.requests.mostRecent()).toBeUndefined();
       });
     });
   });
@@ -121,13 +122,13 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
   describe("when simulating a response with request.response", function () {
     describe("and the response is Success", function () {
       beforeEach(function() {
-        client = new XMLHttpRequest();
+        client = new fakeGlobal.XMLHttpRequest();
         client.onreadystatechange = onreadystatechange;
         client.open("GET", "example.com/someApi");
         client.setRequestHeader("Content-Type", "text/plain")
         client.send();
 
-        request = mostRecentAjaxRequest();
+        request = mockAjax.requests.mostRecent();
         response = {status: 200, contentType: "text/html", responseText: "OK!"};
         request.response(response);
 
@@ -154,13 +155,13 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
 
     describe("and the response is Success, but with JSON", function () {
       beforeEach(function() {
-        client = new XMLHttpRequest();
+        client = new fakeGlobal.XMLHttpRequest();
         client.onreadystatechange = onreadystatechange;
         client.open("GET", "example.com/someApi");
         client.setRequestHeader("Content-Type", "application/json")
         client.send();
 
-        request = mostRecentAjaxRequest();
+        request = mockAjax.requests.mostRecent();
         var responseObject = {status: 200, contentType: "application/json", responseText: '{"foo":"bar"}'};
 
         request.response(responseObject);
@@ -194,13 +195,13 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
 
     describe("the content type defaults to application/json", function () {
       beforeEach(function() {
-        client = new XMLHttpRequest();
+        client = new fakeGlobal.XMLHttpRequest();
         client.onreadystatechange = onreadystatechange;
         client.open("GET", "example.com/someApi");
         client.setRequestHeader("Content-Type", "application/json")
         client.send();
 
-        request = mostRecentAjaxRequest();
+        request = mockAjax.requests.mostRecent();
         response = {status: 200, responseText: '{"foo": "valid JSON, dammit."}'};
         request.response(response);
 
@@ -227,13 +228,13 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
 
     describe("and the status/response code is 0", function () {
       beforeEach(function() {
-        client = new XMLHttpRequest();
+        client = new fakeGlobal.XMLHttpRequest();
         client.onreadystatechange = onreadystatechange;
         client.open("GET", "example.com/someApi");
         client.setRequestHeader("Content-Type", "text/plain")
         client.send();
 
-        request = mostRecentAjaxRequest();
+        request = mockAjax.requests.mostRecent();
         response = {status: 0, responseText: '{"foo": "whoops!"}'};
         request.response(response);
 
@@ -261,13 +262,13 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
 
   describe("and the response is error", function () {
     beforeEach(function() {
-      client = new XMLHttpRequest();
+      client = new fakeGlobal.XMLHttpRequest();
       client.onreadystatechange = onreadystatechange;
       client.open("GET", "example.com/someApi");
       client.setRequestHeader("Content-Type", "text/plain")
       client.send();
 
-      request = mostRecentAjaxRequest();
+      request = mockAjax.requests.mostRecent();
       response = {status: 500, contentType: "text/html", responseText: "(._){"};
       request.response(response);
 
@@ -296,13 +297,13 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
     beforeEach(function() {
       clock.install();
 
-      client = new XMLHttpRequest();
+      client = new fakeGlobal.XMLHttpRequest();
       client.onreadystatechange = onreadystatechange;
       client.open("GET", "example.com/someApi");
       client.setRequestHeader("Content-Type", "text/plain")
       client.send();
 
-      request = mostRecentAjaxRequest();
+      request = mockAjax.requests.mostRecent();
       response = {contentType: "text/html", responseText: "(._){"};
       request.responseTimeout(response);
 
