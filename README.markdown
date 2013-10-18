@@ -1,3 +1,9 @@
+THIS HAS NOT BEEN UPDATED FOR THE NEW JASMINE-AJAX 2.0 RELEASE. HERE BE DRAGONS.
+
+This branch is now version 2.0, if you need jasmine-ajax for Jasmine 1.3.x please grab the last release from that tag.
+
+
+
 jasmine-ajax - Faking Ajax responses in your Jasmine suite.
 ===
 jasmine-ajax is a library that lets you define a set of fake responses for Ajax
