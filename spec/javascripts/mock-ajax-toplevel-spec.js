@@ -54,6 +54,10 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
       expect(mockAjax.requests.first()).toEqual(request);
     });
 
+    it("should allow access to the queued request via index", function() {
+      expect(mockAjax.requests.at(0)).toEqual(request);
+    });
+
     describe("and then another request", function () {
       beforeEach(function() {
         client = new fakeGlobal.XMLHttpRequest();
