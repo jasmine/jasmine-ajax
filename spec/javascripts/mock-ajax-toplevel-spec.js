@@ -1,26 +1,45 @@
-describe("Jasmine Mock Ajax (for jQuery)", function() {
+describe("Jasmine Mock Ajax (for toplevel)", function() {
   var request, anotherRequest, response;
   var success, error, complete;
+  var client, onreadystatechange;
   var sharedContext = {};
+  var fakeGlobal, mockAjax;
 
   beforeEach(function() {
-    jasmine.Ajax.useMock();
+    var fakeXMLHttpRequest = jasmine.createSpy('realFakeXMLHttpRequest');
+    fakeGlobal = {XMLHttpRequest: fakeXMLHttpRequest};
+    mockAjax = new MockAjax(fakeGlobal);
+    mockAjax.install();
 
     success = jasmine.createSpy("onSuccess");
     error = jasmine.createSpy("onFailure");
     complete = jasmine.createSpy("onComplete");
+
+    onreadystatechange = function() {
+      if (this.readyState == this.DONE) {
+        if (this.status == 200) {
+          if (this.responseHeaders['Content-type'] === 'application/json') {
+            this.response = JSON.parse(this.responseText);
+          } else {
+            this.response = this.responseText;
+          }
+          success(this.response, this.textStatus, this);
+        } else {
+          error(this, this.textStatus, '');
+        }
+
+        complete(this, this.textStatus);
+      }
+    };
   });
 
   describe("when making a request", function () {
     beforeEach(function() {
-      jQuery.ajax({
-        url: "example.com/someApi",
-        type: "GET",
-        success: success,
-        complete: complete,
-        error: error
-      });
-      request = mostRecentAjaxRequest();
+      client = new fakeGlobal.XMLHttpRequest();
+      client.onreadystatechange = onreadystatechange;
+      client.open("GET", "example.com/someApi");
+      client.send();
+      request = mockAjax.requests.mostRecent();
     });
 
     it("should store URL and transport", function() {
@@ -28,78 +47,74 @@ describe("Jasmine Mock Ajax (for jQuery)", function() {
     });
 
     it("should queue the request", function() {
-      expect(ajaxRequests.length).toEqual(1);
+      expect(mockAjax.requests.count()).toEqual(1);
     });
 
     it("should allow access to the queued request", function() {
-      expect(ajaxRequests[0]).toEqual(request);
+      expect(mockAjax.requests.first()).toEqual(request);
     });
 
     describe("and then another request", function () {
       beforeEach(function() {
-        jQuery.ajax({
-          url: "example.com/someApi",
-          type: "GET",
-          success: success,
-          complete: complete,
-          error: error
-        });
-        anotherRequest = mostRecentAjaxRequest();
+        client = new fakeGlobal.XMLHttpRequest();
+        client.onreadystatechange = onreadystatechange;
+        client.open("GET", "example.com/someApi");
+        client.send();
+
+        anotherRequest = mockAjax.requests.mostRecent();
       });
 
       it("should queue the next request", function() {
-        expect(ajaxRequests.length).toEqual(2);
+        expect(mockAjax.requests.count()).toEqual(2);
       });
 
       it("should allow access to the other queued request", function() {
-        expect(ajaxRequests[1]).toEqual(anotherRequest);
+        expect(mockAjax.requests.first()).toEqual(request);
+        expect(mockAjax.requests.mostRecent()).toEqual(anotherRequest);
       });
     });
 
-    describe("mostRecentAjaxRequest", function () {
+    describe("mockAjax.requests.mostRecent()", function () {
 
       describe("when there is one request queued", function () {
         it("should return the request", function() {
-          expect(mostRecentAjaxRequest()).toEqual(request);
+          expect(mockAjax.requests.mostRecent()).toEqual(request);
         });
       });
 
       describe("when there is more than one request", function () {
         beforeEach(function() {
-          jQuery.ajax({
-            url: "example.com/someApi",
-            type: "GET",
-            success: success,
-            complete: complete,
-            error: error
-          });
-          anotherRequest = mostRecentAjaxRequest();
+          client = new fakeGlobal.XMLHttpRequest();
+          client.onreadystatechange = onreadystatechange;
+          client.open("GET", "example.com/someApi");
+          client.send();
+          anotherRequest = mockAjax.requests.mostRecent();
         });
 
         it("should return the most recent request", function() {
-          expect(mostRecentAjaxRequest()).toEqual(anotherRequest);
+          expect(mockAjax.requests.mostRecent()).toEqual(anotherRequest);
         });
       });
 
       describe("when there are no requests", function () {
         beforeEach(function() {
-          clearAjaxRequests();
+          mockAjax.requests.reset();
         });
 
         it("should return null", function() {
-          expect(mostRecentAjaxRequest()).toEqual(null);
+          expect(mockAjax.requests.mostRecent()).toBeUndefined();
         });
       });
     });
 
     describe("clearAjaxRequests()", function () {
       beforeEach(function() {
-        clearAjaxRequests();
+        mockAjax.requests.reset();
       });
 
       it("should remove all requests", function() {
-        expect(ajaxRequests.length).toEqual(0);
-        expect(mostRecentAjaxRequest()).toEqual(null);
+        expect(mockAjax.requests.count()).toEqual(0);
+        expect(mockAjax.requests.mostRecent()).toBeUndefined();
       });
     });
   });
@@ -107,15 +122,13 @@ describe("Jasmine Mock Ajax (for jQuery)", function() {
   describe("when simulating a response with request.response", function () {
     describe("and the response is Success", function () {
       beforeEach(function() {
-        jQuery.ajax({
-          url: "example.com/someApi",
-          type: "GET",
-          dataType: 'text',
-          success: success,
-          complete: complete,
-          error: error
-        });
-        request = mostRecentAjaxRequest();
+        client = new fakeGlobal.XMLHttpRequest();
+        client.onreadystatechange = onreadystatechange;
+        client.open("GET", "example.com/someApi");
+        client.setRequestHeader("Content-Type", "text/plain")
+        client.send();
+
+        request = mockAjax.requests.mostRecent();
         response = {status: 200, contentType: "text/html", responseText: "OK!"};
         request.response(response);
 
@@ -137,20 +150,18 @@ describe("Jasmine Mock Ajax (for jQuery)", function() {
         expect(complete).toHaveBeenCalled();
       });
 
-      sharedAjaxResponseBehaviorForJQuery_Success(sharedContext);
+      sharedAjaxResponseBehaviorForZepto_Success(sharedContext);
     });
 
     describe("and the response is Success, but with JSON", function () {
       beforeEach(function() {
-        jQuery.ajax({
-          url: "example.com/someApi",
-          type: "GET",
-          dataType: 'json',
-          success: success,
-          complete: complete,
-          error: error
-        });
-        request = mostRecentAjaxRequest();
+        client = new fakeGlobal.XMLHttpRequest();
+        client.onreadystatechange = onreadystatechange;
+        client.open("GET", "example.com/someApi");
+        client.setRequestHeader("Content-Type", "application/json")
+        client.send();
+
+        request = mockAjax.requests.mostRecent();
         var responseObject = {status: 200, contentType: "application/json", responseText: '{"foo":"bar"}'};
 
         request.response(responseObject);
@@ -160,7 +171,7 @@ describe("Jasmine Mock Ajax (for jQuery)", function() {
         sharedContext.contentType = responseObject.contentType;
         sharedContext.responseText = responseObject.responseText;
 
-        response = success.mostRecentCall.args[2];
+        response = success.calls.mostRecent().args[2];
       });
 
       it("should call the success handler", function() {
@@ -176,23 +187,21 @@ describe("Jasmine Mock Ajax (for jQuery)", function() {
       });
 
       it("should return a JavaScript object", function() {
-        expect(success.mostRecentCall.args[0]).toEqual({foo: "bar"});
+        expect(success.calls.mostRecent().args[0]).toEqual({foo: "bar"});
       });
 
-      sharedAjaxResponseBehaviorForJQuery_Success(sharedContext);
+      sharedAjaxResponseBehaviorForZepto_Success(sharedContext);
     });
 
     describe("the content type defaults to application/json", function () {
       beforeEach(function() {
-        jQuery.ajax({
-          url: "example.com/someApi",
-          type: "GET",
-          dataType: 'json',
-          success: success,
-          complete: complete,
-          error: error
-        });
-        request = mostRecentAjaxRequest();
+        client = new fakeGlobal.XMLHttpRequest();
+        client.onreadystatechange = onreadystatechange;
+        client.open("GET", "example.com/someApi");
+        client.setRequestHeader("Content-Type", "application/json")
+        client.send();
+
+        request = mockAjax.requests.mostRecent();
         response = {status: 200, responseText: '{"foo": "valid JSON, dammit."}'};
         request.response(response);
 
@@ -214,20 +223,18 @@ describe("Jasmine Mock Ajax (for jQuery)", function() {
         expect(complete).toHaveBeenCalled();
       });
 
-      sharedAjaxResponseBehaviorForJQuery_Success(sharedContext);
+      sharedAjaxResponseBehaviorForZepto_Success(sharedContext);
     });
 
     describe("and the status/response code is 0", function () {
       beforeEach(function() {
-        jQuery.ajax({
-          url: "example.com/someApi",
-          type: "GET",
-          dataType: "text",
-          success: success,
-          complete: complete,
-          error: error
-        });
-        request = mostRecentAjaxRequest();
+        client = new fakeGlobal.XMLHttpRequest();
+        client.onreadystatechange = onreadystatechange;
+        client.open("GET", "example.com/someApi");
+        client.setRequestHeader("Content-Type", "text/plain")
+        client.send();
+
+        request = mockAjax.requests.mostRecent();
         response = {status: 0, responseText: '{"foo": "whoops!"}'};
         request.response(response);
 
@@ -249,21 +256,19 @@ describe("Jasmine Mock Ajax (for jQuery)", function() {
         expect(complete).toHaveBeenCalled();
       });
 
-      sharedAjaxResponseBehaviorForJQuery_Failure(sharedContext);
+      sharedAjaxResponseBehaviorForZepto_Failure(sharedContext);
     });
   });
 
   describe("and the response is error", function () {
     beforeEach(function() {
-      jQuery.ajax({
-        url: "example.com/someApi",
-        type: "GET",
-        dataType: "text",
-        success: success,
-        complete: complete,
-        error: error
-      });
-      request = mostRecentAjaxRequest();
+      client = new fakeGlobal.XMLHttpRequest();
+      client.onreadystatechange = onreadystatechange;
+      client.open("GET", "example.com/someApi");
+      client.setRequestHeader("Content-Type", "text/plain")
+      client.send();
+
+      request = mockAjax.requests.mostRecent();
       response = {status: 500, contentType: "text/html", responseText: "(._){"};
       request.response(response);
 
@@ -285,22 +290,20 @@ describe("Jasmine Mock Ajax (for jQuery)", function() {
       expect(complete).toHaveBeenCalled();
     });
 
-    sharedAjaxResponseBehaviorForJQuery_Failure(sharedContext);
+    sharedAjaxResponseBehaviorForZepto_Failure(sharedContext);
   });
 
   describe('when simulating a response with request.responseTimeout', function() {
     beforeEach(function() {
-      jasmine.Clock.useMock();
+      clock.install();
 
-      jQuery.ajax({
-        url: "example.com/someApi",
-        type: "GET",
-        dataType: "text",
-        success: success,
-        complete: complete,
-        error: error
-      });
-      request = mostRecentAjaxRequest();
+      client = new fakeGlobal.XMLHttpRequest();
+      client.onreadystatechange = onreadystatechange;
+      client.open("GET", "example.com/someApi");
+      client.setRequestHeader("Content-Type", "text/plain")
+      client.send();
+
+      request = mockAjax.requests.mostRecent();
       response = {contentType: "text/html", responseText: "(._){"};
       request.responseTimeout(response);
 
@@ -308,6 +311,10 @@ describe("Jasmine Mock Ajax (for jQuery)", function() {
       sharedContext.status = response.status;
       sharedContext.contentType = response.contentType;
       sharedContext.responseText = response.responseText;
+    });
+
+    afterEach(function() {
+      clock.uninstall();
     });
 
     it("should not call the success handler", function() {
@@ -325,11 +332,11 @@ describe("Jasmine Mock Ajax (for jQuery)", function() {
 });
 
 
-function sharedAjaxResponseBehaviorForJQuery_Success(context) {
+function sharedAjaxResponseBehaviorForZepto_Success(context) {
   describe("the success response", function () {
     var xhr;
     beforeEach(function() {
-      xhr = context.responseCallback.mostRecentCall.args[2];
+      xhr = context.responseCallback.calls.mostRecent().args[2];
     });
 
     it("should have the expected status code", function() {
@@ -346,11 +353,11 @@ function sharedAjaxResponseBehaviorForJQuery_Success(context) {
   });
 }
 
-function sharedAjaxResponseBehaviorForJQuery_Failure(context) {
+function sharedAjaxResponseBehaviorForZepto_Failure(context) {
   describe("the failure response", function () {
     var xhr;
     beforeEach(function() {
-      xhr = context.responseCallback.mostRecentCall.args[0];
+      xhr = context.responseCallback.calls.mostRecent().args[0];
     });
 
     it("should have the expected status code", function() {

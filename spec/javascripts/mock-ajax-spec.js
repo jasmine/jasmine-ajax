@@ -1,133 +1,52 @@
-describe("jasmine.Ajax", function() {
-  beforeEach(function() {
-    jasmine.Ajax.reset();
+describe("mockAjax", function() {
+  it("does not replace XMLHttpRequest until it is installed", function() {
+    var fakeXmlHttpRequest = jasmine.createSpy('fakeXmlHttpRequest'),
+        fakeGlobal = { XMLHttpRequest: fakeXmlHttpRequest },
+        mockAjax = new MockAjax(fakeGlobal);
+
+    fakeGlobal.XMLHttpRequest('foo');
+    expect(fakeXmlHttpRequest).toHaveBeenCalledWith('foo');
+    fakeXmlHttpRequest.calls.reset();
+
+    mockAjax.install();
+    fakeGlobal.XMLHttpRequest('foo');
+    expect(fakeXmlHttpRequest).not.toHaveBeenCalled();
   });
 
-  describe("isInstalled", function() {
-    it("returns true if the mock has been installed", function() {
-      jasmine.Ajax.installed = true;
-      expect(jasmine.Ajax.isInstalled()).toBeTruthy();
-    });
+  it("replaces the global XMLHttpRequest on uninstall", function() {
+    var fakeXmlHttpRequest = jasmine.createSpy('fakeXmlHttpRequest'),
+        fakeGlobal = { XMLHttpRequest: fakeXmlHttpRequest },
+        mockAjax = new MockAjax(fakeGlobal);
 
-    it("returns false if the mock has not been installed", function() {
-      jasmine.Ajax.installed = false;
-      expect(jasmine.Ajax.isInstalled()).toBeFalsy();
-    });
+    mockAjax.install();
+    mockAjax.uninstall();
+
+    fakeGlobal.XMLHttpRequest('foo');
+    expect(fakeXmlHttpRequest).toHaveBeenCalledWith('foo');
   });
 
-  describe("assertInstalled", function() {
-    it("doesn't raise an error if the mock is installed", function() {
-      jasmine.Ajax.installed = true;
-      expect(
-        function() {
-          jasmine.Ajax.assertInstalled();
-        }).not.toThrow("Mock ajax is not installed, use jasmine.Ajax.useMock()");
-    });
+  it("allows the httpRequest to be retrieved", function() {
+    var fakeXmlHttpRequest = jasmine.createSpy('fakeXmlHttpRequest'),
+        fakeGlobal = { XMLHttpRequest: fakeXmlHttpRequest },
+        mockAjax = new MockAjax(fakeGlobal);
 
-    it("raises an error if the mock is not installed", function() {
-      jasmine.Ajax.installed = false;
-      expect(
-        function() {
-          jasmine.Ajax.assertInstalled();
-        }).toThrow("Mock ajax is not installed, use jasmine.Ajax.useMock()");
-    });
+    mockAjax.install();
+    var request = new fakeGlobal.XMLHttpRequest();
+
+    expect(mockAjax.requests.count()).toBe(1);
+    expect(mockAjax.requests.mostRecent()).toBe(request);
   });
 
-  describe("installMock", function() {
-    describe("when using jQuery", function() {
+  it("allows the httpRequests to be cleared", function() {
+    var fakeXmlHttpRequest = jasmine.createSpy('fakeXmlHttpRequest'),
+        fakeGlobal = { XMLHttpRequest: fakeXmlHttpRequest },
+        mockAjax = new MockAjax(fakeGlobal);
 
-      it("installs the mock", function() {
-          jasmine.Ajax.installMock();
-          expect(jQuery.ajaxSettings.xhr).toBe(jasmine.Ajax.jQueryMock);
-      });
+    mockAjax.install();
+    var request = new fakeGlobal.XMLHttpRequest();
 
-      it("saves a reference to jQuery.ajaxSettings.xhr", function() {
-          var jqueryAjax = jQuery.ajaxSettings.xhr;
-          jasmine.Ajax.installMock();
-          expect(jasmine.Ajax.real).toBe(jqueryAjax);
-      });
-
-      it("sets mode to 'jQuery'", function() {
-          jasmine.Ajax.installMock();
-          expect(jasmine.Ajax.mode).toEqual("jQuery");
-      });
-    });
-
-    describe("when using any other library", function() {
-      it("raises an exception", function() {
-        var jquery = jQuery;
-        jQuery = undefined;
-
-        expect(function(){ jasmine.Ajax.installMock(); }).toThrow("jasmine.Ajax currently only supports jQuery");
-
-        jQuery = jquery;
-      });
-    });
-
-    it("sets the installed flag to true", function() {
-      jasmine.Ajax.installMock();
-      expect(jasmine.Ajax.installed).toBeTruthy();
-    });
-
+    expect(mockAjax.requests.mostRecent()).toBe(request);
+    mockAjax.requests.reset();
+    expect(mockAjax.requests.count()).toBe(0);
   });
-
-  describe("uninstallMock", function() {
-    describe("when using jQuery", function() {
-      it("returns ajax control to jQuery", function() {
-          var jqueryAjax = jQuery.ajaxSettings.xhr;
-
-          jasmine.Ajax.installMock();
-          jasmine.Ajax.uninstallMock();
-
-          expect(jQuery.ajaxSettings.xhr).toBe(jqueryAjax);
-      });
-    });
-
-    it("raises an exception if jasmine.Ajax is not installed", function() {
-      expect(function(){ jasmine.Ajax.uninstallMock(); }).toThrow("Mock ajax is not installed, use jasmine.Ajax.useMock()");
-    });
-
-    it("sets the installed flag to false", function() {
-      jasmine.Ajax.installMock();
-      jasmine.Ajax.uninstallMock();
-      expect(jasmine.Ajax.installed).toBeFalsy();
-
-      // so uninstallMock doesn't throw error when spec.after runs
-      jasmine.Ajax.installMock();
-    });
-
-    it("sets the mode to null", function() {
-      jasmine.Ajax.installMock();
-      jasmine.Ajax.uninstallMock();
-      expect(jasmine.Ajax.mode).toEqual(null);
-      jasmine.Ajax.installMock();
-    });
-  });
-
-  describe("useMock", function() {
-    it("delegates to installMock", function() {
-      spyOn(jasmine.Ajax, 'installMock').andCallThrough();
-      jasmine.Ajax.useMock();
-      expect(jasmine.Ajax.installMock).toHaveBeenCalled();
-    });
-
-    it("ensures the mock is not already installed", function() {
-      jasmine.Ajax.useMock();
-
-      spyOn(jasmine.Ajax, 'installMock');
-
-      jasmine.Ajax.useMock();
-
-      expect(jasmine.Ajax.installMock).not.toHaveBeenCalled();
-    });
-
-  });
-
 });
-
-function withoutJquery(spec) {
-  var jqueryRef = jQuery;
-  jQuery = undefined;
-  spec.apply(this);
-  jQuery = jqueryRef;
-}

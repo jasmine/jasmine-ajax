@@ -1,5 +1,3 @@
-jQuery.noConflict();
-
-beforeEach(function() {
-  clearAjaxRequests();
-});
+// beforeEach(function() {
+  // clearAjaxRequests();
+// });

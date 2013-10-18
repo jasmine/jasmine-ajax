@@ -1,8 +1,13 @@
 describe("FakeXMLHttpRequest", function() {
   var xhr;
   beforeEach(function() {
-    xhr = new FakeXMLHttpRequest();
+    var realXMLHttpRequest = jasmine.createSpy('realRequest'),
+        fakeGlobal = {XMLHttpRequest: realXMLHttpRequest},
+        mockAjax = new MockAjax(fakeGlobal);
+    mockAjax.install();
+    xhr = new fakeGlobal.XMLHttpRequest();
   });
+
   it("should have an initial readyState of 0 (uninitialized)", function() {
     expect(xhr.readyState).toEqual(0);
   });
@@ -52,6 +57,7 @@ describe("FakeXMLHttpRequest", function() {
   });
 
   it("can be extended", function(){
+    pending("why do we want to do this?");
     FakeXMLHttpRequest.prototype.foo = function(){
       return "foo";
     };

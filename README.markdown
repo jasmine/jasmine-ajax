@@ -1,10 +1,13 @@
 jasmine-ajax - Faking Ajax responses in your Jasmine suite.
 ===
-jasmine-ajax is a library that lets you define a set of fake responses for Ajax requests made by your application, specify per spec which response should be used, and keep track of the Ajax requests you make so you can make assertions about the results.
+jasmine-ajax is a library that lets you define a set of fake responses for Ajax
+requests made by your application, specify per spec which response should be
+used, and keep track of the Ajax requests you make so you can make assertions
+about the results.
 
 Libraries Supported
 ---
-jasmine-ajax is currently compatible with jQuery. Support for other libraries planned.
+jasmine-ajax is currently compatible with any library that uses XMLHttpRequest. Tested with jQuery and Zepto.
 
 Installing
 ---
@@ -181,4 +184,4 @@ Jasmine
 ------------
 http://github.com/pivotal/jasmine
 
-Copyright (c) 2011 Pivotal Labs. This software is licensed under the MIT License.
+Copyright (c) 2013 Pivotal Labs. This software is licensed under the MIT License.
