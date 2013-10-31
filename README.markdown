@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/pivotal/jasmine-ajax.png?branch=master)](https://travis-ci.org/pivotal/jasmine-ajax)
+
 THIS HAS NOT BEEN UPDATED FOR THE NEW JASMINE-AJAX 2.0 RELEASE. HERE BE DRAGONS.
 
 This branch is now version 2.0, if you need jasmine-ajax for Jasmine 1.3.x please grab the last release from that tag.
