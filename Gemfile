@@ -1,4 +1,4 @@
 source "https://rubygems.org"
 
 gem 'rake'
-gem 'jasmine', "~> 2.0.0.rc3"
+gem 'jasmine', "~> 2.0.0.rc5"

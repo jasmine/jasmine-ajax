@@ -299,7 +299,7 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
 
   describe('when simulating a response with request.responseTimeout', function() {
     beforeEach(function() {
-      clock.install();
+      jasmine.clock().install();
 
       client = new fakeGlobal.XMLHttpRequest();
       client.onreadystatechange = onreadystatechange;
@@ -318,7 +318,7 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
     });
 
     afterEach(function() {
-      clock.uninstall();
+      jasmine.clock().uninstall();
     });
 
     it("should not call the success handler", function() {

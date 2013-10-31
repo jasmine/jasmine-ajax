@@ -8,15 +8,15 @@ GEM
       rack-test (>= 0.5.4)
       xpath (~> 2.0)
     cliver (0.2.2)
-    jasmine (2.0.0.rc3)
-      jasmine-core (~> 2.0.0.rc3)
+    jasmine (2.0.0.rc5)
+      jasmine-core (~> 2.0.0.rc5)
       phantomjs
-      rack
+      rack (>= 1.2.1)
       rake
-    jasmine-core (2.0.0.rc3)
-    mime-types (1.25)
-    mini_portile (0.5.1)
-    multi_json (1.8.1)
+    jasmine-core (2.0.0.rc5)
+    mime-types (2.0)
+    mini_portile (0.5.2)
+    multi_json (1.8.2)
     nokogiri (1.6.0)
       mini_portile (~> 0.5.0)
     phantomjs (1.8.1.1)
@@ -38,5 +38,5 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  jasmine (~> 2.0.0.rc3)
+  jasmine (~> 2.0.0.rc5)
   rake
