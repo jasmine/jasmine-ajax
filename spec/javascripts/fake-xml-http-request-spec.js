@@ -38,6 +38,8 @@ describe("FakeXMLHttpRequest", function() {
       it("should have a readyState of 0 (uninitialized)", function() {
         xhr.abort();
         expect(xhr.readyState).toEqual(0);
+        expect(xhr.status).toEqual(0);
+        expect(xhr.statusText).toEqual("abort");
       });
     });
   });
