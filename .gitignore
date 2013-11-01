@@ -1,3 +1,4 @@
 .idea/
 .rvmrc
+*.swp
 node_modules

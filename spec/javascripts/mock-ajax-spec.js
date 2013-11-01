@@ -25,6 +25,25 @@ describe("mockAjax", function() {
     expect(fakeXmlHttpRequest).toHaveBeenCalledWith('foo');
   });
 
+  it("clears requests and stubs upon uninstall", function() {
+    var fakeXmlHttpRequest = jasmine.createSpy('fakeXmlHttpRequest'),
+        fakeGlobal = { XMLHttpRequest: fakeXmlHttpRequest },
+        mockAjax = new MockAjax(fakeGlobal);
+
+    mockAjax.install();
+
+    mockAjax.requests.track({url: '/testurl'});
+    mockAjax.stubs.addStub({url: '/bobcat'});
+
+    expect(mockAjax.requests.count()).toEqual(1);
+    expect(mockAjax.stubs.findStub('/bobcat')).toBeDefined();
+
+    mockAjax.uninstall();
+
+    expect(mockAjax.requests.count()).toEqual(0);
+    expect(mockAjax.stubs.findStub('/bobcat')).not.toBeDefined();
+  });
+
   it("allows the httpRequest to be retrieved", function() {
     var fakeXmlHttpRequest = jasmine.createSpy('fakeXmlHttpRequest'),
         fakeGlobal = { XMLHttpRequest: fakeXmlHttpRequest },
