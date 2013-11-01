@@ -186,11 +186,12 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
         client.send();
 
         request = mockAjax.requests.mostRecent();
-        response = {status: 200, contentType: "text/html", responseText: "OK!"};
+        response = {status: 200, statusText: "OK", contentType: "text/html", responseText: "OK!"};
         request.response(response);
 
         sharedContext.responseCallback = success;
         sharedContext.status = response.status;
+        sharedContext.statusText = response.statusText;
         sharedContext.contentType = response.contentType;
         sharedContext.responseText = response.responseText;
       });
@@ -219,12 +220,13 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
         client.send();
 
         request = mockAjax.requests.mostRecent();
-        var responseObject = {status: 200, contentType: "application/json", responseText: '{"foo":"bar"}'};
+        var responseObject = {status: 200, statusText: "OK", contentType: "application/json", responseText: '{"foo":"bar"}'};
 
         request.response(responseObject);
 
         sharedContext.responseCallback = success;
         sharedContext.status = responseObject.status;
+        sharedContext.statusText = responseObject.statusText;
         sharedContext.contentType = responseObject.contentType;
         sharedContext.responseText = responseObject.responseText;
 
@@ -259,11 +261,12 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
         client.send();
 
         request = mockAjax.requests.mostRecent();
-        response = {status: 200, responseText: '{"foo": "valid JSON, dammit."}'};
+        response = {status: 200, statusText: "OK", responseText: '{"foo": "valid JSON, dammit."}'};
         request.response(response);
 
         sharedContext.responseCallback = success;
         sharedContext.status = response.status;
+        sharedContext.statusText = response.statusText;
         sharedContext.contentType = "application/json";
         sharedContext.responseText = response.responseText;
       });
@@ -292,11 +295,12 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
         client.send();
 
         request = mockAjax.requests.mostRecent();
-        response = {status: 0, responseText: '{"foo": "whoops!"}'};
+        response = {status: 0, statusText: "ABORT", responseText: '{"foo": "whoops!"}'};
         request.response(response);
 
         sharedContext.responseCallback = error;
         sharedContext.status = 0;
+        sharedContext.statusText = response.statusText;
         sharedContext.contentType = 'application/json';
         sharedContext.responseText = response.responseText;
       });
@@ -326,11 +330,12 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
       client.send();
 
       request = mockAjax.requests.mostRecent();
-      response = {status: 500, contentType: "text/html", responseText: "(._){"};
+      response = {status: 500, statusText: "SERVER ERROR", contentType: "text/html", responseText: "(._){"};
       request.response(response);
 
       sharedContext.responseCallback = error;
       sharedContext.status = response.status;
+      sharedContext.statusText = response.statusText;
       sharedContext.contentType = response.contentType;
       sharedContext.responseText = response.responseText;
     });
@@ -366,6 +371,7 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
 
       sharedContext.responseCallback = error;
       sharedContext.status = response.status;
+      sharedContext.statusText = response.statusText;
       sharedContext.contentType = response.contentType;
       sharedContext.responseText = response.responseText;
     });
@@ -407,6 +413,10 @@ function sharedAjaxResponseBehaviorForZepto_Success(context) {
     it("should have the expected response text", function() {
       expect(xhr.responseText).toEqual(context.responseText);
     });
+    
+    it("should have the expected status text", function() {
+      expect(xhr.statusText).toEqual(context.statusText);
+    });
   });
 }
 
@@ -427,6 +437,10 @@ function sharedAjaxResponseBehaviorForZepto_Failure(context) {
 
     it("should have the expected response text", function() {
       expect(xhr.responseText).toEqual(context.responseText);
+    });
+    
+    it("should have the expected status text", function() {
+      expect(xhr.statusText).toEqual(context.statusText);
     });
   });
 }
