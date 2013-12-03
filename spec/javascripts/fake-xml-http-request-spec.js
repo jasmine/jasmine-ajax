@@ -1,15 +1,44 @@
 describe("FakeXMLHttpRequest", function() {
   var xhr;
+  var xhr2;
   beforeEach(function() {
     var realXMLHttpRequest = jasmine.createSpy('realRequest'),
         fakeGlobal = {XMLHttpRequest: realXMLHttpRequest},
         mockAjax = new MockAjax(fakeGlobal);
     mockAjax.install();
     xhr = new fakeGlobal.XMLHttpRequest();
+    xhr2 = new fakeGlobal.XMLHttpRequest();
   });
 
   it("should have an initial readyState of 0 (uninitialized)", function() {
     expect(xhr.readyState).toEqual(0);
+  });
+
+  describe("when setting request headers", function() {
+    beforeEach(function() {
+      xhr.setRequestHeader('X-Header-1', 'one');
+    });
+
+    it("should make the request headers available", function() {
+      expect(Object.keys(xhr.requestHeaders).length).toEqual(1);
+      expect(xhr.requestHeaders['X-Header-1']).toEqual('one');
+    });
+
+    describe("when setting headers on another xhr object", function() {
+      beforeEach(function() {
+        xhr2.setRequestHeader('X-Header-2', 'two');
+      });
+
+      it("should make the only its request headers available", function() {
+        expect(Object.keys(xhr2.requestHeaders).length).toEqual(1);
+        expect(xhr2.requestHeaders['X-Header-2']).toEqual('two');
+      });
+
+      it("should not modify any other xhr objects", function() {
+        expect(Object.keys(xhr.requestHeaders).length).toEqual(1);
+        expect(xhr.requestHeaders['X-Header-1']).toEqual('one');
+      });
+    });
   });
 
   describe("when opened", function() {
