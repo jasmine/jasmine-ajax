@@ -4,7 +4,7 @@ THIS HAS NOT BEEN UPDATED FOR THE NEW JASMINE-AJAX 2.0 RELEASE. HERE BE DRAGONS.
 
 This branch is now version 2.0, if you need jasmine-ajax for Jasmine 1.3.x please grab the last release from that tag.
 
-
+If you are trying to use the updated version of the gem, consider using the documentation located on [jasmine.github.io](http://jasmine.github.io/2.0/ajax.html) as it is more up-to-date.
 
 jasmine-ajax - Faking Ajax responses in your Jasmine suite.
 ===
