@@ -43,30 +43,39 @@ describe("FakeXMLHttpRequest", function() {
 
   describe("when opened", function() {
     beforeEach(function() {
+      spyOn(xhr, 'onreadystatechange');
       xhr.open("GET", "http://example.com");
     });
+
     it("should have a readyState of 1 (open)", function() {
       expect(xhr.readyState).toEqual(1);
+      expect(xhr.onreadystatechange).toHaveBeenCalled();
     });
 
     describe("when sent", function() {
       it("should have a readyState of 2 (sent)", function() {
+        xhr.onreadystatechange.calls.reset();
         xhr.send(null);
         expect(xhr.readyState).toEqual(2);
+        expect(xhr.onreadystatechange).toHaveBeenCalled();
       });
     });
 
     describe("when a response comes in", function() {
       it("should have a readyState of 4 (loaded)", function() {
+        xhr.onreadystatechange.calls.reset();
         xhr.response({status: 200});
         expect(xhr.readyState).toEqual(4);
+        expect(xhr.onreadystatechange).toHaveBeenCalled();
       });
     });
 
     describe("when aborted", function() {
       it("should have a readyState of 0 (uninitialized)", function() {
+        xhr.onreadystatechange.calls.reset();
         xhr.abort();
         expect(xhr.readyState).toEqual(0);
+        expect(xhr.onreadystatechange).toHaveBeenCalled();
         expect(xhr.status).toEqual(0);
         expect(xhr.statusText).toEqual("abort");
       });
