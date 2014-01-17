@@ -63,4 +63,44 @@ describe("Webmock style mocking", function() {
       expect(response.responseText).toEqual('no');
     });
   });
+
+  describe("stubbing with form data", function() {
+    beforeEach(function() {
+      mockAjax.stubRequest("http://example.com/someApi", 'foo=bar').andReturn({responseText: "form", status: 201});
+    });
+
+    var postRequest = function(data) {
+      var xhr = new fakeGlobal.XMLHttpRequest();
+      xhr.onreadystatechange = function(arguments) {
+        if (this.readyState == this.DONE) {
+          response = this;
+          successSpy();
+        }
+      };
+
+      xhr.open("POST", "http://example.com/someApi");
+      xhr.send(data);
+    };
+
+    it("uses the form data stub when the data matches", function() {
+      postRequest('foo=bar');
+
+      expect(response.status).toEqual(201);
+      expect(response.responseText).toEqual('form');
+    });
+
+    it("falls back to the stub without data specified if the data doesn't match", function() {
+      postRequest('foo=baz');
+
+      expect(response.status).toEqual(200);
+      expect(response.responseText).toEqual('hi!');
+    });
+
+    it("uses the stub without data specified if no data is passed", function() {
+      postRequest();
+
+      expect(response.status).toEqual(200);
+      expect(response.responseText).toEqual('hi!');
+    });
+  });
 });
