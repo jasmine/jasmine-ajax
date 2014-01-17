@@ -33,7 +33,7 @@ describe("mockAjax", function() {
     mockAjax.install();
 
     mockAjax.requests.track({url: '/testurl'});
-    mockAjax.stubs.addStub({url: '/bobcat'});
+    mockAjax.stubRequest('/bobcat');
 
     expect(mockAjax.requests.count()).toEqual(1);
     expect(mockAjax.stubs.findStub('/bobcat')).toBeDefined();

@@ -66,7 +66,7 @@ describe("Webmock style mocking", function() {
 
   describe("stubbing with form data", function() {
     beforeEach(function() {
-      mockAjax.stubRequest("http://example.com/someApi", 'foo=bar').andReturn({responseText: "form", status: 201});
+      mockAjax.stubRequest("http://example.com/someApi", 'foo=bar&baz=quux').andReturn({responseText: "form", status: 201});
     });
 
     var postRequest = function(data) {
@@ -83,14 +83,21 @@ describe("Webmock style mocking", function() {
     };
 
     it("uses the form data stub when the data matches", function() {
-      postRequest('foo=bar');
+      postRequest('foo=bar&baz=quux');
+
+      expect(response.status).toEqual(201);
+      expect(response.responseText).toEqual('form');
+    });
+
+    it("matches data params in any order", function() {
+      postRequest('baz=quux&foo=bar');
 
       expect(response.status).toEqual(201);
       expect(response.responseText).toEqual('form');
     });
 
     it("falls back to the stub without data specified if the data doesn't match", function() {
-      postRequest('foo=baz');
+      postRequest('foo=bar');
 
       expect(response.status).toEqual(200);
       expect(response.responseText).toEqual('hi!');
