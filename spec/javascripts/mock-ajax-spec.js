@@ -35,8 +35,7 @@ describe("jasmine.Ajax", function() {
 
   describe("installMock", function() {
     describe("when using jQuery", function() {
-
-      it("installs the mock", function() {
+      it("installs the jQueryMock mock", function() {
           jasmine.Ajax.installMock();
           expect(jQuery.ajaxSettings.xhr).toBe(jasmine.Ajax.jQueryMock);
       });
@@ -50,6 +49,28 @@ describe("jasmine.Ajax", function() {
       it("sets mode to 'jQuery'", function() {
           jasmine.Ajax.installMock();
           expect(jasmine.Ajax.mode).toEqual("jQuery");
+      });
+
+      it("installs the jQueryGetJSON mock", function() {
+          jasmine.Ajax.installMock();
+          expect(jQuery.getJSON).not.toBe(jasmine.Ajax.realGetJSON);
+      });
+
+      it("saves a reference to jQuery.getJSON", function() {
+          var jqueryGetJSON = jQuery.getJSON;
+          jasmine.Ajax.installMock();
+          expect(jasmine.Ajax.realGetJSON).toBe(jqueryGetJSON);
+      });
+
+      it("installs the jQueryGetScript mock", function() {
+          jasmine.Ajax.installMock();
+          expect(jQuery.getScript).not.toBe(jasmine.Ajax.realGetScript);
+      });
+
+      it("saves a reference to jQuery.getScript", function() {
+          var jqueryGetScript = jQuery.getScript;
+          jasmine.Ajax.installMock();
+          expect(jasmine.Ajax.realGetScript).toBe(jqueryGetScript);
       });
     });
 
@@ -81,6 +102,24 @@ describe("jasmine.Ajax", function() {
 
           expect(jQuery.ajaxSettings.xhr).toBe(jqueryAjax);
       });
+
+      it("returns getJSON control to jQuery", function() {
+          var jqueryGetJSON = jQuery.getJSON;
+
+          jasmine.Ajax.installMock();
+          jasmine.Ajax.uninstallMock();
+
+          expect(jQuery.getJSON).toBe(jqueryGetJSON);
+      });
+
+      it("returns getScript control to jQuery", function() {
+          var jqueryGetScript = jQuery.getScript;
+
+          jasmine.Ajax.installMock();
+          jasmine.Ajax.uninstallMock();
+
+          expect(jQuery.getScript).toBe(jqueryGetScript);
+      });
     });
 
     it("raises an exception if jasmine.Ajax is not installed", function() {
@@ -100,6 +139,27 @@ describe("jasmine.Ajax", function() {
       jasmine.Ajax.installMock();
       jasmine.Ajax.uninstallMock();
       expect(jasmine.Ajax.mode).toEqual(null);
+      jasmine.Ajax.installMock();
+    });
+
+    it("sets the real to null", function() {
+      jasmine.Ajax.installMock();
+      jasmine.Ajax.uninstallMock();
+      expect(jasmine.Ajax.real).toEqual(null);
+      jasmine.Ajax.installMock();
+    });
+
+    it("sets the realGetJSON to null", function() {
+      jasmine.Ajax.installMock();
+      jasmine.Ajax.uninstallMock();
+      expect(jasmine.Ajax.realGetJSON).toEqual(null);
+      jasmine.Ajax.installMock();
+    });
+
+    it("sets the realGetScript to null", function() {
+      jasmine.Ajax.installMock();
+      jasmine.Ajax.uninstallMock();
+      expect(jasmine.Ajax.realGetScript).toEqual(null);
       jasmine.Ajax.installMock();
     });
   });
@@ -122,7 +182,6 @@ describe("jasmine.Ajax", function() {
     });
 
   });
-
 });
 
 function withoutJquery(spec) {
