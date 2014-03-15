@@ -1,8 +1,6 @@
 [![Build Status](https://travis-ci.org/pivotal/jasmine-ajax.png?branch=master)](https://travis-ci.org/pivotal/jasmine-ajax)
 
-THIS HAS NOT BEEN UPDATED FOR THE NEW JASMINE-AJAX 2.0 RELEASE. HERE BE DRAGONS.
-
-If you are using the updated version of this library, there is some documentation located at [jasmine.github.io](http://jasmine.github.io/2.0/ajax.html) that is more up-to-date.
+If you are using the updated version of this library, there is some additional documentation located at [jasmine.github.io](http://jasmine.github.io/2.0/ajax.html) that is up-to-date.
 
 This branch is now version 2.0, if you need jasmine-ajax for Jasmine 1.3.x please grab the last release from that tag.
 
@@ -19,7 +17,7 @@ jasmine-ajax is currently compatible with any library that uses XMLHttpRequest. 
 
 Installing
 ---
-Download [mock-ajax.js](http://cloud.github.com/downloads/pivotal/jasmine-ajax/mock-ajax.js) and add it to your project. If you are using the jasmine gem, be sure the location you put mock-ajax.js is included in your src_files path in jasmine.yml. If you are using Jasmine standalone, make sure you add it to your spec runner.
+Download [mock-ajax.js](https://raw.github.com/pivotal/jasmine-ajax/master/lib/mock-ajax.js) and add it to your project. If you are using the jasmine gem, be sure the location you put mock-ajax.js is included in your src_files path in jasmine.yml. If you are using Jasmine standalone, make sure you add it to your spec runner.
 
 Setup
 ---
