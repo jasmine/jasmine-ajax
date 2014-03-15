@@ -104,10 +104,10 @@ Then you'd define a mock response that looks something like this:
 A good place to define this is in `spec/javascripts/helpers/test_responses`. You can also define failure responses, for whatever status codes the API you are working with supports.
 
 ### 2. Installing the mock ###
-Install the mock using `jasmine.Ajax.useMock()`:
+Install the mock using `jasmine.Ajax.install()`:
 
     beforeEach(function() {
-      jasmine.Ajax.useMock();
+      jasmine.Ajax.install();
       ...
 After this, all Ajax requests will be captured by jasmine-ajax. If you want to do things like load fixtures, do it before you install the mock (see below).
 
@@ -119,7 +119,7 @@ Before you can specify that a request uses your test response, you must have a h
           onFailure: onFailure
         });
 
-        request = mostRecentAjaxRequest();
+        request = jasmine.Ajax.requests.mostRecent();
 
 The onreadystatechange event isn't fired to complete the ajax request until you set the response in the next step.
 
@@ -141,7 +141,7 @@ Putting it all together, you can install the mock, pass some spies as callbacks 
       var onSuccess, onFailure;
 
       beforeEach(function() {
-        jasmine.Ajax.useMock();
+        jasmine.Ajax.install();
 
         onSuccess = jasmine.createSpy('onSuccess');
         onFailure = jasmine.createSpy('onFailure');
@@ -153,7 +153,7 @@ Putting it all together, you can install the mock, pass some spies as callbacks 
           onFailure: onFailure
         });
 
-        request = mostRecentAjaxRequest();
+        request = jasmine.Ajax.requests.mostRecent();
         expect(request.url).toBe('venues/search');
         expect(request.method).toBe('POST');
         expect(request.data()).toEqual({latLng: ['40.019461, -105.273296']});
@@ -167,7 +167,7 @@ Putting it all together, you can install the mock, pass some spies as callbacks 
         it("calls onSuccess with an array of Locations", function() {
           expect(onSuccess).toHaveBeenCalled();
 
-          var successArgs = onSuccess.mostRecentCall.args[0];
+          var successArgs = onSuccess.calls.mostRecent().args[0];
 
           expect(successArgs.length).toEqual(1);
           expect(successArgs[0]).toEqual(jasmine.any(Venue));
@@ -192,4 +192,4 @@ Jasmine
 ------------
 http://github.com/pivotal/jasmine
 
-Copyright (c) 2013 Pivotal Labs. This software is licensed under the MIT License.
+Copyright (c) 2014 Pivotal Labs. This software is licensed under the MIT License.
