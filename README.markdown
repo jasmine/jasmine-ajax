@@ -1,8 +1,6 @@
 [![Build Status](https://travis-ci.org/pivotal/jasmine-ajax.png?branch=master)](https://travis-ci.org/pivotal/jasmine-ajax)
 
-THIS HAS NOT BEEN UPDATED FOR THE NEW JASMINE-AJAX 2.0 RELEASE. HERE BE DRAGONS.
-
-If you are using the updated version of this library, there is some documentation located at [jasmine.github.io](http://jasmine.github.io/2.0/ajax.html) that is more up-to-date.
+If you are using the updated version of this library, there is some additional documentation located at [jasmine.github.io](http://jasmine.github.io/2.0/ajax.html) that is up-to-date.
 
 This branch is now version 2.0, if you need jasmine-ajax for Jasmine 1.3.x please grab the last release from that tag.
 
@@ -19,7 +17,7 @@ jasmine-ajax is currently compatible with any library that uses XMLHttpRequest. 
 
 Installing
 ---
-Download [mock-ajax.js](http://cloud.github.com/downloads/pivotal/jasmine-ajax/mock-ajax.js) and add it to your project. If you are using the jasmine gem, be sure the location you put mock-ajax.js is included in your src_files path in jasmine.yml. If you are using Jasmine standalone, make sure you add it to your spec runner.
+Download [mock-ajax.js](https://raw.github.com/pivotal/jasmine-ajax/master/lib/mock-ajax.js) and add it to your project. If you are using the jasmine gem, be sure the location you put mock-ajax.js is included in your src_files path in jasmine.yml. If you are using Jasmine standalone, make sure you add it to your spec runner.
 
 Setup
 ---
@@ -104,10 +102,10 @@ Then you'd define a mock response that looks something like this:
 A good place to define this is in `spec/javascripts/helpers/test_responses`. You can also define failure responses, for whatever status codes the API you are working with supports.
 
 ### 2. Installing the mock ###
-Install the mock using `jasmine.Ajax.useMock()`:
+Install the mock using `jasmine.Ajax.install()`:
 
     beforeEach(function() {
-      jasmine.Ajax.useMock();
+      jasmine.Ajax.install();
       ...
 After this, all Ajax requests will be captured by jasmine-ajax. If you want to do things like load fixtures, do it before you install the mock (see below).
 
@@ -119,7 +117,7 @@ Before you can specify that a request uses your test response, you must have a h
           onFailure: onFailure
         });
 
-        request = mostRecentAjaxRequest();
+        request = jasmine.Ajax.requests.mostRecent();
 
 The onreadystatechange event isn't fired to complete the ajax request until you set the response in the next step.
 
@@ -141,7 +139,7 @@ Putting it all together, you can install the mock, pass some spies as callbacks 
       var onSuccess, onFailure;
 
       beforeEach(function() {
-        jasmine.Ajax.useMock();
+        jasmine.Ajax.install();
 
         onSuccess = jasmine.createSpy('onSuccess');
         onFailure = jasmine.createSpy('onFailure');
@@ -153,7 +151,7 @@ Putting it all together, you can install the mock, pass some spies as callbacks 
           onFailure: onFailure
         });
 
-        request = mostRecentAjaxRequest();
+        request = jasmine.Ajax.requests.mostRecent();
         expect(request.url).toBe('venues/search');
         expect(request.method).toBe('POST');
         expect(request.data()).toEqual({latLng: ['40.019461, -105.273296']});
@@ -167,7 +165,7 @@ Putting it all together, you can install the mock, pass some spies as callbacks 
         it("calls onSuccess with an array of Locations", function() {
           expect(onSuccess).toHaveBeenCalled();
 
-          var successArgs = onSuccess.mostRecentCall.args[0];
+          var successArgs = onSuccess.calls.mostRecent().args[0];
 
           expect(successArgs.length).toEqual(1);
           expect(successArgs[0]).toEqual(jasmine.any(Venue));
@@ -192,4 +190,4 @@ Jasmine
 ------------
 http://github.com/pivotal/jasmine
 
-Copyright (c) 2013 Pivotal Labs. This software is licensed under the MIT License.
+Copyright (c) 2014 Pivotal Labs. This software is licensed under the MIT License.
