@@ -2,8 +2,9 @@ describe("FakeXMLHttpRequest", function() {
   var xhr;
   var xhr2;
   beforeEach(function() {
-    var realXMLHttpRequest = jasmine.createSpy('realRequest'),
-        fakeGlobal = {XMLHttpRequest: realXMLHttpRequest},
+    var realXMLHttpRequest = {someOtherProperty: 'someValue'},
+        realXMLHttpRequestCtor = spyOn(window, 'XMLHttpRequest').and.returnValue(realXMLHttpRequest),
+        fakeGlobal = {XMLHttpRequest: realXMLHttpRequestCtor},
         mockAjax = new MockAjax(fakeGlobal);
     mockAjax.install();
     xhr = new fakeGlobal.XMLHttpRequest();
@@ -118,4 +119,10 @@ describe("FakeXMLHttpRequest", function() {
       expect(data['some=thing']).toEqual(['else entirely']);
     });
   });
+
+  describe("when a fake XMLHttpRequest is created", function() {
+    it("inherits the properties of the real XMLHttpRequest object", function() {
+      expect(xhr.someOtherProperty).toBe('someValue');
+    })
+  })
 });
