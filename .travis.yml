@@ -1,4 +1,4 @@
-script: bash travis-scribe.sh
+script: bash travis-script.sh
 language: ruby
 cache: bundler
 rvm: 1.9.3
