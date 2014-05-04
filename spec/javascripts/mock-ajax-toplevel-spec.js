@@ -187,7 +187,7 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
 
         request = mockAjax.requests.mostRecent();
         response = {status: 200, statusText: "OK", contentType: "text/html", responseText: "OK!"};
-        request.response(response);
+        request.makeResponse(response);
 
         sharedContext.responseCallback = success;
         sharedContext.status = response.status;
@@ -222,7 +222,7 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
         request = mockAjax.requests.mostRecent();
         var responseObject = {status: 200, statusText: "OK", contentType: "application/json", responseText: '{"foo":"bar"}'};
 
-        request.response(responseObject);
+        request.makeResponse(responseObject);
 
         sharedContext.responseCallback = success;
         sharedContext.status = responseObject.status;
@@ -262,7 +262,7 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
 
         request = mockAjax.requests.mostRecent();
         response = {status: 200, statusText: "OK", responseText: '{"foo": "valid JSON, dammit."}'};
-        request.response(response);
+        request.makeResponse(response);
 
         sharedContext.responseCallback = success;
         sharedContext.status = response.status;
@@ -296,7 +296,7 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
 
         request = mockAjax.requests.mostRecent();
         response = {status: 0, statusText: "ABORT", responseText: '{"foo": "whoops!"}'};
-        request.response(response);
+        request.makeResponse(response);
 
         sharedContext.responseCallback = error;
         sharedContext.status = 0;
@@ -331,7 +331,7 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
 
       request = mockAjax.requests.mostRecent();
       response = {status: 500, statusText: "SERVER ERROR", contentType: "text/html", responseText: "(._){"};
-      request.response(response);
+      request.makeResponse(response);
 
       sharedContext.responseCallback = error;
       sharedContext.status = response.status;

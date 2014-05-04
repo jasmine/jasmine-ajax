@@ -77,7 +77,7 @@ describe("FakeXMLHttpRequest", function() {
     describe("when a response comes in", function() {
       it("should have a readyState of 4 (loaded)", function() {
         xhr.onreadystatechange.calls.reset();
-        xhr.response({status: 200});
+        xhr.makeResponse({status: 200});
         expect(xhr.readyState).toEqual(4);
         expect(xhr.onreadystatechange).toHaveBeenCalled();
       });
