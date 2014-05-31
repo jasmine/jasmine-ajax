@@ -183,7 +183,7 @@ Most third-party Jasmine extensions use Ajax to load HTML fixtures into the DOM.
       loadFixtures('fixture.html');
 
       // then install the mock
-      jasmine.Ajax.useMock();
+      jasmine.Ajax.install();
     });
 
 Jasmine
