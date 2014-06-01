@@ -5,7 +5,7 @@ describe("Webmock style mocking", function() {
     url = url || "http://example.com/someApi"
     var xhr = new fakeGlobal.XMLHttpRequest();
     xhr.onreadystatechange = function(arguments) {
-      if (this.readyState == this.DONE) {
+      if (this.readyState == (this.DONE || 4)) { // IE 8 doesn't support DONE
         response = this;
         successSpy();
       }
@@ -85,7 +85,7 @@ describe("Webmock style mocking", function() {
     var postRequest = function(data) {
       var xhr = new fakeGlobal.XMLHttpRequest();
       xhr.onreadystatechange = function(arguments) {
-        if (this.readyState == this.DONE) {
+        if (this.readyState == (this.DONE || 4)) { // IE 8 doesn't support DONE
           response = this;
           successSpy();
         }

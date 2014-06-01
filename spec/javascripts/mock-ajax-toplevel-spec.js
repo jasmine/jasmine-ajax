@@ -16,7 +16,7 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
     complete = jasmine.createSpy("onComplete");
 
     onreadystatechange = function() {
-      if (this.readyState == this.DONE) {
+      if (this.readyState == (this.DONE || 4)) { // IE 8 doesn't support DONE
         if (this.status == 200) {
           if (this.responseHeaders['Content-type'] === 'application/json') {
             this.response = JSON.parse(this.responseText);

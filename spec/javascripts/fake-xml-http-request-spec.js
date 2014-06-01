@@ -11,6 +11,17 @@ describe("FakeXMLHttpRequest", function() {
     xhr2 = new fakeGlobal.XMLHttpRequest();
   });
 
+  function objectKeys(obj) {
+    keys = [];
+    for (key in obj) {
+      if (obj.hasOwnProperty(key)) {
+        keys.push(key);
+      }
+    }
+
+    return keys;
+  }
+
   it("should have an initial readyState of 0 (uninitialized)", function() {
     expect(xhr.readyState).toEqual(0);
   });
@@ -21,7 +32,7 @@ describe("FakeXMLHttpRequest", function() {
     });
 
     it("should make the request headers available", function() {
-      expect(Object.keys(xhr.requestHeaders).length).toEqual(1);
+      expect(objectKeys(xhr.requestHeaders).length).toEqual(1);
       expect(xhr.requestHeaders['X-Header-1']).toEqual('one');
     });
 
@@ -31,12 +42,12 @@ describe("FakeXMLHttpRequest", function() {
       });
 
       it("should make the only its request headers available", function() {
-        expect(Object.keys(xhr2.requestHeaders).length).toEqual(1);
+        expect(objectKeys(xhr2.requestHeaders).length).toEqual(1);
         expect(xhr2.requestHeaders['X-Header-2']).toEqual('two');
       });
 
       it("should not modify any other xhr objects", function() {
-        expect(Object.keys(xhr.requestHeaders).length).toEqual(1);
+        expect(objectKeys(xhr.requestHeaders).length).toEqual(1);
         expect(xhr.requestHeaders['X-Header-1']).toEqual('one');
       });
     });
@@ -95,14 +106,6 @@ describe("FakeXMLHttpRequest", function() {
     it("should store the password", function() {
       expect(xhr.password).toEqual("password");
     });
-  });
-
-  it("can be extended", function(){
-    pending("why do we want to do this?");
-    FakeXMLHttpRequest.prototype.foo = function(){
-      return "foo";
-    };
-    expect(new FakeXMLHttpRequest().foo()).toEqual("foo");
   });
 
   describe("data", function() {
