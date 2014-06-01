@@ -178,7 +178,7 @@ Loading Fixtures
 ---
 Most third-party Jasmine extensions use Ajax to load HTML fixtures into the DOM. Since jasmine-ajax intercepts all Ajax calls after it is installed, you need to load your fixtures before installing the mock. If you are using jasmine-jquery, that looks like this:
 
-    beforeEach(function){
+    beforeEach(function(){
       // first load your fixtures
       loadFixtures('fixture.html');
 
