@@ -18,7 +18,7 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
     onreadystatechange = function() {
       if (this.readyState == (this.DONE || 4)) { // IE 8 doesn't support DONE
         if (this.status == 200) {
-          if (this.responseHeaders['Content-type'] === 'application/json') {
+          if (this.getResponseHeader('Content-type') === 'application/json') {
             this.response = JSON.parse(this.responseText);
           } else {
             this.response = this.responseText;
