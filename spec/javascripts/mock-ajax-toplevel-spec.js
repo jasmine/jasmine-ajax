@@ -18,7 +18,7 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
     onreadystatechange = function() {
       if (this.readyState == (this.DONE || 4)) { // IE 8 doesn't support DONE
         if (this.status == 200) {
-          if (this.responseHeaders['Content-type'] === 'application/json') {
+          if (this.responseHeaders['Content-Type'] === 'application/json') {
             this.response = JSON.parse(this.responseText);
           } else {
             this.response = this.responseText;
@@ -407,7 +407,7 @@ function sharedAjaxResponseBehaviorForZepto_Success(context) {
     });
 
     it("should have the expected content type", function() {
-      expect(xhr.getResponseHeader('Content-type')).toEqual(context.contentType);
+      expect(xhr.getResponseHeader('Content-Type')).toEqual(context.contentType);
     });
 
     it("should have the expected response text", function() {
@@ -432,7 +432,7 @@ function sharedAjaxResponseBehaviorForZepto_Failure(context) {
     });
 
     it("should have the expected content type", function() {
-      expect(xhr.getResponseHeader('Content-type')).toEqual(context.contentType);
+      expect(xhr.getResponseHeader('Content-Type')).toEqual(context.contentType);
     });
 
     it("should have the expected response text", function() {
