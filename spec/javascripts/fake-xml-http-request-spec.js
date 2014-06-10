@@ -12,8 +12,8 @@ describe("FakeXMLHttpRequest", function() {
   });
 
   function objectKeys(obj) {
-    keys = [];
-    for (key in obj) {
+    var keys = [];
+    for (var key in obj) {
       if (obj.hasOwnProperty(key)) {
         keys.push(key);
       }
@@ -26,29 +26,35 @@ describe("FakeXMLHttpRequest", function() {
     expect(xhr.readyState).toEqual(0);
   });
 
+  it("should throw if attempt to set a header", function() {
+    expect(function() { xhr.setRequestHeader('X-Header-1', 'one'); }).toThrow();
+  });
+
   describe("when setting request headers", function() {
     beforeEach(function() {
+      xhr.open("GET", "http://example.com");
       xhr.setRequestHeader('X-Header-1', 'one');
     });
 
     it("should make the request headers available", function() {
       expect(objectKeys(xhr.requestHeaders).length).toEqual(1);
-      expect(xhr.requestHeaders['X-Header-1']).toEqual('one');
+      expect(xhr._getRequestHeader('X-Header-1')).toEqual('one');
     });
 
     describe("when setting headers on another xhr object", function() {
       beforeEach(function() {
+        xhr2.open("GET", "http://example2.com");
         xhr2.setRequestHeader('X-Header-2', 'two');
       });
 
       it("should make the only its request headers available", function() {
         expect(objectKeys(xhr2.requestHeaders).length).toEqual(1);
-        expect(xhr2.requestHeaders['X-Header-2']).toEqual('two');
+        expect(xhr2._getRequestHeader('X-Header-2')).toEqual('two');
       });
 
       it("should not modify any other xhr objects", function() {
         expect(objectKeys(xhr.requestHeaders).length).toEqual(1);
-        expect(xhr.requestHeaders['X-Header-1']).toEqual('one');
+        expect(xhr._getRequestHeader('X-Header-1')).toEqual('one');
       });
     });
   });
