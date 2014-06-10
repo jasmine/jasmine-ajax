@@ -77,6 +77,14 @@ describe("Webmock style mocking", function() {
     });
   });
 
+  it("allows stubs to use RegExp", function () {
+    mockAjax.stubRequest(/thisGuy/).andReturn({responseText: 'regex', status: 200});
+
+    sendRequest(fakeGlobal, 'http://www.example.com/thisGuy/thatGuy');
+    expect(successSpy).toHaveBeenCalled();
+    expect(response.responseText).toBe('regex');
+  });
+
   describe("stubbing with form data", function() {
     beforeEach(function() {
       mockAjax.stubRequest("http://example.com/someApi", 'foo=bar&baz=quux').andReturn({responseText: "form", status: 201});
