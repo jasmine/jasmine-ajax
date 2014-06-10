@@ -44,6 +44,22 @@ describe("mockAjax", function() {
     expect(mockAjax.stubs.findStub('/bobcat')).not.toBeDefined();
   });
 
+  it("allows stubs to use RegExp", function () {
+    var fakeXmlHttpRequest = jasmine.createSpy('fakeXmlHttpRequest'),
+        fakeGlobal = { XMLHttpRequest: fakeXmlHttpRequest },
+        mockAjax = new MockAjax(fakeGlobal);
+
+    mockAjax.install();
+    mockAjax.uninstall();
+
+    var regExpStub = mockAjax.stubRequest(/^bobcat/i);
+    var stringStub = mockAjax.stubRequest('/bobcat');
+
+    expect(mockAjax.stubs.findStub(/^bobcat/i)).toBeDefined();
+    expect(mockAjax.stubs.findStub('/bobcat')).toBeDefined();
+    expect(regExpStub.matches('/BOBCAT'));
+  });
+
   it("allows the httpRequest to be retrieved", function() {
     var fakeXmlHttpRequest = jasmine.createSpy('fakeXmlHttpRequest'),
         fakeGlobal = { XMLHttpRequest: fakeXmlHttpRequest },
