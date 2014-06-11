@@ -111,15 +111,49 @@ describe("FakeXMLHttpRequest", function() {
   describe("data", function() {
     beforeEach(function() {
       xhr.open("POST", "http://example.com?this=that");
-      xhr.send('3+stooges=shemp&3+stooges=larry%20%26%20moe%20%26%20curly&some%3Dthing=else+entirely');
+    });
+
+    it("should be an empty object if no params were sent", function() {
+      xhr.send();
+      expect(xhr.data()).toEqual({});
     });
 
     it("should return request params as a hash of arrays", function() {
+      xhr.send('3+stooges=shemp&3+stooges=larry%20%26%20moe%20%26%20curly&some%3Dthing=else+entirely');
       var data = xhr.data();
       expect(data['3 stooges'].length).toEqual(2);
       expect(data['3 stooges'][0]).toEqual('shemp');
       expect(data['3 stooges'][1]).toEqual('larry & moe & curly');
       expect(data['some=thing']).toEqual(['else entirely']);
+    });
+
+    it("should parse json when the content type is appropriate", function() {
+      var data = {
+        foo: 'bar',
+        baz: ['q', 'u', 'u', 'x'],
+        nested: {
+          object: {
+            with: 'stuff'
+          }
+        }
+      };
+
+      xhr.setRequestHeader('Content-Type', 'application/json');
+      xhr.send(JSON.stringify(data));
+
+      expect(xhr.data()).toEqual(data);
+    });
+  });
+
+  describe("contentType", function() {
+    it("gets the Content-Type", function() {
+      xhr.setRequestHeader('Content-Type', 'something');
+      expect(xhr.contentType()).toEqual('something');
+    });
+
+    it("gets the content-type even when the casing is not to spec", function() {
+      xhr.setRequestHeader('content-Type', 'some other thing');
+      expect(xhr.contentType()).toEqual('some other thing');
     });
   });
 
