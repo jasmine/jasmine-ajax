@@ -145,6 +145,23 @@ describe("FakeXMLHttpRequest", function() {
       expect(xhr.data()).toEqual(data);
     });
 
+    it("should parse json even if there are further qualifiers", function() {
+      var data = {
+        foo: 'bar',
+        baz: ['q', 'u', 'u', 'x'],
+        nested: {
+          object: {
+            with: 'stuff'
+          }
+        }
+      };
+
+      xhr.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
+      xhr.send(JSON.stringify(data));
+
+      expect(xhr.data()).toEqual(data);
+    });
+
     it("should be able to use a custom parser", function() {
       xhr.send('custom_format');
       var custom = {
