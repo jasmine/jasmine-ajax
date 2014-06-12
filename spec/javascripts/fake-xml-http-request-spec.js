@@ -1,11 +1,12 @@
 describe("FakeXMLHttpRequest", function() {
   var xhr;
   var xhr2;
+  var mockAjax;
   beforeEach(function() {
     var realXMLHttpRequest = {someOtherProperty: 'someValue'},
         realXMLHttpRequestCtor = spyOn(window, 'XMLHttpRequest').and.returnValue(realXMLHttpRequest),
-        fakeGlobal = {XMLHttpRequest: realXMLHttpRequestCtor},
-        mockAjax = new MockAjax(fakeGlobal);
+        fakeGlobal = {XMLHttpRequest: realXMLHttpRequestCtor};
+    mockAjax = new MockAjax(fakeGlobal);
     mockAjax.install();
     xhr = new fakeGlobal.XMLHttpRequest();
     xhr2 = new fakeGlobal.XMLHttpRequest();
@@ -142,6 +143,34 @@ describe("FakeXMLHttpRequest", function() {
       xhr.send(JSON.stringify(data));
 
       expect(xhr.data()).toEqual(data);
+    });
+
+    it("should be able to use a custom parser", function() {
+      xhr.send('custom_format');
+      var custom = {
+        test: jasmine.createSpy('test').and.returnValue(true),
+        parse: jasmine.createSpy('parse').and.returnValue('parsedFormat')
+      };
+      mockAjax.addCustomParamParser(custom);
+      expect(xhr.data()).toBe('parsedFormat');
+      expect(custom.test).toHaveBeenCalled();
+      expect(custom.parse).toHaveBeenCalledWith('custom_format');
+    });
+
+    it("should clear custom parsers when uninstalled", function() {
+      var custom = {
+        test: jasmine.createSpy('test').and.returnValue(true),
+        parse: jasmine.createSpy('parse').and.returnValue('parsedFormat')
+      };
+      mockAjax.addCustomParamParser(custom);
+      xhr.send('custom_format');
+      expect(xhr.data()).toBe('parsedFormat');
+
+      mockAjax.uninstall();
+      mockAjax.install();
+
+      xhr.send('custom_format');
+      expect(xhr.data()).toEqual({custom_format: [ 'undefined' ]});
     });
   });
 

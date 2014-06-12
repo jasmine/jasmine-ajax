@@ -173,6 +173,29 @@ Putting it all together, you can install the mock, pass some spies as callbacks 
       });
     });
 
+By default the `data` function is very naive about parsing form data being sent.
+
+The provided parsers are:
+
+1. If the XHR has a content-type of application/json, JSON.parse
+1. Otherwise simply split query string by '&' and '='
+
+If you need more control over how your data is presented, you can supply a custom param parser. Custom parsers will be prepended to the list of parsers to try.
+
+    describe("custom params", function() {
+      beforeEach(function() {
+        jasmine.Ajax.install();
+        jasmine.Ajax.addCustomParamParser({
+          test: function(xhr) {
+            // return true if you can parse
+          },
+          parse: function(params) {
+            // parse and return
+          }
+        });
+      });
+    });
+
 
 Loading Fixtures
 ---
