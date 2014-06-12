@@ -18,7 +18,7 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
     onreadystatechange = function() {
       if (this.readyState == (this.DONE || 4)) { // IE 8 doesn't support DONE
         if (this.status == 200) {
-          if (this.responseHeaders['Content-Type'] === 'application/json') {
+          if (this.responseHeaders['Content-type'] === 'application/json') {
             this.response = JSON.parse(this.responseText);
           } else {
             this.response = this.responseText;
@@ -186,14 +186,13 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
         client.send();
 
         request = mockAjax.requests.mostRecent();
-        response = {status: 200, statusText: "OK", contentType: "text/html", response: "Response!", responseText: "OK!"};
+        response = {status: 200, statusText: "OK", contentType: "text/html", responseText: "OK!"};
         request.makeResponse(response);
 
         sharedContext.responseCallback = success;
         sharedContext.status = response.status;
         sharedContext.statusText = response.statusText;
         sharedContext.contentType = response.contentType;
-        sharedContext.response  = response.response;
         sharedContext.responseText = response.responseText;
       });
 
@@ -221,7 +220,7 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
         client.send();
 
         request = mockAjax.requests.mostRecent();
-        var responseObject = {status: 200, statusText: "OK", contentType: "application/json", response: '{"foo":"response"}', responseText: '{"foo":"bar"}'};
+        var responseObject = {status: 200, statusText: "OK", contentType: "application/json", responseText: '{"foo":"bar"}', responseType: "json"};
 
         request.makeResponse(responseObject);
 
@@ -231,6 +230,7 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
         sharedContext.contentType = responseObject.contentType;
         sharedContext.response  = responseObject.response;
         sharedContext.responseText = responseObject.responseText;
+        sharedContext.responseType = responseObject.responseType;
 
         response = success.calls.mostRecent().args[2];
       });
@@ -247,11 +247,80 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
         expect(complete).toHaveBeenCalled();
       });
 
-      it("should return a JavaScript object", function() {
-        expect(success.calls.mostRecent().args[0]).toEqual({foo: "bar"});
+      it("should return a JavaScript object for XHR2 response", function() {
+        var responseText = sharedContext.responseText;
+        expect(success.calls.mostRecent().args[0]).toEqual(responseText);
+
+        expect(response.responseText).toEqual(responseText);
+        expect(response.response).toEqual({foo: "bar"});
       });
 
       sharedAjaxResponseBehaviorForZepto_Success(sharedContext);
+    });
+
+    describe("and the response is Success, and response is overriden", function () {
+      beforeEach(function() {
+        client = new fakeGlobal.XMLHttpRequest();
+        client.onreadystatechange = onreadystatechange;
+        client.open("GET", "example.com/someApi");
+        client.setRequestHeader("Content-Type", "application/json")
+        client.send();
+
+        request = mockAjax.requests.mostRecent();
+        var responseObject = {status: 200, statusText: "OK", contentType: "application/json", responseText: '{"foo":"bar"}', response: {foo: "bar"}};
+
+        request.makeResponse(responseObject);
+
+        sharedContext.responseCallback = success;
+        sharedContext.status = responseObject.status;
+        sharedContext.statusText = responseObject.statusText;
+        sharedContext.contentType = responseObject.contentType;
+        sharedContext.response  = responseObject.response;
+        sharedContext.responseText = responseObject.responseText;
+        sharedContext.responseType = responseObject.responseType;
+
+        response = success.calls.mostRecent().args[2];
+      });
+
+      it("should return the provided override for the XHR2 response", function() {
+        var responseText = sharedContext.responseText;
+
+        expect(response.responseText).toEqual(responseText);
+        expect(response.response).toEqual({foo: "bar"});
+      });
+
+      sharedAjaxResponseBehaviorForZepto_Success(sharedContext);
+    });
+
+    describe("and responseType is not currently inferable", function () {
+      var responseObject;
+
+      beforeEach(function() {
+        client = new fakeGlobal.XMLHttpRequest();
+        client.onreadystatechange = onreadystatechange;
+        client.open("GET", "example.com/someApi");
+        client.setRequestHeader("Content-Type", "application/json")
+        client.send();
+
+        request = mockAjax.requests.mostRecent();
+        responseObject = {status: 200, statusText: "OK", contentType: "application/json", responseText: '{"foo":"bar"}'};
+      });
+
+      it("throw an error for unsupported responseType 'arraybuffer'", function() {
+        responseObject.responseType = 'arraybuffer';
+        expect(function() { request.makeResponse(responseObject) }).toThrow();
+      });
+
+      it("throw an error for unsupported responseType 'blob'", function() {
+        responseObject.responseType = 'blob';
+        expect(function() { request.makeResponse(responseObject) }).toThrow();
+      });
+
+      it("throw an error for unsupported responseType 'document'", function() {
+        responseObject.responseType = 'document';
+        expect(function() { request.makeResponse(responseObject) }).toThrow();
+      });
+
     });
 
     describe("the content type defaults to application/json", function () {
@@ -263,14 +332,13 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
         client.send();
 
         request = mockAjax.requests.mostRecent();
-        response = {status: 200, statusText: "OK", response: '{"foo": "valid response, dammit."}', responseText: '{"foo": "valid JSON, dammit."}'};
+        response = {status: 200, statusText: "OK", responseText: '{"foo": "valid JSON, dammit."}', responseType: 'json'};
         request.makeResponse(response);
 
         sharedContext.responseCallback = success;
         sharedContext.status = response.status;
         sharedContext.statusText = response.statusText;
         sharedContext.contentType = "application/json";
-        sharedContext.response  = response.response;
         sharedContext.responseText = response.responseText;
       });
 
@@ -371,7 +439,7 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
       client.send();
 
       request = mockAjax.requests.mostRecent();
-      response = {contentType: "text/html", response: "(._){response", responseText: "(._){"};
+      response = {contentType: "text/html", response: "(._){response", responseText: "(._){", responseType: "text"};
       request.responseTimeout(response);
 
       sharedContext.responseCallback = error;
@@ -417,7 +485,8 @@ function sharedAjaxResponseBehaviorForZepto_Success(context) {
     });
 
     it("should have the expected xhr2 response", function() {
-      expect(xhr.response).toEqual(context.response);
+      var expected = context.response || context.responseType == 'json' ? JSON.parse(context.responseText) : context.responseText;
+      expect(xhr.response).toEqual(expected);
     });
 
     it("should have the expected response text", function() {
