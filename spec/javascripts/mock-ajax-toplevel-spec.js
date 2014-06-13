@@ -18,11 +18,6 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
     onreadystatechange = function() {
       if (this.readyState == (this.DONE || 4)) { // IE 8 doesn't support DONE
         if (this.status == 200) {
-          if (this.responseHeaders['Content-type'] === 'application/json') {
-            this.response = JSON.parse(this.responseText);
-          } else {
-            this.response = this.responseText;
-          }
           success(this.responseText, this.textStatus, this);
         } else {
           error(this, this.textStatus, '');
@@ -194,6 +189,7 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
         sharedContext.statusText = response.statusText;
         sharedContext.contentType = response.contentType;
         sharedContext.responseText = response.responseText;
+        sharedContext.responseType = response.responseType;
       });
 
       it("should call the success handler", function() {
@@ -228,7 +224,6 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
         sharedContext.status = responseObject.status;
         sharedContext.statusText = responseObject.statusText;
         sharedContext.contentType = responseObject.contentType;
-        sharedContext.response  = responseObject.response;
         sharedContext.responseText = responseObject.responseText;
         sharedContext.responseType = responseObject.responseType;
 
@@ -267,7 +262,7 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
         client.send();
 
         request = mockAjax.requests.mostRecent();
-        var responseObject = {status: 200, statusText: "OK", contentType: "application/json", responseText: '{"foo":"bar"}', response: {foo: "bar"}};
+        var responseObject = {status: 200, statusText: "OK", contentType: "application/json", responseText: '{"foo":"bar"}', responseType: 'json';
 
         request.makeResponse(responseObject);
 
@@ -275,7 +270,6 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
         sharedContext.status = responseObject.status;
         sharedContext.statusText = responseObject.statusText;
         sharedContext.contentType = responseObject.contentType;
-        sharedContext.response  = responseObject.response;
         sharedContext.responseText = responseObject.responseText;
         sharedContext.responseType = responseObject.responseType;
 
@@ -339,6 +333,7 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
         sharedContext.status = response.status;
         sharedContext.statusText = response.statusText;
         sharedContext.contentType = "application/json";
+        sharedContext.responseType = response.responseType;
         sharedContext.responseText = response.responseText;
       });
 
@@ -366,15 +361,15 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
         client.send();
 
         request = mockAjax.requests.mostRecent();
-        response = {status: 0, statusText: "ABORT", response: '{"foo": "response"}', responseText: '{"foo": "whoops!"}'};
+        response = {status: 0, statusText: "ABORT", responseText: '{"foo": "whoops!"}'};
         request.makeResponse(response);
 
         sharedContext.responseCallback = error;
         sharedContext.status = 0;
         sharedContext.statusText = response.statusText;
         sharedContext.contentType = 'application/json';
-        sharedContext.response  = response.response;
         sharedContext.responseText = response.responseText;
+        sharedContext.responseType = response.responseType;
       });
 
       it("should call the success handler", function() {
@@ -402,15 +397,15 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
       client.send();
 
       request = mockAjax.requests.mostRecent();
-      response = {status: 500, statusText: "SERVER ERROR", contentType: "text/html", response: "(._){response", responseText: "(._){"};
+      response = {status: 500, statusText: "SERVER ERROR", contentType: "text/html", responseText: "(._){"};
       request.makeResponse(response);
 
       sharedContext.responseCallback = error;
       sharedContext.status = response.status;
       sharedContext.statusText = response.statusText;
       sharedContext.contentType = response.contentType;
-      sharedContext.response  = response.response;
       sharedContext.responseText = response.responseText;
+      sharedContext.responseType = response.responseType;
     });
 
     it("should not call the success handler", function() {
@@ -446,8 +441,8 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
       sharedContext.status = response.status;
       sharedContext.statusText = response.statusText;
       sharedContext.contentType = response.contentType;
-      sharedContext.response  = response.response;
       sharedContext.responseText = response.responseText;
+      sharedContext.responseType = response.responseType;
     });
 
     afterEach(function() {
@@ -515,7 +510,8 @@ function sharedAjaxResponseBehaviorForZepto_Failure(context) {
     });
 
     it("should have the expected xhr2 response", function() {
-      expect(xhr.response).toEqual(context.response);
+      var expected = context.response || xhr.responseType == 'json' ? JSON.parse(xhr.responseText) : xhr.responseText;
+      expect(xhr.response).toEqual(expected);
     });
 
     it("should have the expected response text", function() {
