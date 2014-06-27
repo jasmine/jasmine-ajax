@@ -20,10 +20,16 @@
   "license": "MIT",
   "ignore": [
     "**/.*",
-    "node_modules",
-    "bower_components",
+    "Gemfile",
+    "Gemfile.lock",
+    "Gruntfile",
+    "Rakefile",
     "app/bower_components",
+    "bower_components",
+    "node_modules",
+    "spec",
     "test",
-    "tests"
+    "tests",
+    "travis-script.sh"
   ]
 }
