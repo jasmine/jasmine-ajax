@@ -1,8 +1,9 @@
 describe("Webmock style mocking", function() {
   var successSpy, errorSpy, response, fakeGlobal, mockAjax;
 
-  var sendRequest = function(fakeGlobal, url) {
+  var sendRequest = function(fakeGlobal, url, method) {
     url = url || "http://example.com/someApi"
+    method = method || 'GET';
     var xhr = new fakeGlobal.XMLHttpRequest();
     xhr.onreadystatechange = function(arguments) {
       if (this.readyState == (this.DONE || 4)) { // IE 8 doesn't support DONE
@@ -11,7 +12,7 @@ describe("Webmock style mocking", function() {
       }
     };
 
-    xhr.open("GET", url);
+    xhr.open(method, url);
     xhr.send();
   };
 
@@ -62,6 +63,23 @@ describe("Webmock style mocking", function() {
 
     it("should allow the latest stub to win", function() {
       expect(response.responseText).toEqual('no');
+    });
+  });
+
+  describe('stubs with method specified', function() {
+    beforeEach(function() {
+      mockAjax.stubRequest('http://example.com/myApi', null, 'POST').andReturn({responseText: 'post', status: '201'});
+      mockAjax.stubRequest('http://example.com/myApi', null, 'PUT').andReturn({responseText: 'put', status: '200'});
+    });
+
+    it("does not match a different method", function() {
+      sendRequest(fakeGlobal, 'http://example.com/myApi', 'GET');
+      expect(successSpy).not.toHaveBeenCalled();
+    });
+
+    it("matches with the right method", function() {
+      sendRequest(fakeGlobal, 'http://example.com/myApi', 'POST');
+      expect(response.responseText).toEqual('post');
     });
   });
 
