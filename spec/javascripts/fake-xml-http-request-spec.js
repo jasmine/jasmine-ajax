@@ -81,6 +81,22 @@ describe("FakeXMLHttpRequest", function() {
         expect(xhr.readyState).toEqual(4);
         expect(xhr.onreadystatechange).toHaveBeenCalled();
       });
+
+      describe("when a second response comes in", function() {
+        it("should throw an error", function() {
+          xhr.onreadystatechange.calls.reset();
+          xhr.response({status: 200});
+          expect(function() { xhr.response({status: 200}); }).toThrowError('FakeXMLHttpRequest already completed');
+        });
+      });
+
+      describe("when a second response comes in as a timout", function() {
+        it("should throw an error", function() {
+          xhr.onreadystatechange.calls.reset();
+          xhr.response({status: 200});
+          expect(function() { xhr.responseTimeout(); }).toThrowError('FakeXMLHttpRequest already completed');
+        });
+      });
     });
 
     describe("when aborted", function() {
