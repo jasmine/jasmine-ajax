@@ -57,6 +57,7 @@ GEM
 
 PLATFORMS
   ruby
+  x64-mingw32
 
 DEPENDENCIES
   jasmine (~> 2.0.0)
