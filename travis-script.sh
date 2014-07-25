@@ -11,4 +11,4 @@ then
   fi
 fi
 
-bundle exec rake jasmine:ci
+grunt jshint && bundle exec rake jasmine:ci
