@@ -219,9 +219,23 @@ describe("FakeXMLHttpRequest", function() {
       expect(xhr.contentType()).toEqual('something');
     });
 
-    it("gets the content-type even when the casing is not to spec", function() {
+    it("gets the content-type case-insensitively", function() {
       xhr.setRequestHeader('content-Type', 'some other thing');
       expect(xhr.contentType()).toEqual('some other thing');
+    });
+  });
+
+  describe("getResponseHeader", function() {
+    it("gets a response header case-insensitively", function() {
+      xhr.send();
+      xhr.response({
+        status: 200,
+        responseHeaders: {
+          'X-Foo': 'Bar'
+        }
+      });
+
+      expect(xhr.getResponseHeader('x-foo')).toBe('Bar');
     });
   });
 
