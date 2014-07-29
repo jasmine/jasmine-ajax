@@ -2,6 +2,7 @@ script: bash travis-script.sh
 language: ruby
 cache: bundler
 rvm: 1.9.3
+before_install: npm install -g grunt-cli
 env:
   global:
   - USE_SAUCE=true
