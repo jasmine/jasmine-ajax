@@ -37,6 +37,12 @@ describe("FakeXMLHttpRequest", function() {
       expect(xhr.requestHeaders['X-Header-1']).toEqual('one');
     });
 
+    it('should combine request headers with the same header name', function() {
+      xhr.setRequestHeader('X-Header-1', 'two');
+      expect(objectKeys(xhr.requestHeaders).length).toEqual(1);
+      expect(xhr.requestHeaders['X-Header-1']).toEqual('one, two');
+    });
+
     describe("when setting headers on another xhr object", function() {
       beforeEach(function() {
         xhr2.setRequestHeader('X-Header-2', 'two');
