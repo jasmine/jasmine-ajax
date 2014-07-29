@@ -1,3 +1,5 @@
+/*global sharedAjaxResponseBehaviorForZepto_Failure: true, sharedAjaxResponseBehaviorForZepto_Success: true */
+
 describe("Jasmine Mock Ajax (for toplevel)", function() {
   var request, anotherRequest, response;
   var success, error, complete;
@@ -8,7 +10,7 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
   beforeEach(function() {
     var fakeXMLHttpRequest = jasmine.createSpy('realFakeXMLHttpRequest');
     fakeGlobal = {XMLHttpRequest: fakeXMLHttpRequest};
-    mockAjax = new MockAjax(fakeGlobal);
+    mockAjax = new window.MockAjax(fakeGlobal);
     mockAjax.install();
 
     success = jasmine.createSpy("onSuccess");
@@ -16,8 +18,8 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
     complete = jasmine.createSpy("onComplete");
 
     onreadystatechange = function() {
-      if (this.readyState == (this.DONE || 4)) { // IE 8 doesn't support DONE
-        if (this.status == 200) {
+      if (this.readyState === (this.DONE || 4)) { // IE 8 doesn't support DONE
+        if (this.status === 200) {
           if (this.responseHeaders['Content-Type'] === 'application/json') {
             this.response = JSON.parse(this.responseText);
           } else {
@@ -141,7 +143,7 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
 
           it("matches by funcarg", function() {
             expect(mockAjax.requests.filter(function(request) {
-              return request.url == "example.com/someApi";
+              return request.url === "example.com/someApi";
             }).length).toEqual(1);
           });
         });
@@ -158,7 +160,7 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
         it("returns just the matching requests", function() {
           expect(mockAjax.requests.filter('example.com/someApi').length).toEqual(1);
         });
-          
+
         it("matches by exact URL", function() {
           expect(mockAjax.requests.filter('example.com/someApi').length).toEqual(1);
         });
@@ -169,7 +171,7 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
 
         it("matches by funcarg", function() {
           expect(mockAjax.requests.filter(function(request) {
-            return request.url == "example.com/someApi";
+            return request.url === "example.com/someApi";
           }).length).toEqual(1);
         });
       });
@@ -182,7 +184,7 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
         client = new fakeGlobal.XMLHttpRequest();
         client.onreadystatechange = onreadystatechange;
         client.open("GET", "example.com/someApi");
-        client.setRequestHeader("Content-Type", "text/plain")
+        client.setRequestHeader("Content-Type", "text/plain");
         client.send();
 
         request = mockAjax.requests.mostRecent();
@@ -216,7 +218,7 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
         client = new fakeGlobal.XMLHttpRequest();
         client.onreadystatechange = onreadystatechange;
         client.open("GET", "example.com/someApi");
-        client.setRequestHeader("Content-Type", "application/json")
+        client.setRequestHeader("Content-Type", "application/json");
         client.send();
 
         request = mockAjax.requests.mostRecent();
@@ -257,7 +259,7 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
         client = new fakeGlobal.XMLHttpRequest();
         client.onreadystatechange = onreadystatechange;
         client.open("GET", "example.com/someApi");
-        client.setRequestHeader("Content-Type", "application/json")
+        client.setRequestHeader("Content-Type", "application/json");
         client.send();
 
         request = mockAjax.requests.mostRecent();
@@ -291,7 +293,7 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
         client = new fakeGlobal.XMLHttpRequest();
         client.onreadystatechange = onreadystatechange;
         client.open("GET", "example.com/someApi");
-        client.setRequestHeader("Content-Type", "text/plain")
+        client.setRequestHeader("Content-Type", "text/plain");
         client.send();
 
         request = mockAjax.requests.mostRecent();
@@ -326,7 +328,7 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
       client = new fakeGlobal.XMLHttpRequest();
       client.onreadystatechange = onreadystatechange;
       client.open("GET", "example.com/someApi");
-      client.setRequestHeader("Content-Type", "text/plain")
+      client.setRequestHeader("Content-Type", "text/plain");
       client.send();
 
       request = mockAjax.requests.mostRecent();
@@ -362,7 +364,7 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
       client = new fakeGlobal.XMLHttpRequest();
       client.onreadystatechange = onreadystatechange;
       client.open("GET", "example.com/someApi");
-      client.setRequestHeader("Content-Type", "text/plain")
+      client.setRequestHeader("Content-Type", "text/plain");
       client.send();
 
       request = mockAjax.requests.mostRecent();
@@ -413,7 +415,7 @@ function sharedAjaxResponseBehaviorForZepto_Success(context) {
     it("should have the expected response text", function() {
       expect(xhr.responseText).toEqual(context.responseText);
     });
-    
+
     it("should have the expected status text", function() {
       expect(xhr.statusText).toEqual(context.statusText);
     });
@@ -438,7 +440,7 @@ function sharedAjaxResponseBehaviorForZepto_Failure(context) {
     it("should have the expected response text", function() {
       expect(xhr.responseText).toEqual(context.responseText);
     });
-    
+
     it("should have the expected status text", function() {
       expect(xhr.statusText).toEqual(context.statusText);
     });

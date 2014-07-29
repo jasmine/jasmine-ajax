@@ -23,13 +23,17 @@ module.exports = function( grunt ) {
         undef: true,
         globals: {
           jasmine: false,
-          ajaxRequests: true,
-          ajaxStubs: true,
           module: false,
-          exports: true
+          exports: true,
+          describe: false,
+          it: false,
+          expect: false,
+          beforeEach: false,
+          afterEach: false,
+          spyOn: false
         }
       },
-      all: ['Gruntfile.js', 'lib/*.js', 'spec/*.js']
+      all: ['Gruntfile.js', 'lib/**/*.js', 'spec/**/*.js']
     },
     shell: {
       ctags: {

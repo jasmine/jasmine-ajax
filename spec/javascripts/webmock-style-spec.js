@@ -2,11 +2,11 @@ describe("Webmock style mocking", function() {
   var successSpy, errorSpy, response, fakeGlobal, mockAjax;
 
   var sendRequest = function(fakeGlobal, url, method) {
-    url = url || "http://example.com/someApi"
+    url = url || "http://example.com/someApi";
     method = method || 'GET';
     var xhr = new fakeGlobal.XMLHttpRequest();
-    xhr.onreadystatechange = function(arguments) {
-      if (this.readyState == (this.DONE || 4)) { // IE 8 doesn't support DONE
+    xhr.onreadystatechange = function(args) {
+      if (this.readyState === (this.DONE || 4)) { // IE 8 doesn't support DONE
         response = this;
         successSpy();
       }
@@ -19,7 +19,7 @@ describe("Webmock style mocking", function() {
   beforeEach(function() {
     successSpy = jasmine.createSpy('success');
     fakeGlobal = {XMLHttpRequest: jasmine.createSpy('realXMLHttpRequest')};
-    mockAjax = new MockAjax(fakeGlobal);
+    mockAjax = new window.MockAjax(fakeGlobal);
     mockAjax.install();
 
     mockAjax.stubRequest("http://example.com/someApi").andReturn({responseText: "hi!"});
@@ -110,8 +110,8 @@ describe("Webmock style mocking", function() {
 
     var postRequest = function(data) {
       var xhr = new fakeGlobal.XMLHttpRequest();
-      xhr.onreadystatechange = function(arguments) {
-        if (this.readyState == (this.DONE || 4)) { // IE 8 doesn't support DONE
+      xhr.onreadystatechange = function(args) {
+        if (this.readyState === (this.DONE || 4)) { // IE 8 doesn't support DONE
           response = this;
           successSpy();
         }

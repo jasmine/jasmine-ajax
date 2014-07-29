@@ -6,15 +6,15 @@ describe("FakeXMLHttpRequest", function() {
     var realXMLHttpRequest = {someOtherProperty: 'someValue'},
         realXMLHttpRequestCtor = spyOn(window, 'XMLHttpRequest').and.returnValue(realXMLHttpRequest),
         fakeGlobal = {XMLHttpRequest: realXMLHttpRequestCtor};
-    mockAjax = new MockAjax(fakeGlobal);
+    mockAjax = new window.MockAjax(fakeGlobal);
     mockAjax.install();
     xhr = new fakeGlobal.XMLHttpRequest();
     xhr2 = new fakeGlobal.XMLHttpRequest();
   });
 
   function objectKeys(obj) {
-    keys = [];
-    for (key in obj) {
+    var keys = [];
+    for (var key in obj) {
       if (obj.hasOwnProperty(key)) {
         keys.push(key);
       }
@@ -150,7 +150,7 @@ describe("FakeXMLHttpRequest", function() {
         baz: ['q', 'u', 'u', 'x'],
         nested: {
           object: {
-            with: 'stuff'
+            containing: 'stuff'
           }
         }
       };
@@ -167,7 +167,7 @@ describe("FakeXMLHttpRequest", function() {
         baz: ['q', 'u', 'u', 'x'],
         nested: {
           object: {
-            with: 'stuff'
+            containing: 'stuff'
           }
         }
       };
@@ -222,6 +222,6 @@ describe("FakeXMLHttpRequest", function() {
   describe("when a fake XMLHttpRequest is created", function() {
     it("inherits the properties of the real XMLHttpRequest object", function() {
       expect(xhr.someOtherProperty).toBe('someValue');
-    })
-  })
+    });
+  });
 });

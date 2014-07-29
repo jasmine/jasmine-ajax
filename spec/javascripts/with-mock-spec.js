@@ -10,7 +10,7 @@ describe("withMock", function() {
     var xmlHttpRequest = jasmine.createSpyObj('XMLHttpRequest', ['open', 'send']),
       xmlHttpRequestCtor = spyOn(window, 'XMLHttpRequest').and.returnValue(xmlHttpRequest),
       fakeGlobal = {XMLHttpRequest: xmlHttpRequestCtor},
-      mockAjax = new MockAjax(fakeGlobal);
+      mockAjax = new window.MockAjax(fakeGlobal);
 
     mockAjax.withMock(function() {
       sendRequest(fakeGlobal);
@@ -25,11 +25,11 @@ describe("withMock", function() {
     var xmlHttpRequest = jasmine.createSpyObj('XMLHttpRequest', ['open', 'send']),
       xmlHttpRequestCtor = spyOn(window, 'XMLHttpRequest').and.returnValue(xmlHttpRequest),
       fakeGlobal = {XMLHttpRequest: xmlHttpRequestCtor},
-      mockAjax = new MockAjax(fakeGlobal);
+      mockAjax = new window.MockAjax(fakeGlobal);
 
     expect(function() {
       mockAjax.withMock(function() {
-        throw "error"
+        throw "error";
       });
     }).toThrow("error");
 
