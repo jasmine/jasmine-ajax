@@ -239,6 +239,17 @@ describe("FakeXMLHttpRequest", function() {
     });
   });
 
+  describe("overriding mime type", function() {
+    it('has null override by default', function() {
+      expect(xhr.overriddenMimeType).toBeNull();
+    });
+
+    it('records the override', function() {
+      xhr.overrideMimeType('text/plain; charset: utf-8');
+      expect(xhr.overriddenMimeType).toBe('text/plain; charset: utf-8');
+    });
+  });
+
   describe("when a fake XMLHttpRequest is created", function() {
     it("inherits the properties of the real XMLHttpRequest object", function() {
       expect(xhr.someOtherProperty).toBe('someValue');
