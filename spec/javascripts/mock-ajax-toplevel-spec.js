@@ -254,6 +254,66 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
       sharedAjaxResponseBehaviorForZepto_Success(sharedContext);
     });
 
+    describe("response with unique header names using an object", function () {
+      beforeEach(function () {
+        client = new fakeGlobal.XMLHttpRequest();
+        client.onreadystatechange = onreadystatechange;
+        client.open("GET", "example.com");
+        client.send();
+
+        request = mockAjax.requests.mostRecent();
+        var responseObject = {status: 200, statusText: "OK", responseText: '["foo"]', responseHeaders: {
+          'X-Header1': 'header 1 value',
+          'X-Header2': 'header 2 value',
+          'X-Header3': 'header 3 value'
+        }};
+        request.response(responseObject);
+        response = success.calls.mostRecent().args[2];
+      });
+
+      it("getResponseHeader should return the each value", function () {
+        expect(response.getResponseHeader('X-Header1')).toBe('header 1 value');
+        expect(response.getResponseHeader('X-Header2')).toBe('header 2 value');
+        expect(response.getResponseHeader('X-Header3')).toBe('header 3 value');
+      });
+
+      it("getAllResponseHeaders should return all values", function () {
+        expect(response.getAllResponseHeaders()).toBe([
+          "X-Header1: header 1 value",
+          "X-Header2: header 2 value",
+          "X-Header3: header 3 value"
+        ].join("\r\n"));
+      });
+    });
+
+    describe("response with multiple headers of the same name using an array of objects", function () {
+      beforeEach(function () {
+        client = new fakeGlobal.XMLHttpRequest();
+        client.onreadystatechange = onreadystatechange;
+        client.open("GET", "example.com");
+        client.send();
+
+        request = mockAjax.requests.mostRecent();
+        var responseObject = {status: 200, statusText: "OK", responseText: '["foo"]', responseHeaders: [
+          { name: 'X-Header', value: 'header value 1' },
+          { name: 'X-Header', value: 'header value 2' }
+        ]};
+        request.response(responseObject);
+        response = success.calls.mostRecent().args[2];
+      });
+
+      it("getResponseHeader should return all values comma separated", function () {
+        expect(response.getResponseHeader('X-Header')).toBe('header value 1, header value 2');
+      });
+
+      it("getAllResponseHeaders should return all values", function () {
+        expect(response.getAllResponseHeaders()).toBe([
+          "X-Header: header value 1",
+          "X-Header: header value 2"
+        ].join("\r\n"));
+      });
+    });
+
     describe("the content type defaults to application/json", function () {
       beforeEach(function() {
         client = new fakeGlobal.XMLHttpRequest();
