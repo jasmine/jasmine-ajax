@@ -38,7 +38,7 @@ describe("Webmock style mocking", function() {
 
   it("should set the contentType", function() {
     sendRequest(fakeGlobal);
-    expect(response.responseHeaders['Content-Type']).toEqual('application/json');
+    expect(response.getResponseHeader('Content-Type')).toEqual('application/json');
   });
 
   it("should set the responseText", function() {
