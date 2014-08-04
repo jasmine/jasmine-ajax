@@ -11,4 +11,6 @@ then
   fi
 fi
 
-grunt jshint && bundle exec rake jasmine:ci
+grunt jshint
+bundle exec rake jasmine:ci
+JASMINE_CONFIG_PATH=spec/support/jasmine_combined.yml bundle exec rake jasmine:ci

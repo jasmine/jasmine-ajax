@@ -1,0 +1,16 @@
+src_dir: lib
+
+src_files:
+    - mock-ajax.js
+
+spec_dir:
+    - spec
+
+spec_files:
+    - '*-spec.js'
+
+helpers:
+    - helpers/spec-helper.js
+
+stylesheets:
+
