@@ -30,19 +30,32 @@ module.exports = function( grunt ) {
           expect: false,
           beforeEach: false,
           afterEach: false,
-          spyOn: false
+          spyOn: false,
+          getJasmineRequireObj: false
         }
       },
-      all: ['Gruntfile.js', 'lib/**/*.js', 'spec/**/*.js']
+      all: ['Gruntfile.js', 'src/**/*.js', 'lib/**/*.js', 'spec/**/*.js']
     },
     shell: {
       ctags: {
         command: 'ctags -R lib'
       }
+    },
+    concat: {
+      mockAjax: {
+        src: [
+          'src/requireAjax.js',
+          'src/**/*.js',
+          '!src/boot.js',
+          'src/boot.js'
+        ],
+        dest: 'lib/mock-ajax.js'
+      }
     }
   });
 
   grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-shell');
 
   grunt.registerTask('default', ['jshint']);
