@@ -167,36 +167,7 @@ describe("FakeXMLHttpRequest", function() {
       expect(xhr.data()).toEqual(data);
     });
 
-    it("should parse json even if there are further qualifiers", function() {
-      var data = {
-        foo: 'bar',
-        baz: ['q', 'u', 'u', 'x'],
-        nested: {
-          object: {
-            containing: 'stuff'
-          }
-        }
-      };
-
-      xhr.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
-      xhr.send(JSON.stringify(data));
-
-      expect(xhr.data()).toEqual(data);
-    });
-
-    it("should be able to use a custom parser", function() {
-      xhr.send('custom_format');
-      var custom = {
-        test: jasmine.createSpy('test').and.returnValue(true),
-        parse: jasmine.createSpy('parse').and.returnValue('parsedFormat')
-      };
-      mockAjax.addCustomParamParser(custom);
-      expect(xhr.data()).toBe('parsedFormat');
-      expect(custom.test).toHaveBeenCalled();
-      expect(custom.parse).toHaveBeenCalledWith('custom_format');
-    });
-
-    it("should clear custom parsers when uninstalled", function() {
+    it("should use a custom parser and clear custom parsers when uninstalled", function() {
       var custom = {
         test: jasmine.createSpy('test').and.returnValue(true),
         parse: jasmine.createSpy('parse').and.returnValue('parsedFormat')
