@@ -27,7 +27,6 @@ getJasmineRequireObj().AjaxRequestTracker = function() {
     };
 
     this.filter = function(url_to_match) {
-      if (requests.length === 0) { return []; }
       var matching_requests = [];
 
       for (var i = 0; i < requests.length; i++) {

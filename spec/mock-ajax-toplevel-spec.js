@@ -123,59 +123,6 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
         expect(mockAjax.requests.mostRecent()).toBeUndefined();
       });
     });
-
-    describe("filter", function() {
-      describe("when there are no matching requests", function() {
-        it("returns an empty array", function() {
-          expect(mockAjax.requests.filter('/philharmonic')).toEqual([]);
-        });
-      });
-
-      describe("when there is one matching request", function() {
-        describe("returns an array with the single matching request", function() {
-          it("matches by exact URL", function() {
-            expect(mockAjax.requests.filter('example.com/someApi').length).toEqual(1);
-          });
-
-          it("matches by regexp", function() {
-            expect(mockAjax.requests.filter(/some.pi/).length).toEqual(1);
-          });
-
-          it("matches by funcarg", function() {
-            expect(mockAjax.requests.filter(function(request) {
-              return request.url === "example.com/someApi";
-            }).length).toEqual(1);
-          });
-        });
-      });
-
-      describe("when there is a non-matching request", function() {
-        beforeEach(function() {
-          client = new fakeGlobal.XMLHttpRequest();
-          client.onreadystatechange = onreadystatechange;
-          client.open("GET", "example.com/someOtherApi");
-          client.send();
-        });
-
-        it("returns just the matching requests", function() {
-          expect(mockAjax.requests.filter('example.com/someApi').length).toEqual(1);
-        });
-
-        it("matches by exact URL", function() {
-          expect(mockAjax.requests.filter('example.com/someApi').length).toEqual(1);
-        });
-
-        it("matches by regexp", function() {
-          expect(mockAjax.requests.filter(/some.pi/).length).toEqual(1);
-        });
-
-        it("matches by funcarg", function() {
-          expect(mockAjax.requests.filter(function(request) {
-            return request.url === "example.com/someApi";
-          }).length).toEqual(1);
-        });
-      });
-    });
   });
 
   describe("when simulating a response with request.response", function () {
