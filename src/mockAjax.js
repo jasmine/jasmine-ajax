@@ -4,7 +4,7 @@ getJasmineRequireObj().MockAjax = function($ajax) {
       stubTracker = new $ajax.StubTracker(),
       paramParser = new $ajax.ParamParser(),
       realAjaxFunction = global.XMLHttpRequest,
-      mockAjaxFunction = $ajax.fakeRequest(requestTracker, stubTracker, paramParser);
+      mockAjaxFunction = $ajax.fakeRequest(global, requestTracker, stubTracker, paramParser);
 
     this.install = function() {
       global.XMLHttpRequest = mockAjaxFunction;

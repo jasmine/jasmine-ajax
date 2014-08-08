@@ -7,7 +7,7 @@ describe('ParamParser', function() {
 
   it('has a default parser', function() {
     var parser = this.parser.findParser({ contentType: function() {} }),
-        parsed = parser.parse('3+stooges=shemp&3+stooges=larry%20%26%20moe%20%26%20curly&some%3Dthing=else+entirely')
+        parsed = parser.parse('3+stooges=shemp&3+stooges=larry%20%26%20moe%20%26%20curly&some%3Dthing=else+entirely');
 
     expect(parsed).toEqual({
       '3 stooges': ['shemp', 'larry & moe & curly'],

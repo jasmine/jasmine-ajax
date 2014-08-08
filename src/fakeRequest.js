@@ -18,7 +18,7 @@ getJasmineRequireObj().AjaxFakeRequest = function() {
     return false;
   }
 
-  function fakeRequest(requestTracker, stubTracker, paramParser) {
+  function fakeRequest(global, requestTracker, stubTracker, paramParser) {
     function FakeXMLHttpRequest() {
       requestTracker.track(this);
       this.requestHeaders = {};
@@ -55,7 +55,7 @@ getJasmineRequireObj().AjaxFakeRequest = function() {
     }
 
     var iePropertiesThatCannotBeCopied = ['responseBody', 'responseText', 'responseXML', 'status', 'statusText', 'responseTimeout'];
-    extend(FakeXMLHttpRequest.prototype, new window.XMLHttpRequest(), iePropertiesThatCannotBeCopied);
+    extend(FakeXMLHttpRequest.prototype, new global.XMLHttpRequest(), iePropertiesThatCannotBeCopied);
     extend(FakeXMLHttpRequest.prototype, {
       open: function() {
         this.method = arguments[0];
