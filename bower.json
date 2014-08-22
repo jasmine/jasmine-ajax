@@ -9,7 +9,7 @@
   "description": "A library for faking Ajax responses in your Jasmine suite.",
   "main": "lib/mock-ajax.js",
   "dependencies": {
-    "jasmine" : "2.0.0"
+    "jasmine" : "~2.0"
   },
   "moduleType": [
     "globals"
