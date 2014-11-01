@@ -393,10 +393,10 @@ describe('FakeRequest', function() {
     request.response({ status: 200, contentType: 'text/xml', responseText: '<dom><stuff/></dom>' });
 
     if (typeof window.Document !== 'undefined') {
-      expect(request.responseXML).toEqual(jasmine.any(window.Document));
+      expect(request.responseXML instanceof window.Document).toBe(true);
     } else {
       // IE 8
-      expect(request.responseXML).toEqual(jasmine.any(window.ActiveXObject));
+      expect(request.responseXML instanceof window.ActiveXObject).toBe(true);
     }
   });
 
@@ -408,25 +408,10 @@ describe('FakeRequest', function() {
     request.response({ status: 200, contentType: 'application/xml', responseText: '<dom><stuff/></dom>' });
 
     if (typeof window.Document !== 'undefined') {
-      expect(request.responseXML).toEqual(jasmine.any(window.Document));
+      expect(request.responseXML instanceof window.Document).toBe(true);
     } else {
       // IE 8
-      expect(request.responseXML).toEqual(jasmine.any(window.ActiveXObject));
-    }
-  });
-
-  it('parses a text/html document into responseXML', function() {
-    var request = new this.FakeRequest();
-    request.open();
-    request.send();
-
-    request.response({ status: 200, contentType: 'text/html', responseText: '<dom><stuff/></dom>' });
-
-    if (typeof window.Document !== 'undefined') {
-      expect(request.responseXML).toEqual(jasmine.any(window.Document));
-    } else {
-      // IE 8
-      expect(request.responseXML).toEqual(jasmine.any(window.ActiveXObject));
+      expect(request.responseXML instanceof window.ActiveXObject).toBe(true);
     }
   });
 
@@ -438,10 +423,10 @@ describe('FakeRequest', function() {
     request.response({ status: 200, contentType: 'application/text+xml', responseText: '<dom><stuff/></dom>' });
 
     if (typeof window.Document !== 'undefined') {
-      expect(request.responseXML).toEqual(jasmine.any(window.Document));
+      expect(request.responseXML instanceof window.Document).toBe(true);
     } else {
       // IE 8
-      expect(request.responseXML).toEqual(jasmine.any(window.ActiveXObject));
+      expect(request.responseXML instanceof window.ActiveXObject).toBe(true);
     }
   });
 });
