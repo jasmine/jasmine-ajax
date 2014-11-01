@@ -54,6 +54,28 @@ getJasmineRequireObj().AjaxFakeRequest = function() {
       return headers;
     }
 
+    function parseXml(xmlText, contentType) {
+      if (global.DOMParser) {
+        return (new global.DOMParser()).parseFromString(xmlText, contentType);
+      } else {
+        var xml = new global.ActiveXObject("Microsoft.XMLDOM");
+        xml.async = "false";
+        xml.loadXML(xmlText);
+        return xml;
+      }
+    }
+
+    var xmlParsables = ['text/html', 'text/xml', 'application/xml'];
+
+    function getResponseXml(responseText, contentType) {
+      if (xmlParsables.indexOf(contentType.toLowerCase()) >= 0) {
+        return parseXml(responseText, contentType);
+      } else if (contentType.match(/\+xml$/)) {
+        return parseXml(responseText, 'text/xml');
+      }
+      return null;
+    }
+
     var iePropertiesThatCannotBeCopied = ['responseBody', 'responseText', 'responseXML', 'status', 'statusText', 'responseTimeout'];
     extend(FakeXMLHttpRequest.prototype, new global.XMLHttpRequest(), iePropertiesThatCannotBeCopied);
     extend(FakeXMLHttpRequest.prototype, {
@@ -154,6 +176,7 @@ getJasmineRequireObj().AjaxFakeRequest = function() {
         this.responseText = response.responseText || "";
         this.readyState = 4;
         this.responseHeaders = normalizeHeaders(response.responseHeaders, response.contentType);
+        this.responseXML = getResponseXml(response.responseText, this.getResponseHeader('content-type') || '');
 
         this.onload();
         this.onreadystatechange();

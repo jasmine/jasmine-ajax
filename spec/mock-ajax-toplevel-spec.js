@@ -9,7 +9,11 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
 
   beforeEach(function() {
     var fakeXMLHttpRequest = jasmine.createSpy('realFakeXMLHttpRequest');
-    fakeGlobal = {XMLHttpRequest: fakeXMLHttpRequest};
+    fakeGlobal = {
+      XMLHttpRequest: fakeXMLHttpRequest,
+      DOMParser: window.DOMParser,
+      ActiveXObject: window.ActiveXObject
+    };
     mockAjax = new window.MockAjax(fakeGlobal);
     mockAjax.install();
 

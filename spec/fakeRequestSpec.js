@@ -7,7 +7,9 @@ describe('FakeRequest', function() {
     this.fakeGlobal = {
       XMLHttpRequest: function() {
         this.extraAttribute = 'my cool attribute';
-      }
+      },
+      DOMParser: window.DOMParser,
+      ActiveXObject: window.ActiveXObject
     };
     this.FakeRequest = getJasmineRequireObj().AjaxFakeRequest()(this.fakeGlobal, this.requestTracker, this.stubTracker, this.paramParser);
   });
@@ -371,5 +373,75 @@ describe('FakeRequest', function() {
 
     expect(request.getResponseHeader('content-type')).toBe('application/json');
     expect(request.getAllResponseHeaders()).toBe('Content-Type: application/json');
+  });
+
+  it('has no responseXML by default', function() {
+    var request = new this.FakeRequest();
+    request.open();
+    request.send();
+
+    request.response({ status: 200 });
+
+    expect(request.responseXML).toBeNull();
+  });
+
+  it('parses a text/xml document into responseXML', function() {
+    var request = new this.FakeRequest();
+    request.open();
+    request.send();
+
+    request.response({ status: 200, contentType: 'text/xml', responseText: '<dom><stuff/></dom>' });
+
+    if (typeof window.Document !== 'undefined') {
+      expect(request.responseXML).toEqual(jasmine.any(window.Document));
+    } else {
+      // IE 8
+      expect(request.responseXML).toEqual(jasmine.any(window.ActiveXObject));
+    }
+  });
+
+  it('parses an application/xml document into responseXML', function() {
+    var request = new this.FakeRequest();
+    request.open();
+    request.send();
+
+    request.response({ status: 200, contentType: 'application/xml', responseText: '<dom><stuff/></dom>' });
+
+    if (typeof window.Document !== 'undefined') {
+      expect(request.responseXML).toEqual(jasmine.any(window.Document));
+    } else {
+      // IE 8
+      expect(request.responseXML).toEqual(jasmine.any(window.ActiveXObject));
+    }
+  });
+
+  it('parses a text/html document into responseXML', function() {
+    var request = new this.FakeRequest();
+    request.open();
+    request.send();
+
+    request.response({ status: 200, contentType: 'text/html', responseText: '<dom><stuff/></dom>' });
+
+    if (typeof window.Document !== 'undefined') {
+      expect(request.responseXML).toEqual(jasmine.any(window.Document));
+    } else {
+      // IE 8
+      expect(request.responseXML).toEqual(jasmine.any(window.ActiveXObject));
+    }
+  });
+
+  it('parses a custom blah+xml document into responseXML', function() {
+    var request = new this.FakeRequest();
+    request.open();
+    request.send();
+
+    request.response({ status: 200, contentType: 'application/text+xml', responseText: '<dom><stuff/></dom>' });
+
+    if (typeof window.Document !== 'undefined') {
+      expect(request.responseXML).toEqual(jasmine.any(window.Document));
+    } else {
+      // IE 8
+      expect(request.responseXML).toEqual(jasmine.any(window.ActiveXObject));
+    }
   });
 });
