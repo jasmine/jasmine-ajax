@@ -122,16 +122,22 @@ describe('FakeRequest', function() {
       this.request.open();
       this.request.onreadystatechange.calls.reset();
 
+      this.request.onloadstart = jasmine.createSpy('loadstart');
+
       this.request.send();
 
       expect(this.request.readyState).toBe(2);
       expect(this.request.onreadystatechange).toHaveBeenCalled();
+      expect(this.request.onloadstart).toHaveBeenCalled();
     });
 
     it('has a ready state of 4 (loaded) when timed out', function() {
       this.request.open();
       this.request.send();
       this.request.onreadystatechange.calls.reset();
+      this.request.ontimeout = jasmine.createSpy('timeout');
+      this.request.onprogress = jasmine.createSpy('progress');
+      this.request.onloadend = jasmine.createSpy('loadend');
 
       jasmine.clock().install();
       this.request.responseTimeout();
@@ -139,6 +145,26 @@ describe('FakeRequest', function() {
 
       expect(this.request.readyState).toBe(4);
       expect(this.request.onreadystatechange).toHaveBeenCalledWith('timeout');
+      expect(this.request.ontimeout).toHaveBeenCalled();
+      expect(this.request.onprogress).toHaveBeenCalled();
+      expect(this.request.onloadend).toHaveBeenCalled();
+    });
+
+    it('has a ready state of 4 (loaded) when network erroring', function() {
+      this.request.open();
+      this.request.send();
+      this.request.onreadystatechange.calls.reset();
+      this.request.onerror = jasmine.createSpy('error');
+      this.request.onprogress = jasmine.createSpy('progress');
+      this.request.onloadend = jasmine.createSpy('loadend');
+
+      this.request.responseError();
+
+      expect(this.request.readyState).toBe(4);
+      expect(this.request.onreadystatechange).toHaveBeenCalled();
+      expect(this.request.onerror).toHaveBeenCalled();
+      expect(this.request.onprogress).toHaveBeenCalled();
+      expect(this.request.onloadend).toHaveBeenCalled();
     });
 
     it('has a ready state of 4 (loaded) when responding', function() {
@@ -146,13 +172,17 @@ describe('FakeRequest', function() {
       this.request.send();
       this.request.onreadystatechange.calls.reset();
 
+      this.request.onprogress = jasmine.createSpy('onprogress');
       this.request.onload = jasmine.createSpy('onload');
+      this.request.onloadend = jasmine.createSpy('onloadend');
 
       this.request.response({});
 
       expect(this.request.readyState).toBe(4);
       expect(this.request.onreadystatechange).toHaveBeenCalled();
+      expect(this.request.onprogress).toHaveBeenCalled();
       expect(this.request.onload).toHaveBeenCalled();
+      expect(this.request.onloadend).toHaveBeenCalled();
     });
 
     it('throws an error when timing out a request that has completed', function() {
@@ -174,6 +204,17 @@ describe('FakeRequest', function() {
 
       expect(function() {
         request.response({});
+      }).toThrowError('FakeXMLHttpRequest already completed');
+    });
+
+    it('throws an error when erroring a request that has completed', function() {
+      this.request.open();
+      this.request.send();
+      this.request.response({});
+      var request = this.request;
+
+      expect(function() {
+        request.responseError({});
       }).toThrowError('FakeXMLHttpRequest already completed');
     });
   });
@@ -199,10 +240,17 @@ describe('FakeRequest', function() {
 
   it('has an aborted status', function() {
     var request = new this.FakeRequest();
+    request.onabort = jasmine.createSpy('onabort');
+    request.onprogress = jasmine.createSpy('progress');
+    request.onloadend = jasmine.createSpy('loadend');
+
     request.abort();
 
     expect(request.status).toBe(0);
     expect(request.statusText).toBe('abort');
+    expect(request.onabort).toHaveBeenCalled();
+    expect(request.onprogress).toHaveBeenCalled();
+    expect(request.onloadend).toHaveBeenCalled();
   });
 
   it('has a status from the response', function() {

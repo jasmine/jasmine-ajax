@@ -105,11 +105,32 @@ getJasmineRequireObj().AjaxFakeRequest = function() {
         this.status = 0;
         this.statusText = "abort";
         this.onreadystatechange();
+        this.onprogress();
+        this.onabort();
+        this.onloadend();
       },
 
       readyState: 0,
 
+      onloadstart: function() {
+      },
+
+      onprogress: function() {
+      },
+
+      onabort: function() {
+      },
+
+      onerror: function() {
+      },
+
       onload: function() {
+      },
+
+      ontimeout: function() {
+      },
+
+      onloadend: function() {
       },
 
       onreadystatechange: function(isTimeout) {
@@ -120,6 +141,7 @@ getJasmineRequireObj().AjaxFakeRequest = function() {
       send: function(data) {
         this.params = data;
         this.readyState = 2;
+        this.onloadstart();
         this.onreadystatechange();
 
         var stub = stubTracker.findStub(this.url, data, this.method);
@@ -178,8 +200,10 @@ getJasmineRequireObj().AjaxFakeRequest = function() {
         this.responseHeaders = normalizeHeaders(response.responseHeaders, response.contentType);
         this.responseXML = getResponseXml(response.responseText, this.getResponseHeader('content-type') || '');
 
-        this.onload();
         this.onreadystatechange();
+        this.onprogress();
+        this.onload();
+        this.onloadend();
       },
 
       responseTimeout: function() {
@@ -189,6 +213,20 @@ getJasmineRequireObj().AjaxFakeRequest = function() {
         this.readyState = 4;
         jasmine.clock().tick(30000);
         this.onreadystatechange('timeout');
+        this.onprogress();
+        this.ontimeout();
+        this.onloadend();
+      },
+
+      responseError: function() {
+        if (this.readyState === 4) {
+          throw new Error("FakeXMLHttpRequest already completed");
+        }
+        this.readyState = 4;
+        this.onreadystatechange();
+        this.onprogress();
+        this.onerror();
+        this.onloadend();
       }
     });
 
