@@ -20,7 +20,9 @@ getJasmineRequireObj().AjaxFakeRequest = function() {
 
   function wrapProgressEvent(xhr, eventName) {
     return function() {
-      xhr[eventName] && xhr[eventName]();
+      if (xhr[eventName]) {
+        xhr[eventName]();
+      }
     };
   }
 
