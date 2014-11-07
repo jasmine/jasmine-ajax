@@ -20,7 +20,7 @@ getJasmineRequireObj().AjaxFakeRequest = function() {
 
   function wrapProgressEvent(xhr, eventName) {
     return function() {
-      xhr[eventName]();
+      xhr[eventName] && xhr[eventName]();
     };
   }
 
@@ -131,26 +131,13 @@ getJasmineRequireObj().AjaxFakeRequest = function() {
 
       readyState: 0,
 
-      onloadstart: function() {
-      },
-
-      onprogress: function() {
-      },
-
-      onabort: function() {
-      },
-
-      onerror: function() {
-      },
-
-      onload: function() {
-      },
-
-      ontimeout: function() {
-      },
-
-      onloadend: function() {
-      },
+      onloadstart: null,
+      onprogress: null,
+      onabort: null,
+      onerror: null,
+      onload: null,
+      ontimeout: null,
+      onloadend: null,
 
       onreadystatechange: function(isTimeout) {
       },
