@@ -140,7 +140,7 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
 
         request = mockAjax.requests.mostRecent();
         response = {status: 200, statusText: "OK", contentType: "text/html", responseText: "OK!"};
-        request.response(response);
+        request.respondWith(response);
 
         sharedContext.responseCallback = success;
         sharedContext.status = response.status;
@@ -175,7 +175,7 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
         request = mockAjax.requests.mostRecent();
         var responseObject = {status: 200, statusText: "OK", contentType: "application/json", responseText: '{"foo":"bar"}'};
 
-        request.response(responseObject);
+        request.respondWith(responseObject);
 
         sharedContext.responseCallback = success;
         sharedContext.status = responseObject.status;
@@ -218,7 +218,7 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
           'X-Header2': 'header 2 value',
           'X-Header3': 'header 3 value'
         }};
-        request.response(responseObject);
+        request.respondWith(responseObject);
         response = success.calls.mostRecent().args[2];
       });
 
@@ -249,7 +249,7 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
           { name: 'X-Header', value: 'header value 1' },
           { name: 'X-Header', value: 'header value 2' }
         ]};
-        request.response(responseObject);
+        request.respondWith(responseObject);
         response = success.calls.mostRecent().args[2];
       });
 
@@ -275,7 +275,7 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
 
         request = mockAjax.requests.mostRecent();
         response = {status: 200, statusText: "OK", responseText: '{"foo": "valid JSON, dammit."}'};
-        request.response(response);
+        request.respondWith(response);
 
         sharedContext.responseCallback = success;
         sharedContext.status = response.status;
@@ -309,7 +309,7 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
 
         request = mockAjax.requests.mostRecent();
         response = {status: 0, statusText: "ABORT", responseText: '{"foo": "whoops!"}'};
-        request.response(response);
+        request.respondWith(response);
 
         sharedContext.responseCallback = error;
         sharedContext.status = 0;
@@ -344,7 +344,7 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
 
       request = mockAjax.requests.mostRecent();
       response = {status: 500, statusText: "SERVER ERROR", contentType: "text/html", responseText: "(._){"};
-      request.response(response);
+      request.respondWith(response);
 
       sharedContext.responseCallback = error;
       sharedContext.status = response.status;

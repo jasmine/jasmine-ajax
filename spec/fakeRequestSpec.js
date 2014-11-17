@@ -157,7 +157,7 @@ describe('FakeRequest', function() {
       this.request.send();
       this.request.onreadystatechange.calls.reset();
 
-      this.request.response({});
+      this.request.respondWith({});
 
       expect(this.request.readyState).toBe(4);
       expect(this.request.onreadystatechange).toHaveBeenCalled();
@@ -166,7 +166,7 @@ describe('FakeRequest', function() {
     it('throws an error when timing out a request that has completed', function() {
       this.request.open();
       this.request.send();
-      this.request.response({});
+      this.request.respondWith({});
       var request = this.request;
 
       expect(function() {
@@ -177,18 +177,18 @@ describe('FakeRequest', function() {
     it('throws an error when responding to a request that has completed', function() {
       this.request.open();
       this.request.send();
-      this.request.response({});
+      this.request.respondWith({});
       var request = this.request;
 
       expect(function() {
-        request.response({});
+        request.respondWith({});
       }).toThrowError('FakeXMLHttpRequest already completed');
     });
 
     it('throws an error when erroring a request that has completed', function() {
       this.request.open();
       this.request.send();
-      this.request.response({});
+      this.request.respondWith({});
       var request = this.request;
 
       expect(function() {
@@ -368,7 +368,7 @@ describe('FakeRequest', function() {
 
       this.resetEvents();
 
-      this.request.response({ status: 200 });
+      this.request.respondWith({ status: 200 });
 
       expect(this.request).not.toHaveTriggeredEvent('loadstart');
       expect(this.request).toHaveTriggeredEvent('progress');
@@ -413,7 +413,7 @@ describe('FakeRequest', function() {
     request.open();
     request.send();
 
-    request.response({ status: 200 });
+    request.respondWith({ status: 200 });
 
     expect(request.status).toBe(200);
     expect(request.statusText).toBe('');
@@ -424,7 +424,7 @@ describe('FakeRequest', function() {
     request.open();
     request.send();
 
-    request.response({ status: 200, statusText: 'OK' });
+    request.respondWith({ status: 200, statusText: 'OK' });
 
     expect(request.status).toBe(200);
     expect(request.statusText).toBe('OK');
@@ -462,7 +462,7 @@ describe('FakeRequest', function() {
     request.open();
     request.send();
 
-    request.response({ status: 200, responseText: 'foobar' });
+    request.respondWith({ status: 200, responseText: 'foobar' });
 
     expect(request.responseText).toBe('foobar');
   });
@@ -472,7 +472,7 @@ describe('FakeRequest', function() {
     request.open();
     request.send();
 
-    request.response({ status: 200 });
+    request.respondWith({ status: 200 });
 
     expect(request.responseText).toBe('');
   });
@@ -482,7 +482,7 @@ describe('FakeRequest', function() {
     request.open();
     request.send();
 
-    request.response({
+    request.respondWith({
       status: 200,
       responseHeaders: {
         'X-Header': 'foo'
@@ -497,7 +497,7 @@ describe('FakeRequest', function() {
     request.open();
     request.send();
 
-    request.response({
+    request.respondWith({
       status: 200,
       responseHeaders: {
         'X-Header': 'foo'
@@ -512,7 +512,7 @@ describe('FakeRequest', function() {
     request.open();
     request.send();
 
-    request.response({
+    request.respondWith({
       status: 200,
       responseHeaders: [
         { name: 'X-Header', value: 'foo' },
@@ -532,8 +532,8 @@ describe('FakeRequest', function() {
     request2.open();
     request2.send();
 
-    request1.response({ status: 200, responseHeaders: { 'X-Foo': 'bar' } });
-    request2.response({ status: 200, responseHeaders: { 'X-Baz': 'quux' } });
+    request1.respondWith({ status: 200, responseHeaders: { 'X-Foo': 'bar' } });
+    request2.respondWith({ status: 200, responseHeaders: { 'X-Baz': 'quux' } });
 
     expect(request1.getAllResponseHeaders()).toBe('X-Foo: bar');
     expect(request2.getAllResponseHeaders()).toBe('X-Baz: quux');
@@ -544,7 +544,7 @@ describe('FakeRequest', function() {
     request.open();
     request.send();
 
-    request.response({
+    request.respondWith({
       status: 200,
       responseHeaders: [
         { name: 'X-Header-1', value: 'foo' },
@@ -561,7 +561,7 @@ describe('FakeRequest', function() {
     request.open();
     request.send();
 
-    request.response({ status: 200, contentType: 'text/plain' });
+    request.respondWith({ status: 200, contentType: 'text/plain' });
 
     expect(request.getResponseHeader('content-type')).toBe('text/plain');
     expect(request.getAllResponseHeaders()).toBe('Content-Type: text/plain');
@@ -572,7 +572,7 @@ describe('FakeRequest', function() {
     request.open();
     request.send();
 
-    request.response({ status: 200 });
+    request.respondWith({ status: 200 });
 
     expect(request.getResponseHeader('content-type')).toBe('application/json');
     expect(request.getAllResponseHeaders()).toBe('Content-Type: application/json');
@@ -583,7 +583,7 @@ describe('FakeRequest', function() {
     request.open();
     request.send();
 
-    request.response({ status: 200 });
+    request.respondWith({ status: 200 });
 
     expect(request.responseXML).toBeNull();
   });
@@ -593,7 +593,7 @@ describe('FakeRequest', function() {
     request.open();
     request.send();
 
-    request.response({ status: 200, contentType: 'text/xml', responseText: '<dom><stuff/></dom>' });
+    request.respondWith({ status: 200, contentType: 'text/xml', responseText: '<dom><stuff/></dom>' });
 
     if (typeof window.Document !== 'undefined') {
       expect(request.responseXML instanceof window.Document).toBe(true);
@@ -608,7 +608,7 @@ describe('FakeRequest', function() {
     request.open();
     request.send();
 
-    request.response({ status: 200, contentType: 'application/xml', responseText: '<dom><stuff/></dom>' });
+    request.respondWith({ status: 200, contentType: 'application/xml', responseText: '<dom><stuff/></dom>' });
 
     if (typeof window.Document !== 'undefined') {
       expect(request.responseXML instanceof window.Document).toBe(true);
@@ -623,7 +623,7 @@ describe('FakeRequest', function() {
     request.open();
     request.send();
 
-    request.response({ status: 200, contentType: 'application/text+xml', responseText: '<dom><stuff/></dom>' });
+    request.respondWith({ status: 200, contentType: 'application/text+xml', responseText: '<dom><stuff/></dom>' });
 
     if (typeof window.Document !== 'undefined') {
       expect(request.responseXML instanceof window.Document).toBe(true);

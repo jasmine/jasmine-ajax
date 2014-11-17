@@ -164,7 +164,7 @@ getJasmineRequireObj().AjaxFakeRequest = function() {
 
         var stub = stubTracker.findStub(this.url, data, this.method);
         if (stub) {
-          this.response(stub);
+          this.respondWith(stub);
         }
       },
 
@@ -208,6 +208,13 @@ getJasmineRequireObj().AjaxFakeRequest = function() {
       responseText: null,
 
       response: function(response) {
+        if (window.console && window.console.warn) {
+          window.console.warn("jasmine-ajax's response method is deprecated because it conflicts with XmlHTTPRequest 2 sytax. It will be removed in a later version. Please use respondWith");
+        }
+        this.respondWith(response);
+      },
+
+      respondWith: function(response) {
         if (this.readyState === 4) {
           throw new Error("FakeXMLHttpRequest already completed");
         }
