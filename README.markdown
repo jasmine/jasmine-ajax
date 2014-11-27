@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/pivotal/jasmine-ajax.png?branch=master)](https://travis-ci.org/pivotal/jasmine-ajax)
+[![Build Status](https://travis-ci.org/jasmine/jasmine-ajax.png?branch=master)](https://travis-ci.org/jasmine/jasmine-ajax)
 
 If you are using the updated version of this library, there is some additional documentation located at [jasmine.github.io](http://jasmine.github.io/2.0/ajax.html) that is up-to-date.
 
