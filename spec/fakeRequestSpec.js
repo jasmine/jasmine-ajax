@@ -597,9 +597,11 @@ describe('FakeRequest', function() {
 
     if (typeof window.Document !== 'undefined') {
       expect(request.responseXML instanceof window.Document).toBe(true);
+      expect(request.response instanceof window.Document).toBe(true);
     } else {
       // IE 8
       expect(request.responseXML instanceof window.ActiveXObject).toBe(true);
+      expect(request.response instanceof window.ActiveXObject).toBe(true);
     }
   });
 
@@ -612,9 +614,11 @@ describe('FakeRequest', function() {
 
     if (typeof window.Document !== 'undefined') {
       expect(request.responseXML instanceof window.Document).toBe(true);
+      expect(request.response instanceof window.Document).toBe(true);
     } else {
       // IE 8
       expect(request.responseXML instanceof window.ActiveXObject).toBe(true);
+      expect(request.response instanceof window.ActiveXObject).toBe(true);
     }
   });
 
@@ -627,9 +631,41 @@ describe('FakeRequest', function() {
 
     if (typeof window.Document !== 'undefined') {
       expect(request.responseXML instanceof window.Document).toBe(true);
+      expect(request.response instanceof window.Document).toBe(true);
     } else {
       // IE 8
       expect(request.responseXML instanceof window.ActiveXObject).toBe(true);
+      expect(request.response instanceof window.ActiveXObject).toBe(true);
     }
+  });
+
+  it('defaults the response attribute to the responseText', function() {
+    var request = new this.FakeRequest();
+    request.open();
+    request.send();
+
+    request.respondWith({ status: 200, responseText: 'foo' });
+
+    expect(request.response).toEqual('foo');
+  });
+
+  it('has a text response when the responseType is blank', function() {
+    var request = new this.FakeRequest();
+    request.open();
+    request.send();
+
+    request.respondWith({ status: 200, responseText: 'foo', responseType: '' });
+
+    expect(request.response).toEqual('foo');
+  });
+
+  it('has a text response when the responseType is text', function() {
+    var request = new this.FakeRequest();
+    request.open();
+    request.send();
+
+    request.respondWith({ status: 200, responseText: 'foo', responseType: 'text' });
+
+    expect(request.response).toEqual('foo');
   });
 });

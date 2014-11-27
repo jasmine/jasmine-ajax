@@ -20,6 +20,7 @@ getJasmineRequireObj().AjaxRequestStub = function() {
       this.status = options.status || 200;
 
       this.contentType = options.contentType;
+      this.response = options.response;
       this.responseText = options.responseText;
     };
 
