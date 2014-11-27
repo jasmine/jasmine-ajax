@@ -38,6 +38,16 @@ getJasmineRequireObj().AjaxFakeRequest = function() {
     };
   }
 
+  function unconvertibleResponseTypeMessage(type) {
+    var msg = [
+      "Can't build XHR.response for XHR.responseType of '",
+      type,
+      "'.",
+      "XHR.response must be explicitly stubbed"
+    ];
+    return msg.join(' ');
+  }
+
   function fakeRequest(global, requestTracker, stubTracker, paramParser) {
     function FakeXMLHttpRequest() {
       requestTracker.track(this);
@@ -218,23 +228,11 @@ getJasmineRequireObj().AjaxFakeRequest = function() {
           case "json":
             return JSON.parse(this.responseText);
           case "arraybuffer":
-            var msg = [
-              "Can't build XHR.response for XHR.responseType of 'arraybuffer'.",
-              "XHR.response must be explicitly stubbed"
-            ];
-            throw msg.join(' ');
+            throw unconvertibleResponseTypeMessage('arraybuffer');
           case "blob":
-            var msg = [
-              "Can't build XHR.response for XHR.responseType of 'blob'.",
-              "XHR.response must be explicitly stubbed"
-            ];
-            throw msg.join(' ');
+            throw unconvertibleResponseTypeMessage('blob');
           case "document":
-            var msg = [
-              "Can't build XHR.response for XHR.responseType of 'document'.",
-              "XHR.response must be explicitly stubbed"
-            ];
-            throw msg.join(' ');
+            return this.responseXML;
         }
       },
 
@@ -249,13 +247,16 @@ getJasmineRequireObj().AjaxFakeRequest = function() {
         this.responseType = response.responseType || "";
         this.readyState = 4;
         this.responseHeaders = normalizeHeaders(response.responseHeaders, response.contentType);
+        this.responseXML = getResponseXml(response.responseText, this.getResponseHeader('content-type') || '');
+        if (this.responseXML) {
+          this.responseType = 'document';
+        }
 
         if ('response' in response) {
           this.response = response.response;
         } else {
           this.response = this.responseValue();
         }
-        this.responseXML = getResponseXml(response.responseText, this.getResponseHeader('content-type') || '');
 
         this.onreadystatechange();
         this.events.progress();

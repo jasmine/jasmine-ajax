@@ -22,8 +22,8 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
     complete = jasmine.createSpy("onComplete");
 
     onreadystatechange = function() {
-      if (this.readyState == (this.DONE || 4)) { // IE 8 doesn't support DONE
-        if (this.status == 200) {
+      if (this.readyState === (this.DONE || 4)) { // IE 8 doesn't support DONE
+        if (this.status === 200) {
           success(this.responseText, this.textStatus, this);
         } else {
           error(this, this.textStatus, '');
@@ -211,7 +211,7 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
         client = new fakeGlobal.XMLHttpRequest();
         client.onreadystatechange = onreadystatechange;
         client.open("GET", "example.com/someApi");
-        client.setRequestHeader("Content-Type", "application/json")
+        client.setRequestHeader("Content-Type", "application/json");
         client.send();
 
         request = mockAjax.requests.mostRecent();
@@ -462,7 +462,7 @@ function sharedAjaxResponseBehaviorForZepto_Success(context) {
     });
 
     it("should have the expected xhr2 response", function() {
-      var expected = context.response || context.responseType == 'json' ? JSON.parse(context.responseText) : context.responseText;
+      var expected = context.response || context.responseType === 'json' ? JSON.parse(context.responseText) : context.responseText;
       expect(xhr.response).toEqual(expected);
     });
 
@@ -492,7 +492,7 @@ function sharedAjaxResponseBehaviorForZepto_Failure(context) {
     });
 
     it("should have the expected xhr2 response", function() {
-      var expected = context.response || xhr.responseType == 'json' ? JSON.parse(xhr.responseText) : xhr.responseText;
+      var expected = context.response || xhr.responseType === 'json' ? JSON.parse(xhr.responseText) : xhr.responseText;
       expect(xhr.response).toEqual(expected);
     });
 
