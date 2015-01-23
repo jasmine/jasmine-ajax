@@ -267,7 +267,7 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
           "X-Header1: header 1 value",
           "X-Header2: header 2 value",
           "X-Header3: header 3 value"
-        ].join("\r\n"));
+        ].join("\r\n") + "\r\n");
       });
     });
 
@@ -295,7 +295,7 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
         expect(response.getAllResponseHeaders()).toBe([
           "X-Header: header value 1",
           "X-Header: header value 2"
-        ].join("\r\n"));
+        ].join("\r\n") + "\r\n");
       });
     });
 

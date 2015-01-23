@@ -535,8 +535,8 @@ describe('FakeRequest', function() {
     request1.respondWith({ status: 200, responseHeaders: { 'X-Foo': 'bar' } });
     request2.respondWith({ status: 200, responseHeaders: { 'X-Baz': 'quux' } });
 
-    expect(request1.getAllResponseHeaders()).toBe('X-Foo: bar');
-    expect(request2.getAllResponseHeaders()).toBe('X-Baz: quux');
+    expect(request1.getAllResponseHeaders()).toBe("X-Foo: bar\r\n");
+    expect(request2.getAllResponseHeaders()).toBe("X-Baz: quux\r\n");
   });
 
   it('retrieves all response headers', function() {
@@ -553,7 +553,7 @@ describe('FakeRequest', function() {
       ]
     });
 
-    expect(request.getAllResponseHeaders()).toBe("X-Header-1: foo\r\nX-Header-2: bar\r\nX-Header-1: baz");
+    expect(request.getAllResponseHeaders()).toBe("X-Header-1: foo\r\nX-Header-2: bar\r\nX-Header-1: baz\r\n");
   });
 
   it('sets the content-type header to the specified contentType when no other headers are supplied', function() {
@@ -564,7 +564,7 @@ describe('FakeRequest', function() {
     request.respondWith({ status: 200, contentType: 'text/plain' });
 
     expect(request.getResponseHeader('content-type')).toBe('text/plain');
-    expect(request.getAllResponseHeaders()).toBe('Content-Type: text/plain');
+    expect(request.getAllResponseHeaders()).toBe("Content-Type: text/plain\r\n");
   });
 
   it('sets a default content-type header if no contentType and headers are supplied', function() {
@@ -575,7 +575,7 @@ describe('FakeRequest', function() {
     request.respondWith({ status: 200 });
 
     expect(request.getResponseHeader('content-type')).toBe('application/json');
-    expect(request.getAllResponseHeaders()).toBe('Content-Type: application/json');
+    expect(request.getAllResponseHeaders()).toBe("Content-Type: application/json\r\n");
   });
 
   it('has no responseXML by default', function() {
