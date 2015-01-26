@@ -39,6 +39,13 @@ module.exports = function( grunt ) {
     shell: {
       ctags: {
         command: 'ctags -R lib'
+      },
+      release: {
+        command: [
+          'git tag v<%= packageVersion %>',
+          'git push origin master --tags',
+          'npm publish'
+        ].join('&&')
       }
     },
     concat: {
@@ -51,6 +58,21 @@ module.exports = function( grunt ) {
         ],
         dest: 'lib/mock-ajax.js'
       }
+    },
+    packageVersion: packageVersion()
+  });
+
+  function packageVersion() {
+    return require('./package.json').version;
+  }
+
+  grunt.registerTask('versionCheck', function() {
+    var pkgVersion = packageVersion(),
+        bower = require('./bower.json'),
+        bowerVersion = bower.version;
+
+    if (pkgVersion !== bowerVersion) {
+      grunt.fail.fatal("package.json and bower.json have different version numbers\n\tpackage.json:\t" + pkgVersion + "\n\tbower.json:\t" + bowerVersion);
     }
   });
 
@@ -60,4 +82,5 @@ module.exports = function( grunt ) {
 
   grunt.registerTask('default', ['jshint']);
   grunt.registerTask('ctags', 'Generate ctags', ['shell:ctags']);
+  grunt.registerTask('release', 'Release ' + packageVersion() + ' to npm', ['versionCheck', 'shell:release']);
 };
