@@ -1,5 +1,9 @@
 module.exports = function( grunt ) {
   'use strict';
+
+  function packageVersion() {
+    return require('./package.json').version;
+  }
   //
   // Grunt configuration:
   //
@@ -31,7 +35,8 @@ module.exports = function( grunt ) {
           beforeEach: false,
           afterEach: false,
           spyOn: false,
-          getJasmineRequireObj: false
+          getJasmineRequireObj: false,
+          require: false
         }
       },
       all: ['Gruntfile.js', 'src/**/*.js', 'lib/**/*.js', 'spec/**/*.js']
@@ -61,10 +66,6 @@ module.exports = function( grunt ) {
     },
     packageVersion: packageVersion()
   });
-
-  function packageVersion() {
-    return require('./package.json').version;
-  }
 
   grunt.registerTask('versionCheck', function() {
     var pkgVersion = packageVersion(),
