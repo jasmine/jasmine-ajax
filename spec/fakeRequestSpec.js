@@ -4,6 +4,14 @@ describe('FakeRequest', function() {
     this.stubTracker = { findStub: function() {} };
     var parserInstance = this.parserInstance = jasmine.createSpy('parse');
     this.paramParser = { findParser: function() { return { parse: parserInstance }; } };
+    var eventBus = this.fakeEventBus = {
+      addEventListener: jasmine.createSpy('addEventListener'),
+      trigger: jasmine.createSpy('trigger'),
+      removeEventListener: jasmine.createSpy('removeEventListener')
+    };
+    this.eventBusFactory = function() {
+      return eventBus;
+    };
     this.fakeGlobal = {
       XMLHttpRequest: function() {
         this.extraAttribute = 'my cool attribute';
@@ -11,7 +19,7 @@ describe('FakeRequest', function() {
       DOMParser: window.DOMParser,
       ActiveXObject: window.ActiveXObject
     };
-    this.FakeRequest = getJasmineRequireObj().AjaxFakeRequest()(this.fakeGlobal, this.requestTracker, this.stubTracker, this.paramParser);
+    this.FakeRequest = getJasmineRequireObj().AjaxFakeRequest(this.eventBusFactory)(this.fakeGlobal, this.requestTracker, this.stubTracker, this.paramParser);
   });
 
   it('extends from the global XMLHttpRequest', function() {
@@ -22,7 +30,7 @@ describe('FakeRequest', function() {
 
   it('skips XMLHttpRequest attributes that IE does not want copied', function() {
     // use real window here so it will correctly go red on IE if it breaks
-    var FakeRequest = getJasmineRequireObj().AjaxFakeRequest()(window, this.requestTracker, this.stubTracker, this.paramParser);
+    var FakeRequest = getJasmineRequireObj().AjaxFakeRequest(this.eventBusFactory)(window, this.requestTracker, this.stubTracker, this.paramParser);
     var request = new FakeRequest();
 
     expect(request.responseBody).toBeUndefined();
@@ -197,186 +205,143 @@ describe('FakeRequest', function() {
     });
   });
 
+  it('registers on-style callback with the event bus', function() {
+    this.request = new this.FakeRequest();
+
+    expect(this.fakeEventBus.addEventListener).toHaveBeenCalledWith('loadstart', jasmine.any(Function));
+    expect(this.fakeEventBus.addEventListener).toHaveBeenCalledWith('progress', jasmine.any(Function));
+    expect(this.fakeEventBus.addEventListener).toHaveBeenCalledWith('abort', jasmine.any(Function));
+    expect(this.fakeEventBus.addEventListener).toHaveBeenCalledWith('error', jasmine.any(Function));
+    expect(this.fakeEventBus.addEventListener).toHaveBeenCalledWith('load', jasmine.any(Function));
+    expect(this.fakeEventBus.addEventListener).toHaveBeenCalledWith('timeout', jasmine.any(Function));
+    expect(this.fakeEventBus.addEventListener).toHaveBeenCalledWith('loadend', jasmine.any(Function));
+
+    this.request.onloadstart = jasmine.createSpy('loadstart');
+    this.request.onprogress = jasmine.createSpy('progress');
+    this.request.onabort = jasmine.createSpy('abort');
+    this.request.onerror = jasmine.createSpy('error');
+    this.request.onload = jasmine.createSpy('load');
+    this.request.ontimeout = jasmine.createSpy('timeout');
+    this.request.onloadend = jasmine.createSpy('loadend');
+
+    var args = this.fakeEventBus.addEventListener.calls.allArgs();
+    for (var i = 0; i < args.length; i++) {
+      var eventName = args[i][0],
+          busCallback = args[i][1];
+
+      busCallback();
+      expect(this.request['on' + eventName]).toHaveBeenCalled();
+    }
+  });
+  
+  it('delegates addEventListener to the eventBus', function() {
+    this.request = new this.FakeRequest();
+    
+    this.request.addEventListener('foo', 'bar');
+    
+    expect(this.fakeEventBus.addEventListener).toHaveBeenCalledWith('foo', 'bar');
+  });
+
+  it('delegates removeEventListener to the eventBus', function() {
+    this.request = new this.FakeRequest();
+
+    this.request.removeEventListener('foo', 'bar');
+
+    expect(this.fakeEventBus.removeEventListener).toHaveBeenCalledWith('foo', 'bar');
+  });
+
   describe('triggering progress events', function() {
     beforeEach(function() {
       this.request = new this.FakeRequest();
-
-      spyOn(this.request, 'onloadstart');
-      spyOn(this.request, 'onprogress');
-      spyOn(this.request, 'onabort');
-      spyOn(this.request, 'onerror');
-      spyOn(this.request, 'onload');
-      spyOn(this.request, 'ontimeout');
-      spyOn(this.request, 'onloadend');
-
-      var spies = {};
-
-      spies.loadstart1 = jasmine.createSpy('loadstart1');
-      spies.loadstart2 = jasmine.createSpy('loadstart2');
-      this.request.addEventListener('loadstart', spies.loadstart1);
-      this.request.addEventListener('loadstart', spies.loadstart2);
-
-      spies.progress1 = jasmine.createSpy('progress1');
-      spies.progress2 = jasmine.createSpy('progress2');
-      this.request.addEventListener('progress', spies.progress1);
-      this.request.addEventListener('progress', spies.progress2);
-
-      spies.abort1 = jasmine.createSpy('abort1');
-      spies.abort2 = jasmine.createSpy('abort2');
-      this.request.addEventListener('abort', spies.abort1);
-      this.request.addEventListener('abort', spies.abort2);
-
-      spies.error1 = jasmine.createSpy('error1');
-      spies.error2 = jasmine.createSpy('error2');
-      this.request.addEventListener('error', spies.error1);
-      this.request.addEventListener('error', spies.error2);
-
-      spies.load1 = jasmine.createSpy('load1');
-      spies.load2 = jasmine.createSpy('load2');
-      this.request.addEventListener('load', spies.load1);
-      this.request.addEventListener('load', spies.load2);
-
-      spies.timeout1 = jasmine.createSpy('timeout1');
-      spies.timeout2 = jasmine.createSpy('timeout2');
-      this.request.addEventListener('timeout', spies.timeout1);
-      this.request.addEventListener('timeout', spies.timeout2);
-
-      spies.loadend1 = jasmine.createSpy('loadend1');
-      spies.loadend2 = jasmine.createSpy('loadend2');
-      this.request.addEventListener('loadend', spies.loadend1);
-      this.request.addEventListener('loadend', spies.loadend2);
-
-      this.resetEvents = function() {
-        var request = this.request;
-        var events = ['loadstart', 'progress', 'abort', 'error', 'load', 'timeout', 'loadend'];
-        for (var index in events) {
-          var event = events[index];
-          request['on' + event].calls.reset();
-          spies[event + '1'].calls.reset();
-          spies[event + '2'].calls.reset();
-        }
-      };
-
-      jasmine.addMatchers({
-        toHaveTriggeredEvent: function(util) {
-          return {
-            compare: function(actual, expected) {
-              var direct = actual['on' + expected].calls.any();
-              var event1 = spies[expected + '1'].calls.any();
-              var event2 = spies[expected + '2'].calls.any();
-              var pass = direct && event1 && event2;
-
-              var missed = [], triggered = [];
-
-              (direct ? triggered : missed).push('direct');
-              (event1 ? triggered : missed).push(expected + '1');
-              (event2 ? triggered : missed).push(expected + '2');
-
-              return {
-                pass: pass,
-                message: pass ?
-                  'Expected XHR not to have triggered ' + expected + ' but ' + triggered.join(', ') + ' triggered' :
-                  'Expected XHR to have triggered ' + expected + ' but ' + missed.join(', ') + " didn't trigger"
-              };
-            }
-          };
-        }
-      });
     });
 
     it('should not trigger any events to start', function() {
       this.request.open();
 
-      expect(this.request).not.toHaveTriggeredEvent('loadstart');
-      expect(this.request).not.toHaveTriggeredEvent('progress');
-      expect(this.request).not.toHaveTriggeredEvent('abort');
-      expect(this.request).not.toHaveTriggeredEvent('error');
-      expect(this.request).not.toHaveTriggeredEvent('load');
-      expect(this.request).not.toHaveTriggeredEvent('timeout');
-      expect(this.request).not.toHaveTriggeredEvent('loadend');
+      expect(this.fakeEventBus.trigger).not.toHaveBeenCalled();
     });
 
     it('should trigger loadstart when sent', function() {
       this.request.open();
       this.request.send();
 
-      expect(this.request).toHaveTriggeredEvent('loadstart');
-      expect(this.request).not.toHaveTriggeredEvent('progress');
-      expect(this.request).not.toHaveTriggeredEvent('abort');
-      expect(this.request).not.toHaveTriggeredEvent('error');
-      expect(this.request).not.toHaveTriggeredEvent('load');
-      expect(this.request).not.toHaveTriggeredEvent('timeout');
-      expect(this.request).not.toHaveTriggeredEvent('loadend');
+      expect(this.fakeEventBus.trigger).toHaveBeenCalledWith('loadstart');
+      expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith('progress');
+      expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith('abort');
+      expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith('error');
+      expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith('load');
+      expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith('timeout');
+      expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith('loadend');
     });
 
     it('should trigger abort, progress, loadend when aborted', function() {
       this.request.open();
       this.request.send();
 
-      this.resetEvents();
+      this.fakeEventBus.trigger.calls.reset();
 
       this.request.abort();
 
-      expect(this.request).not.toHaveTriggeredEvent('loadstart');
-      expect(this.request).toHaveTriggeredEvent('progress');
-      expect(this.request).toHaveTriggeredEvent('abort');
-      expect(this.request).not.toHaveTriggeredEvent('error');
-      expect(this.request).not.toHaveTriggeredEvent('load');
-      expect(this.request).not.toHaveTriggeredEvent('timeout');
-      expect(this.request).toHaveTriggeredEvent('loadend');
+      expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith('loadstart');
+      expect(this.fakeEventBus.trigger).toHaveBeenCalledWith('progress');
+      expect(this.fakeEventBus.trigger).toHaveBeenCalledWith('abort');
+      expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith('error');
+      expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith('load');
+      expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith('timeout');
+      expect(this.fakeEventBus.trigger).toHaveBeenCalledWith('loadend');
     });
 
     it('should trigger error, progress, loadend when network error', function() {
       this.request.open();
       this.request.send();
 
-      this.resetEvents();
+      this.fakeEventBus.trigger.calls.reset();
 
       this.request.responseError();
 
-      expect(this.request).not.toHaveTriggeredEvent('loadstart');
-      expect(this.request).toHaveTriggeredEvent('progress');
-      expect(this.request).not.toHaveTriggeredEvent('abort');
-      expect(this.request).toHaveTriggeredEvent('error');
-      expect(this.request).not.toHaveTriggeredEvent('load');
-      expect(this.request).not.toHaveTriggeredEvent('timeout');
-      expect(this.request).toHaveTriggeredEvent('loadend');
+      expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith('loadstart');
+      expect(this.fakeEventBus.trigger).toHaveBeenCalledWith('progress');
+      expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith('abort');
+      expect(this.fakeEventBus.trigger).toHaveBeenCalledWith('error');
+      expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith('load');
+      expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith('timeout');
+      expect(this.fakeEventBus.trigger).toHaveBeenCalledWith('loadend');
     });
 
     it('should trigger timeout, progress, loadend when timing out', function() {
       this.request.open();
       this.request.send();
 
-      this.resetEvents();
+      this.fakeEventBus.trigger.calls.reset();
 
       jasmine.clock().install();
       this.request.responseTimeout();
       jasmine.clock().uninstall();
 
-      expect(this.request).not.toHaveTriggeredEvent('loadstart');
-      expect(this.request).toHaveTriggeredEvent('progress');
-      expect(this.request).not.toHaveTriggeredEvent('abort');
-      expect(this.request).not.toHaveTriggeredEvent('error');
-      expect(this.request).not.toHaveTriggeredEvent('load');
-      expect(this.request).toHaveTriggeredEvent('timeout');
-      expect(this.request).toHaveTriggeredEvent('loadend');
+      expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith('loadstart');
+      expect(this.fakeEventBus.trigger).toHaveBeenCalledWith('progress');
+      expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith('abort');
+      expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith('error');
+      expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith('load');
+      expect(this.fakeEventBus.trigger).toHaveBeenCalledWith('timeout');
+      expect(this.fakeEventBus.trigger).toHaveBeenCalledWith('loadend');
     });
 
     it('should trigger load, progress, loadend when responding', function() {
       this.request.open();
       this.request.send();
 
-      this.resetEvents();
+      this.fakeEventBus.trigger.calls.reset();
 
       this.request.respondWith({ status: 200 });
 
-      expect(this.request).not.toHaveTriggeredEvent('loadstart');
-      expect(this.request).toHaveTriggeredEvent('progress');
-      expect(this.request).not.toHaveTriggeredEvent('abort');
-      expect(this.request).not.toHaveTriggeredEvent('error');
-      expect(this.request).toHaveTriggeredEvent('load');
-      expect(this.request).not.toHaveTriggeredEvent('timeout');
-      expect(this.request).toHaveTriggeredEvent('loadend');
+      expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith('loadstart');
+      expect(this.fakeEventBus.trigger).toHaveBeenCalledWith('progress');
+      expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith('abort');
+      expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith('error');
+      expect(this.fakeEventBus.trigger).toHaveBeenCalledWith('load');
+      expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith('timeout');
+      expect(this.fakeEventBus.trigger).toHaveBeenCalledWith('loadend');
     });
   });
 

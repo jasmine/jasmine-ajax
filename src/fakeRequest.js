@@ -1,4 +1,4 @@
-getJasmineRequireObj().AjaxFakeRequest = function() {
+getJasmineRequireObj().AjaxFakeRequest = function(eventBusFactory) {
   function extend(destination, source, propertiesToSkip) {
     propertiesToSkip = propertiesToSkip || [];
     for (var property in source) {
@@ -27,15 +27,13 @@ getJasmineRequireObj().AjaxFakeRequest = function() {
   }
 
   function initializeEvents(xhr) {
-    return {
-      'loadstart': wrapProgressEvent(xhr, 'onloadstart'),
-      'load': wrapProgressEvent(xhr, 'onload'),
-      'loadend': wrapProgressEvent(xhr, 'onloadend'),
-      'progress': wrapProgressEvent(xhr, 'onprogress'),
-      'error': wrapProgressEvent(xhr, 'onerror'),
-      'abort': wrapProgressEvent(xhr, 'onabort'),
-      'timeout': wrapProgressEvent(xhr, 'ontimeout')
-    };
+    xhr.eventBus.addEventListener('loadstart', wrapProgressEvent(xhr, 'onloadstart'));
+    xhr.eventBus.addEventListener('load', wrapProgressEvent(xhr, 'onload'));
+    xhr.eventBus.addEventListener('loadend', wrapProgressEvent(xhr, 'onloadend'));
+    xhr.eventBus.addEventListener('progress', wrapProgressEvent(xhr, 'onprogress'));
+    xhr.eventBus.addEventListener('error', wrapProgressEvent(xhr, 'onerror'));
+    xhr.eventBus.addEventListener('abort', wrapProgressEvent(xhr, 'onabort'));
+    xhr.eventBus.addEventListener('timeout', wrapProgressEvent(xhr, 'ontimeout'));
   }
 
   function unconvertibleResponseTypeMessage(type) {
@@ -51,7 +49,8 @@ getJasmineRequireObj().AjaxFakeRequest = function() {
   function fakeRequest(global, requestTracker, stubTracker, paramParser) {
     function FakeXMLHttpRequest() {
       requestTracker.track(this);
-      this.events = initializeEvents(this);
+      this.eventBus = eventBusFactory();
+      initializeEvents(this);
       this.requestHeaders = {};
       this.overriddenMimeType = null;
     }
@@ -136,9 +135,9 @@ getJasmineRequireObj().AjaxFakeRequest = function() {
         this.status = 0;
         this.statusText = "abort";
         this.onreadystatechange();
-        this.events.progress();
-        this.events.abort();
-        this.events.loadend();
+        this.eventBus.trigger('progress');
+        this.eventBus.trigger('abort');
+        this.eventBus.trigger('loadend');
       },
 
       readyState: 0,
@@ -154,22 +153,12 @@ getJasmineRequireObj().AjaxFakeRequest = function() {
       onreadystatechange: function(isTimeout) {
       },
 
-      addEventListener: function(event, callback) {
-        var existingCallback = this.events[event],
-            self = this;
-
-        this.events[event] = function() {
-          callback.apply(self, [{}]);
-          existingCallback();
-        };
+      addEventListener: function() {
+        this.eventBus.addEventListener.apply(this.eventBus, arguments);
       },
       
       removeEventListener: function(event, callback) {
-        var existingCallback = this.events[event];
-
-        if(existingCallback){
-          delete this.events[event];
-        }
+        this.eventBus.removeEventListener.apply(this.eventBus, arguments);
       },
 
       status: null,
@@ -177,7 +166,7 @@ getJasmineRequireObj().AjaxFakeRequest = function() {
       send: function(data) {
         this.params = data;
         this.readyState = 2;
-        this.events.loadstart();
+        this.eventBus.trigger('loadstart');
         this.onreadystatechange();
 
         var stub = stubTracker.findStub(this.url, data, this.method);
@@ -267,9 +256,9 @@ getJasmineRequireObj().AjaxFakeRequest = function() {
         }
 
         this.onreadystatechange();
-        this.events.progress();
-        this.events.load();
-        this.events.loadend();
+        this.eventBus.trigger('progress');
+        this.eventBus.trigger('load');
+        this.eventBus.trigger('loadend');
       },
 
       responseTimeout: function() {
@@ -279,9 +268,9 @@ getJasmineRequireObj().AjaxFakeRequest = function() {
         this.readyState = 4;
         jasmine.clock().tick(30000);
         this.onreadystatechange('timeout');
-        this.events.progress();
-        this.events.timeout();
-        this.events.loadend();
+        this.eventBus.trigger('progress');
+        this.eventBus.trigger('timeout');
+        this.eventBus.trigger('loadend');
       },
 
       responseError: function() {
@@ -290,9 +279,9 @@ getJasmineRequireObj().AjaxFakeRequest = function() {
         }
         this.readyState = 4;
         this.onreadystatechange();
-        this.events.progress();
-        this.events.error();
-        this.events.loadend();
+        this.eventBus.trigger('progress');
+        this.eventBus.trigger('error');
+        this.eventBus.trigger('loadend');
       }
     });
 
