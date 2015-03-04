@@ -159,9 +159,17 @@ getJasmineRequireObj().AjaxFakeRequest = function() {
             self = this;
 
         this.events[event] = function() {
-          callback.apply(self);
+          callback.apply(self, [{}]);
           existingCallback();
         };
+      },
+      
+      removeEventListener: function(event, callback) {
+        var existingCallback = this.events[event];
+
+        if(existingCallback){
+          delete this.events[event];
+        }
       },
 
       status: null,
