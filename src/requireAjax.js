@@ -37,7 +37,8 @@ getJasmineRequireObj().ajax = function(jRequire) {
   $ajax.RequestTracker = jRequire.AjaxRequestTracker();
   $ajax.StubTracker = jRequire.AjaxStubTracker();
   $ajax.ParamParser = jRequire.AjaxParamParser();
-  $ajax.fakeRequest = jRequire.AjaxFakeRequest();
+  $ajax.eventBus = jRequire.AjaxEventBus();
+  $ajax.fakeRequest = jRequire.AjaxFakeRequest($ajax.eventBus);
   $ajax.MockAjax = jRequire.MockAjax($ajax);
 
   return $ajax.MockAjax;
