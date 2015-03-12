@@ -1,6 +1,6 @@
 /*
 
-Jasmine-Ajax : a set of helpers for testing AJAX requests under the Jasmine
+Jasmine-Ajax - v<%= packageVersion %>: a set of helpers for testing AJAX requests under the Jasmine
 BDD framework for JavaScript.
 
 http://github.com/pivotal/jasmine-ajax

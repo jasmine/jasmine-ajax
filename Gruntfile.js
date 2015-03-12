@@ -54,6 +54,9 @@ module.exports = function( grunt ) {
       }
     },
     concat: {
+      options: {
+        process: true
+      },
       mockAjax: {
         src: [
           'src/requireAjax.js',
