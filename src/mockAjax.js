@@ -7,6 +7,10 @@ getJasmineRequireObj().MockAjax = function($ajax) {
       mockAjaxFunction = $ajax.fakeRequest(global, requestTracker, stubTracker, paramParser);
 
     this.install = function() {
+      if (global.XMLHttpRequest === mockAjaxFunction) {
+        throw "MockAjax is already installed.";
+      }
+
       global.XMLHttpRequest = mockAjaxFunction;
     };
 

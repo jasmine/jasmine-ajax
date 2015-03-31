@@ -1,4 +1,31 @@
 describe("mockAjax", function() {
+  it("throws an error if installed multiple times", function() {
+    var fakeXmlHttpRequest = jasmine.createSpy('fakeXmlHttpRequest'),
+      fakeGlobal = { XMLHttpRequest: fakeXmlHttpRequest },
+      mockAjax = new window.MockAjax(fakeGlobal);
+
+    function doubleInstall() {
+      mockAjax.install();
+      mockAjax.install();
+    }
+
+    expect(doubleInstall).toThrow();
+  });
+
+  it("does not throw an error if uninstalled between installs", function() {
+    var fakeXmlHttpRequest = jasmine.createSpy('fakeXmlHttpRequest'),
+      fakeGlobal = { XMLHttpRequest: fakeXmlHttpRequest },
+      mockAjax = new window.MockAjax(fakeGlobal);
+
+    function sequentialInstalls() {
+      mockAjax.install();
+      mockAjax.uninstall();
+      mockAjax.install();
+    }
+
+    expect(sequentialInstalls).not.toThrow();
+  });
+
   it("does not replace XMLHttpRequest until it is installed", function() {
     var fakeXmlHttpRequest = jasmine.createSpy('fakeXmlHttpRequest'),
         fakeGlobal = { XMLHttpRequest: fakeXmlHttpRequest },
