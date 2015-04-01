@@ -7,7 +7,7 @@ http://github.com/pivotal/jasmine-ajax
 
 Jasmine Home page: http://pivotal.github.com/jasmine
 
-Copyright (c) 2008-2013 Pivotal Labs
+Copyright (c) 2008-2015 Pivotal Labs
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the

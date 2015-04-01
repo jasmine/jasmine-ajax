@@ -213,4 +213,4 @@ Jasmine
 ------------
 http://github.com/pivotal/jasmine
 
-Copyright (c) 2014 Pivotal Labs. This software is licensed under the MIT License.
+Copyright (c) 2015 Pivotal Labs. This software is licensed under the MIT License.
