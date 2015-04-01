@@ -3,11 +3,11 @@
 Jasmine-Ajax - v<%= packageVersion %>: a set of helpers for testing AJAX requests under the Jasmine
 BDD framework for JavaScript.
 
-http://github.com/pivotal/jasmine-ajax
+http://github.com/jasmine/jasmine-ajax
 
-Jasmine Home page: http://pivotal.github.com/jasmine
+Jasmine Home page: http://jasmine.github.io/
 
-Copyright (c) 2008-2013 Pivotal Labs
+Copyright (c) 2008-2015 Pivotal Labs
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
