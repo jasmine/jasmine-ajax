@@ -12,6 +12,15 @@ describe('EventBus', function() {
     expect(callback).toHaveBeenCalled();
   });
 
+  it('calls an event listener with additional arguments', function() {
+    var callback = jasmine.createSpy('callback');
+
+    this.bus.addEventListener('foo', callback);
+    this.bus.trigger('foo', 'bar');
+
+    expect(callback).toHaveBeenCalledWith('bar');
+  });
+
   it('only triggers callbacks for the specified event', function() {
     var fooCallback = jasmine.createSpy('foo'),
         barCallback = jasmine.createSpy('bar');
