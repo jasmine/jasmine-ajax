@@ -164,9 +164,7 @@ getJasmineRequireObj().AjaxFakeRequest = function(eventBusFactory) {
 
       send: function(data) {
         this.params = data;
-        this.readyState = 2;
         this.eventBus.trigger('loadstart');
-        this.eventBus.trigger('readystatechange');
 
         var stub = stubTracker.findStub(this.url, data, this.method);
         if (stub) {
@@ -237,12 +235,16 @@ getJasmineRequireObj().AjaxFakeRequest = function(eventBusFactory) {
         if (this.readyState === 4) {
           throw new Error("FakeXMLHttpRequest already completed");
         }
+
         this.status = response.status;
         this.statusText = response.statusText || "";
+        this.responseHeaders = normalizeHeaders(response.responseHeaders, response.contentType);
+        this.readyState = 2;
+        this.eventBus.trigger('readystatechange');
+
         this.responseText = response.responseText || "";
         this.responseType = response.responseType || "";
         this.readyState = 4;
-        this.responseHeaders = normalizeHeaders(response.responseHeaders, response.contentType);
         this.responseXML = getResponseXml(response.responseText, this.getResponseHeader('content-type') || '');
         if (this.responseXML) {
           this.responseType = 'document';

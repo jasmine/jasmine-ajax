@@ -125,14 +125,15 @@ describe('FakeRequest', function() {
       expect(this.fakeEventBus.trigger).toHaveBeenCalledWith('readystatechange');
     });
 
-    it('has a ready state of 2 (sent) when sent', function() {
+    it('has a ready state of 1 (sent) when sent', function() {
       this.request.open();
       this.fakeEventBus.trigger.calls.reset();
 
       this.request.send();
 
-      expect(this.request.readyState).toBe(2);
-      expect(this.fakeEventBus.trigger).toHaveBeenCalledWith('readystatechange');
+      expect(this.request.readyState).toBe(1);
+      expect(this.fakeEventBus.trigger).toHaveBeenCalledWith('loadstart');
+      expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith('readystatechange');
     });
 
     it('has a ready state of 4 (loaded) when timed out', function() {
@@ -168,6 +169,43 @@ describe('FakeRequest', function() {
 
       expect(this.request.readyState).toBe(4);
       expect(this.fakeEventBus.trigger).toHaveBeenCalledWith('readystatechange');
+    });
+
+    it('has a ready state of 2, then 4 (loaded) when responding', function() {
+      this.request.open();
+      this.request.send();
+      this.fakeEventBus.trigger.calls.reset();
+
+      var request = this.request;
+      var events = [];
+      var headers = [
+        { name: 'X-Header', value: 'foo' }
+      ];
+
+      this.fakeEventBus.trigger.and.callFake(function(event) {
+        if (event === 'readystatechange') {
+          events.push({
+            readyState: request.readyState,
+            status: request.status,
+            statusText: request.statusText,
+            responseHeaders: request.responseHeaders
+          });
+        }
+      });
+
+      this.request.respondWith({
+        status: 200,
+        statusText: 'OK',
+        responseHeaders: headers
+      });
+
+      expect(this.request.readyState).toBe(4);
+      expect(this.fakeEventBus.trigger).toHaveBeenCalledWith('readystatechange');
+      expect(events.length).toBe(2);
+      expect(events).toEqual([
+        { readyState: 2, status: 200, statusText: 'OK', responseHeaders: headers },
+        { readyState: 4, status: 200, statusText: 'OK', responseHeaders: headers }
+      ]);
     });
 
     it('throws an error when timing out a request that has completed', function() {
@@ -270,7 +308,7 @@ describe('FakeRequest', function() {
       this.request.send();
 
       expect(this.fakeEventBus.trigger).toHaveBeenCalledWith('loadstart');
-      expect(this.fakeEventBus.trigger).toHaveBeenCalledWith('readystatechange');
+      expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith('readystatechange');
       expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith('progress');
       expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith('abort');
       expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith('error');
