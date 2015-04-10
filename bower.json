@@ -11,7 +11,7 @@
     "Gregg Van Hove <gregg@slackersoft.net>"
   ],
   "dependencies": {
-    "jasmine" : "~2.0"
+    "jasmine" : "~2"
   },
   "moduleType": [
     "globals"
