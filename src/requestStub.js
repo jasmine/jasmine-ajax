@@ -1,4 +1,8 @@
 getJasmineRequireObj().AjaxRequestStub = function() {
+  var RETURN = 0,
+      ERROR = 1,
+      TIMEOUT = 2;
+
   function RequestStub(url, stubData, method) {
     var normalizeQuery = function(query) {
       return query ? query.split('&').sort().join('&') : undefined;
@@ -17,12 +21,33 @@ getJasmineRequireObj().AjaxRequestStub = function() {
     this.method = method;
 
     this.andReturn = function(options) {
+      this.action = RETURN;
       this.status = options.status || 200;
 
       this.contentType = options.contentType;
       this.response = options.response;
       this.responseText = options.responseText;
       this.responseHeaders = options.responseHeaders;
+    };
+
+    this.isReturn = function() {
+      return this.action === RETURN;
+    };
+
+    this.andError = function() {
+      this.action = ERROR;
+    };
+
+    this.isError = function() {
+      return this.action === ERROR;
+    };
+
+    this.andTimeout = function() {
+      this.action = TIMEOUT;
+    };
+
+    this.isTimeout = function() {
+      return this.action === TIMEOUT;
     };
 
     this.matches = function(fullUrl, data, method) {
