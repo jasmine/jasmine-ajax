@@ -168,7 +168,13 @@ getJasmineRequireObj().AjaxFakeRequest = function(eventBusFactory) {
 
         var stub = stubTracker.findStub(this.url, data, this.method);
         if (stub) {
-          this.respondWith(stub);
+          if (stub.isReturn()) {
+            this.respondWith(stub);
+          } else if (stub.isError()) {
+            this.responseError();
+          } else if (stub.isTimeout()) {
+            this.responseTimeout();
+          }
         }
       },
 

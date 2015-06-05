@@ -1,5 +1,5 @@
 describe("Webmock style mocking", function() {
-  var successSpy, errorSpy, response, fakeGlobal, mockAjax;
+  var successSpy, errorSpy, timeoutSpy, response, fakeGlobal, mockAjax;
 
   var sendRequest = function(fakeGlobal, url, method) {
     url = url || "http://example.com/someApi";
@@ -12,22 +12,46 @@ describe("Webmock style mocking", function() {
       }
     };
 
+    xhr.onerror = function() {
+      errorSpy();
+    };
+
+    xhr.ontimeout = function() {
+      timeoutSpy();
+    };
+
     xhr.open(method, url);
     xhr.send();
   };
 
   beforeEach(function() {
     successSpy = jasmine.createSpy('success');
+    errorSpy = jasmine.createSpy('error');
+    timeoutSpy = jasmine.createSpy('timeout');
     fakeGlobal = {XMLHttpRequest: jasmine.createSpy('realXMLHttpRequest')};
     mockAjax = new window.MockAjax(fakeGlobal);
     mockAjax.install();
 
     mockAjax.stubRequest("http://example.com/someApi").andReturn({responseText: "hi!"});
+    mockAjax.stubRequest("http://example.com/someErrorApi").andError();
+    mockAjax.stubRequest("http://example.com/someTimeoutApi").andTimeout();
   });
 
   it("allows a url to be setup as a stub", function() {
     sendRequest(fakeGlobal);
     expect(successSpy).toHaveBeenCalled();
+  });
+
+  it("allows a url to be setup as a stub which trigger error", function() {
+    sendRequest(fakeGlobal, "http://example.com/someErrorApi");
+    expect(errorSpy).toHaveBeenCalled();
+  });
+
+  it("allows a url to be setup as a stub which timeouts", function() {
+    jasmine.clock().install();
+    sendRequest(fakeGlobal, "http://example.com/someTimeoutApi");
+    expect(timeoutSpy).toHaveBeenCalled();
+    jasmine.clock().uninstall();
   });
 
   it("should allow you to clear all the ajax stubs", function() {
