@@ -136,7 +136,7 @@ getJasmineRequireObj().AjaxFakeRequest = function(eventBusFactory) {
         this.status = 0;
         this.statusText = "abort";
         this.eventBus.trigger('readystatechange');
-        this.eventBus.trigger('progress');
+        this.eventBus.trigger('progress', { lengthComputable: false });
         this.eventBus.trigger('abort');
         this.eventBus.trigger('loadend');
       },
@@ -257,7 +257,7 @@ getJasmineRequireObj().AjaxFakeRequest = function(eventBusFactory) {
         }
 
         this.eventBus.trigger('readystatechange');
-        this.eventBus.trigger('progress');
+        this.eventBus.trigger('progress', { lengthComputable: false });
         this.eventBus.trigger('load');
         this.eventBus.trigger('loadend');
       },
@@ -269,7 +269,7 @@ getJasmineRequireObj().AjaxFakeRequest = function(eventBusFactory) {
         this.readyState = 4;
         jasmine.clock().tick(30000);
         this.eventBus.trigger('readystatechange', 'timeout');
-        this.eventBus.trigger('progress');
+        this.eventBus.trigger('progress', { lengthComputable: false });
         this.eventBus.trigger('timeout');
         this.eventBus.trigger('loadend');
       },
@@ -280,7 +280,7 @@ getJasmineRequireObj().AjaxFakeRequest = function(eventBusFactory) {
         }
         this.readyState = 4;
         this.eventBus.trigger('readystatechange');
-        this.eventBus.trigger('progress');
+        this.eventBus.trigger('progress', { lengthComputable: false });
         this.eventBus.trigger('error');
         this.eventBus.trigger('loadend');
       }
