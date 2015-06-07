@@ -41,9 +41,9 @@ getJasmineRequireObj().AjaxEventBus = function(eventFactory) {
     // Others are progress event.
     // https://xhr.spec.whatwg.org/#events
     if (event === 'readystatechange') {
-      evt = eventFactory.event(event);
+      evt = eventFactory.event(xhr, event);
     } else {
-      evt = eventFactory.progressEvent(event);
+      evt = eventFactory.progressEvent(xhr, event);
     }
 
     var eventListeners = this.eventList[event];

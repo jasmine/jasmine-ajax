@@ -13,12 +13,8 @@ describe('EventBus', function() {
     ]);
 
     var eventFactory = this.eventFactory = {
-      event: function() {
-        return event;
-      },
-      progressEvent: function() {
-        return progressEvent;
-      }
+      event: jasmine.createSpy('event').and.returnValue(event),
+      progressEvent: jasmine.createSpy('progressEvent').and.returnValue(progressEvent)
     };
 
     this.bus = getJasmineRequireObj().AjaxEventBus(eventFactory)();
@@ -32,6 +28,8 @@ describe('EventBus', function() {
     this.bus.trigger(this.xhr, 'foo');
 
     expect(callback).toHaveBeenCalledWith(this.progressEvent);
+    expect(this.eventFactory.progressEvent).toHaveBeenCalledWith(this.xhr, 'foo');
+    expect(this.eventFactory.event).not.toHaveBeenCalled();
   });
 
   it('calls an readystatechange listener with event object', function() {
@@ -41,6 +39,8 @@ describe('EventBus', function() {
     this.bus.trigger(this.xhr, 'readystatechange');
 
     expect(callback).toHaveBeenCalledWith(this.event);
+    expect(this.eventFactory.event).toHaveBeenCalledWith(this.xhr, 'readystatechange');
+    expect(this.eventFactory.progressEvent).not.toHaveBeenCalled();
   });
 
   it('only triggers callbacks for the specified event', function() {
