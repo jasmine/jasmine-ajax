@@ -116,7 +116,7 @@ getJasmineRequireObj().AjaxFakeRequest = function(eventBusFactory) {
         this.username = arguments[3];
         this.password = arguments[4];
         this.readyState = 1;
-        this.eventBus.trigger('readystatechange');
+        this.eventBus.trigger(this, 'readystatechange');
       },
 
       setRequestHeader: function(header, value) {
@@ -135,10 +135,10 @@ getJasmineRequireObj().AjaxFakeRequest = function(eventBusFactory) {
         this.readyState = 0;
         this.status = 0;
         this.statusText = "abort";
-        this.eventBus.trigger('readystatechange');
-        this.eventBus.trigger('progress');
-        this.eventBus.trigger('abort');
-        this.eventBus.trigger('loadend');
+        this.eventBus.trigger(this, 'readystatechange');
+        this.eventBus.trigger(this, 'progress');
+        this.eventBus.trigger(this, 'abort');
+        this.eventBus.trigger(this, 'loadend');
       },
 
       readyState: 0,
@@ -164,7 +164,7 @@ getJasmineRequireObj().AjaxFakeRequest = function(eventBusFactory) {
 
       send: function(data) {
         this.params = data;
-        this.eventBus.trigger('loadstart');
+        this.eventBus.trigger(this, 'loadstart');
 
         var stub = stubTracker.findStub(this.url, data, this.method);
         if (stub) {
@@ -246,7 +246,7 @@ getJasmineRequireObj().AjaxFakeRequest = function(eventBusFactory) {
         this.statusText = response.statusText || "";
         this.responseHeaders = normalizeHeaders(response.responseHeaders, response.contentType);
         this.readyState = 2;
-        this.eventBus.trigger('readystatechange');
+        this.eventBus.trigger(this, 'readystatechange');
 
         this.responseText = response.responseText || "";
         this.responseType = response.responseType || "";
@@ -262,10 +262,10 @@ getJasmineRequireObj().AjaxFakeRequest = function(eventBusFactory) {
           this.response = this.responseValue();
         }
 
-        this.eventBus.trigger('readystatechange');
-        this.eventBus.trigger('progress');
-        this.eventBus.trigger('load');
-        this.eventBus.trigger('loadend');
+        this.eventBus.trigger(this, 'readystatechange');
+        this.eventBus.trigger(this, 'progress');
+        this.eventBus.trigger(this, 'load');
+        this.eventBus.trigger(this, 'loadend');
       },
 
       responseTimeout: function() {
@@ -274,10 +274,10 @@ getJasmineRequireObj().AjaxFakeRequest = function(eventBusFactory) {
         }
         this.readyState = 4;
         jasmine.clock().tick(30000);
-        this.eventBus.trigger('readystatechange', 'timeout');
-        this.eventBus.trigger('progress');
-        this.eventBus.trigger('timeout');
-        this.eventBus.trigger('loadend');
+        this.eventBus.trigger(this, 'readystatechange', 'timeout');
+        this.eventBus.trigger(this, 'progress');
+        this.eventBus.trigger(this, 'timeout');
+        this.eventBus.trigger(this, 'loadend');
       },
 
       responseError: function() {
@@ -285,10 +285,10 @@ getJasmineRequireObj().AjaxFakeRequest = function(eventBusFactory) {
           throw new Error("FakeXMLHttpRequest already completed");
         }
         this.readyState = 4;
-        this.eventBus.trigger('readystatechange');
-        this.eventBus.trigger('progress');
-        this.eventBus.trigger('error');
-        this.eventBus.trigger('loadend');
+        this.eventBus.trigger(this, 'readystatechange');
+        this.eventBus.trigger(this, 'progress');
+        this.eventBus.trigger(this, 'error');
+        this.eventBus.trigger(this, 'loadend');
       }
     });
 

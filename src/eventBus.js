@@ -38,14 +38,14 @@ getJasmineRequireObj().AjaxEventBus = function() {
     }
   };
 
-  EventBus.prototype.trigger = function(event) {
+  EventBus.prototype.trigger = function(xhr, event) {
     // Arguments specified after event name need to be propagated
-    var args = slice(arguments, 1);
+    var args = slice(arguments, 2);
     var eventListeners = this.eventList[event];
 
-    if(eventListeners){
-      for(var i = 0; i < eventListeners.length; i++){
-        eventListeners[i].apply(this, args);
+    if (eventListeners) {
+      for (var i = 0; i < eventListeners.length; i++) {
+        eventListeners[i].apply(xhr, args);
       }
     }
   };

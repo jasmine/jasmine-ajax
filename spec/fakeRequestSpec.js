@@ -112,7 +112,7 @@ describe('FakeRequest', function() {
       this.request.open();
 
       expect(this.request.readyState).toBe(1);
-      expect(this.fakeEventBus.trigger).toHaveBeenCalledWith('readystatechange');
+      expect(this.fakeEventBus.trigger).toHaveBeenCalledWith(this.request, 'readystatechange');
     });
 
     it('has a ready state of 0 (uninitialized) when aborted', function() {
@@ -122,7 +122,7 @@ describe('FakeRequest', function() {
       this.request.abort();
 
       expect(this.request.readyState).toBe(0);
-      expect(this.fakeEventBus.trigger).toHaveBeenCalledWith('readystatechange');
+      expect(this.fakeEventBus.trigger).toHaveBeenCalledWith(this.request, 'readystatechange');
     });
 
     it('has a ready state of 1 (sent) when sent', function() {
@@ -132,7 +132,7 @@ describe('FakeRequest', function() {
       this.request.send();
 
       expect(this.request.readyState).toBe(1);
-      expect(this.fakeEventBus.trigger).toHaveBeenCalledWith('loadstart');
+      expect(this.fakeEventBus.trigger).toHaveBeenCalledWith(this.request, 'loadstart');
       expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith('readystatechange');
     });
 
@@ -146,7 +146,7 @@ describe('FakeRequest', function() {
       jasmine.clock().uninstall();
 
       expect(this.request.readyState).toBe(4);
-      expect(this.fakeEventBus.trigger).toHaveBeenCalledWith('readystatechange', 'timeout');
+      expect(this.fakeEventBus.trigger).toHaveBeenCalledWith(this.request, 'readystatechange', 'timeout');
     });
 
     it('has a ready state of 4 (loaded) when network erroring', function() {
@@ -157,7 +157,7 @@ describe('FakeRequest', function() {
       this.request.responseError();
 
       expect(this.request.readyState).toBe(4);
-      expect(this.fakeEventBus.trigger).toHaveBeenCalledWith('readystatechange');
+      expect(this.fakeEventBus.trigger).toHaveBeenCalledWith(this.request, 'readystatechange');
     });
 
     it('has a ready state of 4 (loaded) when responding', function() {
@@ -168,7 +168,7 @@ describe('FakeRequest', function() {
       this.request.respondWith({});
 
       expect(this.request.readyState).toBe(4);
-      expect(this.fakeEventBus.trigger).toHaveBeenCalledWith('readystatechange');
+      expect(this.fakeEventBus.trigger).toHaveBeenCalledWith(this.request, 'readystatechange');
     });
 
     it('has a ready state of 2, then 4 (loaded) when responding', function() {
@@ -182,7 +182,7 @@ describe('FakeRequest', function() {
         { name: 'X-Header', value: 'foo' }
       ];
 
-      this.fakeEventBus.trigger.and.callFake(function(event) {
+      this.fakeEventBus.trigger.and.callFake(function(xhr, event) {
         if (event === 'readystatechange') {
           events.push({
             readyState: request.readyState,
@@ -200,7 +200,7 @@ describe('FakeRequest', function() {
       });
 
       expect(this.request.readyState).toBe(4);
-      expect(this.fakeEventBus.trigger).toHaveBeenCalledWith('readystatechange');
+      expect(this.fakeEventBus.trigger).toHaveBeenCalledWith(this.request, 'readystatechange');
       expect(events.length).toBe(2);
       expect(events).toEqual([
         { readyState: 2, status: 200, statusText: 'OK', responseHeaders: headers },
@@ -297,7 +297,7 @@ describe('FakeRequest', function() {
     it('should not trigger any events to start', function() {
       this.request.open();
 
-      expect(this.fakeEventBus.trigger).toHaveBeenCalledWith('readystatechange');
+      expect(this.fakeEventBus.trigger).toHaveBeenCalledWith(this.request, 'readystatechange');
     });
 
     it('should trigger loadstart when sent', function() {
@@ -307,14 +307,14 @@ describe('FakeRequest', function() {
 
       this.request.send();
 
-      expect(this.fakeEventBus.trigger).toHaveBeenCalledWith('loadstart');
-      expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith('readystatechange');
-      expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith('progress');
-      expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith('abort');
-      expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith('error');
-      expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith('load');
-      expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith('timeout');
-      expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith('loadend');
+      expect(this.fakeEventBus.trigger).toHaveBeenCalledWith(this.request, 'loadstart');
+      expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith(this.request, 'readystatechange');
+      expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith(this.request, 'progress');
+      expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith(this.request, 'abort');
+      expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith(this.request, 'error');
+      expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith(this.request, 'load');
+      expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith(this.request, 'timeout');
+      expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith(this.request, 'loadend');
     });
 
     it('should trigger abort, progress, loadend when aborted', function() {
@@ -325,14 +325,14 @@ describe('FakeRequest', function() {
 
       this.request.abort();
 
-      expect(this.fakeEventBus.trigger).toHaveBeenCalledWith('readystatechange');
-      expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith('loadstart');
-      expect(this.fakeEventBus.trigger).toHaveBeenCalledWith('progress');
-      expect(this.fakeEventBus.trigger).toHaveBeenCalledWith('abort');
-      expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith('error');
-      expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith('load');
-      expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith('timeout');
-      expect(this.fakeEventBus.trigger).toHaveBeenCalledWith('loadend');
+      expect(this.fakeEventBus.trigger).toHaveBeenCalledWith(this.request, 'readystatechange');
+      expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith(this.request, 'loadstart');
+      expect(this.fakeEventBus.trigger).toHaveBeenCalledWith(this.request, 'progress');
+      expect(this.fakeEventBus.trigger).toHaveBeenCalledWith(this.request, 'abort');
+      expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith(this.request, 'error');
+      expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith(this.request, 'load');
+      expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith(this.request, 'timeout');
+      expect(this.fakeEventBus.trigger).toHaveBeenCalledWith(this.request, 'loadend');
     });
 
     it('should trigger error, progress, loadend when network error', function() {
@@ -343,14 +343,14 @@ describe('FakeRequest', function() {
 
       this.request.responseError();
 
-      expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith('loadstart');
-      expect(this.fakeEventBus.trigger).toHaveBeenCalledWith('readystatechange');
-      expect(this.fakeEventBus.trigger).toHaveBeenCalledWith('progress');
-      expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith('abort');
-      expect(this.fakeEventBus.trigger).toHaveBeenCalledWith('error');
-      expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith('load');
-      expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith('timeout');
-      expect(this.fakeEventBus.trigger).toHaveBeenCalledWith('loadend');
+      expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith(this.request, 'loadstart');
+      expect(this.fakeEventBus.trigger).toHaveBeenCalledWith(this.request, 'readystatechange');
+      expect(this.fakeEventBus.trigger).toHaveBeenCalledWith(this.request, 'progress');
+      expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith(this.request, 'abort');
+      expect(this.fakeEventBus.trigger).toHaveBeenCalledWith(this.request, 'error');
+      expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith(this.request, 'load');
+      expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith(this.request, 'timeout');
+      expect(this.fakeEventBus.trigger).toHaveBeenCalledWith(this.request, 'loadend');
     });
 
     it('should trigger timeout, progress, loadend when timing out', function() {
@@ -363,14 +363,14 @@ describe('FakeRequest', function() {
       this.request.responseTimeout();
       jasmine.clock().uninstall();
 
-      expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith('loadstart');
-      expect(this.fakeEventBus.trigger).toHaveBeenCalledWith('readystatechange', 'timeout');
-      expect(this.fakeEventBus.trigger).toHaveBeenCalledWith('progress');
-      expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith('abort');
-      expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith('error');
-      expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith('load');
-      expect(this.fakeEventBus.trigger).toHaveBeenCalledWith('timeout');
-      expect(this.fakeEventBus.trigger).toHaveBeenCalledWith('loadend');
+      expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith(this.request, 'loadstart');
+      expect(this.fakeEventBus.trigger).toHaveBeenCalledWith(this.request, 'readystatechange', 'timeout');
+      expect(this.fakeEventBus.trigger).toHaveBeenCalledWith(this.request, 'progress');
+      expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith(this.request, 'abort');
+      expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith(this.request, 'error');
+      expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith(this.request, 'load');
+      expect(this.fakeEventBus.trigger).toHaveBeenCalledWith(this.request, 'timeout');
+      expect(this.fakeEventBus.trigger).toHaveBeenCalledWith(this.request, 'loadend');
     });
 
     it('should trigger load, progress, loadend when responding', function() {
@@ -381,14 +381,14 @@ describe('FakeRequest', function() {
 
       this.request.respondWith({ status: 200 });
 
-      expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith('loadstart');
-      expect(this.fakeEventBus.trigger).toHaveBeenCalledWith('readystatechange');
-      expect(this.fakeEventBus.trigger).toHaveBeenCalledWith('progress');
-      expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith('abort');
-      expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith('error');
-      expect(this.fakeEventBus.trigger).toHaveBeenCalledWith('load');
-      expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith('timeout');
-      expect(this.fakeEventBus.trigger).toHaveBeenCalledWith('loadend');
+      expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith(this.request, 'loadstart');
+      expect(this.fakeEventBus.trigger).toHaveBeenCalledWith(this.request, 'readystatechange');
+      expect(this.fakeEventBus.trigger).toHaveBeenCalledWith(this.request, 'progress');
+      expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith(this.request, 'abort');
+      expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith(this.request, 'error');
+      expect(this.fakeEventBus.trigger).toHaveBeenCalledWith(this.request, 'load');
+      expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith(this.request, 'timeout');
+      expect(this.fakeEventBus.trigger).toHaveBeenCalledWith(this.request, 'loadend');
     });
   });
 

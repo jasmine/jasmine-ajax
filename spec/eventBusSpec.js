@@ -1,13 +1,14 @@
 describe('EventBus', function() {
   beforeEach(function() {
     this.bus = getJasmineRequireObj().AjaxEventBus()();
+    this.xhr = jasmine.createSpy('xhr');
   });
 
   it('calls an event listener', function() {
     var callback = jasmine.createSpy('callback');
 
     this.bus.addEventListener('foo', callback);
-    this.bus.trigger('foo');
+    this.bus.trigger(this.xhr, 'foo');
 
     expect(callback).toHaveBeenCalled();
   });
@@ -16,7 +17,7 @@ describe('EventBus', function() {
     var callback = jasmine.createSpy('callback');
 
     this.bus.addEventListener('foo', callback);
-    this.bus.trigger('foo', 'bar');
+    this.bus.trigger(this.xhr, 'foo', 'bar');
 
     expect(callback).toHaveBeenCalledWith('bar');
   });
@@ -28,7 +29,7 @@ describe('EventBus', function() {
     this.bus.addEventListener('foo', fooCallback);
     this.bus.addEventListener('bar', barCallback);
 
-    this.bus.trigger('foo');
+    this.bus.trigger(this.xhr, 'foo');
 
     expect(fooCallback).toHaveBeenCalled();
     expect(barCallback).not.toHaveBeenCalled();
@@ -41,7 +42,7 @@ describe('EventBus', function() {
     this.bus.addEventListener('foo', callback1);
     this.bus.addEventListener('foo', callback2);
 
-    this.bus.trigger('foo');
+    this.bus.trigger(this.xhr, 'foo');
 
     expect(callback1).toHaveBeenCalled();
     expect(callback2).toHaveBeenCalled();
@@ -50,7 +51,7 @@ describe('EventBus', function() {
   it('works if there are no callbacks for the event', function() {
     var bus = this.bus;
     expect(function() {
-      bus.trigger('notActuallyThere');
+      bus.trigger(this.xhr, 'notActuallyThere');
     }).not.toThrow();
   });
 
@@ -59,7 +60,7 @@ describe('EventBus', function() {
 
     this.bus.addEventListener('foo', callback);
     this.bus.removeEventListener('foo', callback);
-    this.bus.trigger('foo');
+    this.bus.trigger(this.xhr, 'foo');
 
     expect(callback).not.toHaveBeenCalled();
   });
@@ -72,7 +73,7 @@ describe('EventBus', function() {
     this.bus.addEventListener('foo', callback2);
     this.bus.removeEventListener('foo', callback2);
 
-    this.bus.trigger('foo');
+    this.bus.trigger(this.xhr, 'foo');
 
     expect(callback1).toHaveBeenCalled();
     expect(callback2).not.toHaveBeenCalled();
