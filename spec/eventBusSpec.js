@@ -1,25 +1,46 @@
 describe('EventBus', function() {
   beforeEach(function() {
-    this.bus = getJasmineRequireObj().AjaxEventBus()();
+    var event = this.event = jasmine.createSpyObj('event', [
+      'preventDefault',
+      'stopPropagation',
+      'stopImmediatePropagation'
+    ]);
+
+    var progressEvent = this.progressEvent = jasmine.createSpyObj('progressEvent', [
+      'preventDefault',
+      'stopPropagation',
+      'stopImmediatePropagation'
+    ]);
+
+    var eventFactory = this.eventFactory = {
+      event: function() {
+        return event;
+      },
+      progressEvent: function() {
+        return progressEvent;
+      }
+    };
+
+    this.bus = getJasmineRequireObj().AjaxEventBus(eventFactory)();
     this.xhr = jasmine.createSpy('xhr');
   });
 
-  it('calls an event listener', function() {
+  it('calls an event listener with event object', function() {
     var callback = jasmine.createSpy('callback');
 
     this.bus.addEventListener('foo', callback);
     this.bus.trigger(this.xhr, 'foo');
 
-    expect(callback).toHaveBeenCalled();
+    expect(callback).toHaveBeenCalledWith(this.progressEvent);
   });
 
-  it('calls an event listener with additional arguments', function() {
+  it('calls an readystatechange listener with event object', function() {
     var callback = jasmine.createSpy('callback');
 
-    this.bus.addEventListener('foo', callback);
-    this.bus.trigger(this.xhr, 'foo', 'bar');
+    this.bus.addEventListener('readystatechange', callback);
+    this.bus.trigger(this.xhr, 'readystatechange');
 
-    expect(callback).toHaveBeenCalledWith('bar');
+    expect(callback).toHaveBeenCalledWith(this.event);
   });
 
   it('only triggers callbacks for the specified event', function() {

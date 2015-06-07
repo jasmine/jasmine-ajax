@@ -274,7 +274,7 @@ getJasmineRequireObj().AjaxFakeRequest = function(eventBusFactory) {
         }
         this.readyState = 4;
         jasmine.clock().tick(30000);
-        this.eventBus.trigger(this, 'readystatechange', 'timeout');
+        this.eventBus.trigger(this, 'readystatechange');
         this.eventBus.trigger(this, 'progress');
         this.eventBus.trigger(this, 'timeout');
         this.eventBus.trigger(this, 'loadend');
