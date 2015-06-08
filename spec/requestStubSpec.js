@@ -61,4 +61,12 @@ describe('RequestStub', function() {
     expect(stub).toMatchRequest('/foo', 'baz=quux&foo=bar');
     expect(stub).not.toMatchRequest('/foo', 'foo=bar');
   });
+
+  it('can match the data or query params with a RegExp', function() {
+    var stub = new this.RequestStub('/foo', /ba[rz]=quux/);
+
+    expect(stub).toMatchRequest('/foo', 'bar=quux');
+    expect(stub).toMatchRequest('/foo', 'baz=quux');
+    expect(stub).not.toMatchRequest('/foo', 'foo=bar');
+  });
 });
