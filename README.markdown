@@ -240,7 +240,7 @@ beforeEach(function(){
 
   // Than register a request to which automatically will be responded
   jasmine.Ajax.stubRequest(
-    'https://soap.domain.tld/ws/UserManager,
+    'https://soap.domain.tld/ws/UserManager',
     /.*\<registrationRequest\>.*/
   ).andReturn({
     status: 200,
@@ -251,7 +251,7 @@ beforeEach(function(){
 
   // Register another response for the same URL, but with different SOAP request
   jasmine.Ajax.stubRequest(
-    'https://soap.domain.tld/ws/UserManager,
+    'https://soap.domain.tld/ws/UserManager',
     /.*\<loginRequest\>.*/
   ).andReturn({
     status: 200,
