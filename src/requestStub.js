@@ -17,7 +17,7 @@ getJasmineRequireObj().AjaxRequestStub = function() {
       this.query = split.length > 1 ? normalizeQuery(split[1]) : undefined;
     }
 
-    this.data = normalizeQuery(stubData);
+    this.data = (stubData instanceof RegExp) ? stubData : normalizeQuery(stubData);
     this.method = method;
 
     this.andReturn = function(options) {
@@ -51,17 +51,23 @@ getJasmineRequireObj().AjaxRequestStub = function() {
     };
 
     this.matches = function(fullUrl, data, method) {
-      var matches = false;
+      var urlMatches = false;
       fullUrl = fullUrl.toString();
       if (this.url instanceof RegExp) {
-        matches = this.url.test(fullUrl);
+        urlMatches = this.url.test(fullUrl);
       } else {
         var urlSplit = fullUrl.split('?'),
             url = urlSplit[0],
             query = urlSplit[1];
-        matches = this.url === url && this.query === normalizeQuery(query);
+        urlMatches = this.url === url && this.query === normalizeQuery(query);
       }
-      return matches && (!this.data || this.data === normalizeQuery(data)) && (!this.method || this.method === method);
+      var dataMatches = false;
+      if (this.data instanceof RegExp) {
+        dataMatches = this.data.test(data);
+      } else {
+        dataMatches = !this.data || this.data === normalizeQuery(data);
+      }
+      return urlMatches && dataMatches && (!this.method || this.method === method);
     };
   }
 
