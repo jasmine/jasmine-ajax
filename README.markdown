@@ -226,6 +226,62 @@ beforeEach(function(){
 });
 ```
 
+
+Complex Requests
+----------------
+Third-party frameworks may do many requests you can not simply respond to.
+Let's assume that you are talking to a SOAP service. SOAP services mostly have identical URL's, but responses differ by the XML request that was send using a POST request.
+Let's register a response that will be used if the request body was matched against a RegEx.
+
+```javascript
+beforeEach(function(){
+  // first install the mock
+  jasmine.Ajax.install();
+
+  // Than register a request to which automatically will be responded
+  jasmine.Ajax.stubRequest(
+    'https://soap.domain.tld/ws/UserManager',
+    /.*\<registrationRequest\>.*/
+  ).andReturn({
+    status: 200,
+    statusText: 'HTTP/1.1 200 OK',
+    contentType: 'text/xml;charset=UTF-8',
+    responseText: '<soap:Envelope><soap:Body><registrationResponse><username>foo</username><password>bar</password></registrationResponse></soap:Body></soap:Envelope>'
+  });
+
+  // Register another response for the same URL, but with different SOAP request
+  jasmine.Ajax.stubRequest(
+    'https://soap.domain.tld/ws/UserManager',
+    /.*\<loginRequest\>.*/
+  ).andReturn({
+    status: 200,
+    statusText: 'HTTP/1.1 200 OK',
+    contentType: 'text/xml;charset=UTF-8',
+    responseText: '<soap:Envelope><soap:Body><loginResponse><success>true</success></loginResponse></soap:Body></soap:Envelope>'
+  });
+});
+```
+
+Or if you also want to avoid the host part of the URL, you can register it using a RegEx for the URL, too.
+
+```javascript
+beforeEach(function(){
+  // first install the mock
+  jasmine.Ajax.install();
+
+  // Than register a request to which automatically will be responded
+  jasmine.Ajax.stubRequest(
+    /.*\/ws\/UserManager/,
+    /.*\<registrationRequest\>.*/
+  ).andReturn({
+    status: 200,
+    statusText: 'HTTP/1.1 200 OK',
+    contentType: 'text/xml;charset=UTF-8',
+    responseText: '<soap:Envelope><soap:Body><registrationResponse><username>foo</username><password>bar</password></registrationResponse></soap:Body></soap:Envelope>'
+  });
+});
+```
+
 Jasmine
 -------
 http://github.com/jasmine/jasmine
