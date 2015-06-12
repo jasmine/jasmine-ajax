@@ -50,7 +50,7 @@ getJasmineRequireObj().AjaxFakeRequest = function(eventBusFactory) {
   function fakeRequest(global, requestTracker, stubTracker, paramParser) {
     function FakeXMLHttpRequest() {
       requestTracker.track(this);
-      this.eventBus = eventBusFactory();
+      this.eventBus = eventBusFactory(this);
       initializeEvents(this);
       this.requestHeaders = {};
       this.overriddenMimeType = null;
@@ -155,7 +155,7 @@ getJasmineRequireObj().AjaxFakeRequest = function(eventBusFactory) {
       addEventListener: function() {
         this.eventBus.addEventListener.apply(this.eventBus, arguments);
       },
-      
+
       removeEventListener: function(event, callback) {
         this.eventBus.removeEventListener.apply(this.eventBus, arguments);
       },
@@ -274,7 +274,7 @@ getJasmineRequireObj().AjaxFakeRequest = function(eventBusFactory) {
         }
         this.readyState = 4;
         jasmine.clock().tick(30000);
-        this.eventBus.trigger('readystatechange', 'timeout');
+        this.eventBus.trigger('readystatechange');
         this.eventBus.trigger('progress');
         this.eventBus.trigger('timeout');
         this.eventBus.trigger('loadend');

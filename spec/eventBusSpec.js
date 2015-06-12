@@ -1,24 +1,46 @@
 describe('EventBus', function() {
   beforeEach(function() {
-    this.bus = getJasmineRequireObj().AjaxEventBus()();
+    var event = this.event = jasmine.createSpyObj('event', [
+      'preventDefault',
+      'stopPropagation',
+      'stopImmediatePropagation'
+    ]);
+
+    var progressEvent = this.progressEvent = jasmine.createSpyObj('progressEvent', [
+      'preventDefault',
+      'stopPropagation',
+      'stopImmediatePropagation'
+    ]);
+
+    var eventFactory = this.eventFactory = {
+      event: jasmine.createSpy('event').and.returnValue(event),
+      progressEvent: jasmine.createSpy('progressEvent').and.returnValue(progressEvent)
+    };
+
+    this.xhr = jasmine.createSpy('xhr');
+    this.bus = getJasmineRequireObj().AjaxEventBus(eventFactory)(this.xhr);
   });
 
-  it('calls an event listener', function() {
+  it('calls an event listener with event object', function() {
     var callback = jasmine.createSpy('callback');
 
     this.bus.addEventListener('foo', callback);
     this.bus.trigger('foo');
 
-    expect(callback).toHaveBeenCalled();
+    expect(callback).toHaveBeenCalledWith(this.progressEvent);
+    expect(this.eventFactory.progressEvent).toHaveBeenCalledWith(this.xhr, 'foo');
+    expect(this.eventFactory.event).not.toHaveBeenCalled();
   });
 
-  it('calls an event listener with additional arguments', function() {
+  it('calls an readystatechange listener with event object', function() {
     var callback = jasmine.createSpy('callback');
 
-    this.bus.addEventListener('foo', callback);
-    this.bus.trigger('foo', 'bar');
+    this.bus.addEventListener('readystatechange', callback);
+    this.bus.trigger('readystatechange');
 
-    expect(callback).toHaveBeenCalledWith('bar');
+    expect(callback).toHaveBeenCalledWith(this.event);
+    expect(this.eventFactory.event).toHaveBeenCalledWith(this.xhr, 'readystatechange');
+    expect(this.eventFactory.progressEvent).not.toHaveBeenCalled();
   });
 
   it('only triggers callbacks for the specified event', function() {

@@ -146,7 +146,7 @@ describe('FakeRequest', function() {
       jasmine.clock().uninstall();
 
       expect(this.request.readyState).toBe(4);
-      expect(this.fakeEventBus.trigger).toHaveBeenCalledWith('readystatechange', 'timeout');
+      expect(this.fakeEventBus.trigger).toHaveBeenCalledWith('readystatechange');
     });
 
     it('has a ready state of 4 (loaded) when network erroring', function() {
@@ -364,7 +364,7 @@ describe('FakeRequest', function() {
       jasmine.clock().uninstall();
 
       expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith('loadstart');
-      expect(this.fakeEventBus.trigger).toHaveBeenCalledWith('readystatechange', 'timeout');
+      expect(this.fakeEventBus.trigger).toHaveBeenCalledWith('readystatechange');
       expect(this.fakeEventBus.trigger).toHaveBeenCalledWith('progress');
       expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith('abort');
       expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith('error');
