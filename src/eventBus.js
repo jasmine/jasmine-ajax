@@ -1,4 +1,4 @@
-getJasmineRequireObj().AjaxEventBus = function() {
+getJasmineRequireObj().AjaxEventBus = function(eventFactory) {
   function EventBus() {
     this.eventList = {};
   }
@@ -22,10 +22,6 @@ getJasmineRequireObj().AjaxEventBus = function() {
     return -1;
   }
 
-  function slice(array, start) {
-    return Array.prototype.slice.call(array, start);
-  }
-
   EventBus.prototype.addEventListener = function(event, callback) {
     ensureEvent(this.eventList, event).push(callback);
   };
@@ -38,14 +34,23 @@ getJasmineRequireObj().AjaxEventBus = function() {
     }
   };
 
-  EventBus.prototype.trigger = function(event) {
-    // Arguments specified after event name need to be propagated
-    var args = slice(arguments, 1);
+  EventBus.prototype.trigger = function(xhr, event) {
+    var evt;
+
+    // Event 'readystatechange' is should be a simple event.
+    // Others are progress event.
+    // https://xhr.spec.whatwg.org/#events
+    if (event === 'readystatechange') {
+      evt = eventFactory.event(xhr, event);
+    } else {
+      evt = eventFactory.progressEvent(xhr, event);
+    }
+
     var eventListeners = this.eventList[event];
 
-    if(eventListeners){
-      for(var i = 0; i < eventListeners.length; i++){
-        eventListeners[i].apply(this, args);
+    if (eventListeners) {
+      for (var i = 0; i < eventListeners.length; i++) {
+        eventListeners[i].call(xhr, evt);
       }
     }
   };
