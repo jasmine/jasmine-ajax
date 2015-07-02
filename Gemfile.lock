@@ -66,3 +66,6 @@ DEPENDENCIES
   jasmine (~> 2.0.0)
   jasmine_selenium_runner
   rake
+
+BUNDLED WITH
+   1.10.1
