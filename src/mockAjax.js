@@ -15,6 +15,9 @@ getJasmineRequireObj().MockAjax = function($ajax) {
     };
 
     this.uninstall = function() {
+      if (global.XMLHttpRequest !== mockAjaxFunction) {
+        throw "MockAjax not installed. Race conditions between running tests may be uninstalling MockAjax early.";
+      }
       global.XMLHttpRequest = realAjaxFunction;
 
       this.stubs.reset();

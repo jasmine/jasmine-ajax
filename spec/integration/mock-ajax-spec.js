@@ -26,6 +26,20 @@ describe("mockAjax", function() {
     expect(sequentialInstalls).not.toThrow();
   });
 
+  it("does throw an error if uninstalled without a current install", function() {
+    var fakeXmlHttpRequest = jasmine.createSpy('fakeXmlHttpRequest'),
+      fakeGlobal = { XMLHttpRequest: fakeXmlHttpRequest },
+      mockAjax = new window.MockAjax(fakeGlobal);
+
+    function sequentialUninstalls() {
+      mockAjax.install();
+      mockAjax.uninstall();
+      mockAjax.uninstall();
+    }
+
+    expect(sequentialUninstalls).toThrow();
+  });
+
   it("does not replace XMLHttpRequest until it is installed", function() {
     var fakeXmlHttpRequest = jasmine.createSpy('fakeXmlHttpRequest'),
         fakeGlobal = { XMLHttpRequest: fakeXmlHttpRequest },
