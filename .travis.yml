@@ -17,6 +17,10 @@ matrix:
   include:
   - env:
     - JASMINE_BROWSER="safari"
+    - SAUCE_OS="OS X 10.11"
+    - SAUCE_BROWSER_VERSION=9
+  - env:
+    - JASMINE_BROWSER="safari"
     - SAUCE_OS="OS X 10.10"
     - SAUCE_BROWSER_VERSION=8
   - env:
