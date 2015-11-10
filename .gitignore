@@ -1,4 +1,5 @@
 .idea/
+.tmp/
 .rvmrc
 *.swp
 bower_components
