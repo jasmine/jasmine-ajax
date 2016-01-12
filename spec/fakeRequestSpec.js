@@ -489,6 +489,26 @@ describe('FakeRequest', function() {
     expect(request.responseText).toBe('');
   });
 
+  it('saves responseURL', function() {
+    var request = new this.FakeRequest();
+    request.open();
+    request.send();
+
+    request.respondWith({ status: 200, responseText: 'foobar', responseURL: 'foo.bar/redirect' });
+
+    expect(request.responseURL).toBe('foo.bar/redirect');
+  });
+
+  it('defaults responseText if none is given', function() {
+    var request = new this.FakeRequest();
+    request.open();
+    request.send();
+
+    request.respondWith({ status: 200 });
+
+    expect(request.responseURL).toBe(null);
+  });
+
   it('retrieves individual response headers', function() {
     var request = new this.FakeRequest();
     request.open();

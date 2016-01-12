@@ -107,7 +107,7 @@ getJasmineRequireObj().AjaxFakeRequest = function(eventBusFactory) {
       return null;
     }
 
-    var iePropertiesThatCannotBeCopied = ['responseBody', 'responseText', 'responseXML', 'status', 'statusText', 'responseTimeout'];
+    var iePropertiesThatCannotBeCopied = ['responseBody', 'responseText', 'responseXML', 'status', 'statusText', 'responseTimeout', 'responseURL'];
     extend(FakeXMLHttpRequest.prototype, new global.XMLHttpRequest(), iePropertiesThatCannotBeCopied);
     extend(FakeXMLHttpRequest.prototype, {
       open: function() {
@@ -218,6 +218,7 @@ getJasmineRequireObj().AjaxFakeRequest = function(eventBusFactory) {
       responseText: null,
       response: null,
       responseType: null,
+      responseURL: null,
 
       responseValue: function() {
         switch(this.responseType) {
@@ -250,6 +251,7 @@ getJasmineRequireObj().AjaxFakeRequest = function(eventBusFactory) {
 
         this.responseText = response.responseText || "";
         this.responseType = response.responseType || "";
+        this.responseURL = response.responseURL || null;
         this.readyState = 4;
         this.responseXML = getResponseXml(response.responseText, this.getResponseHeader('content-type') || '');
         if (this.responseXML) {

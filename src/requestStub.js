@@ -28,6 +28,7 @@ getJasmineRequireObj().AjaxRequestStub = function() {
       this.response = options.response;
       this.responseText = options.responseText;
       this.responseHeaders = options.responseHeaders;
+      this.responseURL = options.responseURL;
     };
 
     this.isReturn = function() {
