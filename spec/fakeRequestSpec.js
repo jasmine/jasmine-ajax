@@ -98,6 +98,20 @@ describe('FakeRequest', function() {
     expect(request.contentType()).toEqual('application/text+xml');
   });
 
+  it('clears the request headers when opened', function() {
+    // Requirement #14 https://www.w3.org/TR/XMLHttpRequest/#the-open()-method
+    var request = new this.FakeRequest();
+
+    request.setRequestHeader('X-Header1', 'value1');
+
+    expect(request.requestHeaders['X-Header1']).toEqual('value1');
+
+    request.open();
+
+    expect(request.requestHeaders['X-Header1']).not.toBeDefined();
+    expect(request.requestHeaders).toEqual({});
+  });
+
   describe('managing readyState', function() {
     beforeEach(function() {
       this.request = new this.FakeRequest();
