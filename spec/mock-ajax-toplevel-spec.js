@@ -143,6 +143,7 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
         sharedContext.contentType = response.contentType;
         sharedContext.responseText = response.responseText;
         sharedContext.responseType = response.responseType;
+        sharedContext.responseURL = response.responseURL;
       });
 
       it("should call the success handler", function() {
@@ -179,6 +180,7 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
         sharedContext.contentType = responseObject.contentType;
         sharedContext.responseText = responseObject.responseText;
         sharedContext.responseType = responseObject.responseType;
+        sharedContext.responseURL = responseObject.responseURL;
 
         response = success.calls.mostRecent().args[2];
       });
@@ -225,6 +227,7 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
         sharedContext.contentType = responseObject.contentType;
         sharedContext.responseText = responseObject.responseText;
         sharedContext.responseType = responseObject.responseType;
+        sharedContext.responseURL = responseObject.responseURL;
 
         response = success.calls.mostRecent().args[2];
       });
@@ -234,6 +237,33 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
 
         expect(response.responseText).toEqual(responseText);
         expect(response.response).toEqual({foo: "bar"});
+      });
+
+      sharedAjaxResponseBehaviorForZepto_Success(sharedContext);
+    });
+
+    describe("and the response is Success, and responseURL is set", function () {
+      beforeEach(function() {
+        client = new fakeGlobal.XMLHttpRequest();
+        client.onreadystatechange = onreadystatechange;
+        client.open("GET", "example.com/someApi");
+        client.setRequestHeader("Content-Type", "application/json");
+        client.send();
+
+        request = mockAjax.requests.mostRecent();
+        var responseObject = {status: 200, statusText: "OK", contentType: "application/json", responseText: '{"foo":"bar"}', responseType: 'json', responseURL: 'example.com/redirected'};
+
+        request.respondWith(responseObject);
+
+        sharedContext.responseCallback = success;
+        sharedContext.status = responseObject.status;
+        sharedContext.statusText = responseObject.statusText;
+        sharedContext.contentType = responseObject.contentType;
+        sharedContext.responseText = responseObject.responseText;
+        sharedContext.responseType = responseObject.responseType;
+        sharedContext.responseURL = responseObject.responseURL;
+
+        response = success.calls.mostRecent().args[2];
       });
 
       sharedAjaxResponseBehaviorForZepto_Success(sharedContext);
@@ -317,6 +347,7 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
         sharedContext.contentType = "application/json";
         sharedContext.responseType = response.responseType;
         sharedContext.responseText = response.responseText;
+        sharedContext.responseURL = response.responseURL;
       });
 
       it("should call the success handler", function() {
@@ -352,6 +383,7 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
         sharedContext.contentType = 'application/json';
         sharedContext.responseText = response.responseText;
         sharedContext.responseType = response.responseType;
+        sharedContext.responseURL = response.responseURL;
       });
 
       it("should call the success handler", function() {
@@ -388,6 +420,7 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
       sharedContext.contentType = response.contentType;
       sharedContext.responseText = response.responseText;
       sharedContext.responseType = response.responseType;
+      sharedContext.responseURL = response.responseURL;
     });
 
     it("should not call the success handler", function() {
@@ -425,6 +458,7 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
       sharedContext.contentType = response.contentType;
       sharedContext.responseText = response.responseText;
       sharedContext.responseType = response.responseType;
+      sharedContext.responseURL = response.responseURL;
     });
 
     afterEach(function() {
@@ -473,6 +507,10 @@ function sharedAjaxResponseBehaviorForZepto_Success(context) {
     it("should have the expected status text", function() {
       expect(xhr.statusText).toEqual(context.statusText);
     });
+
+    it("should have the expected response URL", function() {
+      expect(xhr.responseURL).toEqual(context.responseURL || null);
+    });
   });
 }
 
@@ -502,6 +540,10 @@ function sharedAjaxResponseBehaviorForZepto_Failure(context) {
 
     it("should have the expected status text", function() {
       expect(xhr.statusText).toEqual(context.statusText);
+    });
+
+    it("should have the expected response URL", function() {
+      expect(xhr.responseURL).toEqual(context.responseURL || null);
     });
   });
 }
