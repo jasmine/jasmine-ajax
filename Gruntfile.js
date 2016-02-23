@@ -26,6 +26,7 @@ module.exports = function( grunt ) {
         sub: true,
         undef: true,
         globals: {
+          global: true,
           jasmine: false,
           module: false,
           exports: true,
@@ -53,21 +54,34 @@ module.exports = function( grunt ) {
         ].join('&&')
       }
     },
-    concat: {
-      options: {
-        process: true
-      },
-      mockAjax: {
-        src: [
-          'src/requireAjax.js',
-          'src/**/*.js',
-          '!src/boot.js',
-          'src/boot.js'
-        ],
-        dest: 'lib/mock-ajax.js'
-      }
+    template: {
+        options: {
+            data: function() {
+                return {
+                    packageVersion: packageVersion(),
+                    files: grunt.file.expand([
+                        'src/requireAjax.js',
+                        'src/**/*.js',
+                        '!src/boot.js'
+                    ])
+                };
+            }
+        },
+        lib: {
+            src: 'src/boot.js',
+            dest: '.tmp/mock-ajax.js'
+        }
     },
-    packageVersion: packageVersion()
+    includes: {
+        options: {
+            includeRegexp: /\/\/\s*include "(\S+)";/,
+            includePath: '.'
+        },
+        lib: {
+            src: '.tmp/mock-ajax.js',
+            dest: 'lib/mock-ajax.js'
+        }
+    }
   });
 
   grunt.registerTask('versionCheck', function() {
@@ -81,10 +95,12 @@ module.exports = function( grunt ) {
   });
 
   grunt.loadNpmTasks('grunt-contrib-jshint');
-  grunt.loadNpmTasks('grunt-contrib-concat');
+  grunt.loadNpmTasks('grunt-template');
+  grunt.loadNpmTasks('grunt-includes');
   grunt.loadNpmTasks('grunt-shell');
 
   grunt.registerTask('default', ['jshint']);
+  grunt.registerTask('build', ['template:lib', 'includes:lib']);
   grunt.registerTask('ctags', 'Generate ctags', ['shell:ctags']);
   grunt.registerTask('release', 'Release ' + packageVersion() + ' to npm', ['versionCheck', 'shell:release']);
 };
