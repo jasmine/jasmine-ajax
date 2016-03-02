@@ -32,7 +32,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 //Module wrapper to support both browser and CommonJS environment
 (function (root, factory) {
-    if (typeof exports === 'object' && typeof exports.nodeName !== 'string') {
+    if (typeof jasmine === 'undefined' && typeof exports === 'object' && typeof exports.nodeName !== 'string') {
         // CommonJS
         var jasmineRequire = require('jasmine-core');
         module.exports = factory(root, function() {
