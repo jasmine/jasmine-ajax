@@ -117,19 +117,39 @@ describe('FakeRequest', function() {
       this.request = new this.FakeRequest();
     });
 
-    it('has an initial ready state of 0 (uninitialized)', function() {
+    it('has a static state UNSENT', function () {
+        expect(this.FakeRequest.UNSENT).toBe(0);
+    });
+
+    it('has a static state OPENED', function () {
+        expect(this.FakeRequest.OPENED).toBe(1);
+    });
+
+    it('has a static state HEADERS_RECEIVED', function () {
+        expect(this.FakeRequest.HEADERS_RECEIVED).toBe(2);
+    });
+
+    it('has a static state LOADING', function () {
+        expect(this.FakeRequest.LOADING).toBe(3);
+    });
+
+    it('has a static state DONE', function () {
+        expect(this.FakeRequest.DONE).toBe(4);
+    });
+
+    it('has an initial ready state of 0 (unsent)', function() {
       expect(this.request.readyState).toBe(0);
       expect(this.fakeEventBus.trigger).not.toHaveBeenCalled();
     });
 
-    it('has a ready state of 1 (open) when opened', function() {
+    it('has a ready state of 1 (opened) when opened', function() {
       this.request.open();
 
       expect(this.request.readyState).toBe(1);
       expect(this.fakeEventBus.trigger).toHaveBeenCalledWith('readystatechange');
     });
 
-    it('has a ready state of 0 (uninitialized) when aborted', function() {
+    it('has a ready state of 0 (unsent) when aborted', function() {
       this.request.open();
       this.fakeEventBus.trigger.calls.reset();
 
@@ -139,7 +159,7 @@ describe('FakeRequest', function() {
       expect(this.fakeEventBus.trigger).toHaveBeenCalledWith('readystatechange');
     });
 
-    it('has a ready state of 1 (sent) when sent', function() {
+    it('has a ready state of 1 (opened) when sent', function() {
       this.request.open();
       this.fakeEventBus.trigger.calls.reset();
 
@@ -150,7 +170,7 @@ describe('FakeRequest', function() {
       expect(this.fakeEventBus.trigger).not.toHaveBeenCalledWith('readystatechange');
     });
 
-    it('has a ready state of 4 (loaded) when timed out', function() {
+    it('has a ready state of 4 (done) when timed out', function() {
       this.request.open();
       this.request.send();
       this.fakeEventBus.trigger.calls.reset();
@@ -163,7 +183,7 @@ describe('FakeRequest', function() {
       expect(this.fakeEventBus.trigger).toHaveBeenCalledWith('readystatechange');
     });
 
-    it('has a ready state of 4 (loaded) when network erroring', function() {
+    it('has a ready state of 4 (done) when network erroring', function() {
       this.request.open();
       this.request.send();
       this.fakeEventBus.trigger.calls.reset();
@@ -174,7 +194,7 @@ describe('FakeRequest', function() {
       expect(this.fakeEventBus.trigger).toHaveBeenCalledWith('readystatechange');
     });
 
-    it('has a ready state of 4 (loaded) when responding', function() {
+    it('has a ready state of 4 (done) when responding', function() {
       this.request.open();
       this.request.send();
       this.fakeEventBus.trigger.calls.reset();
@@ -185,7 +205,7 @@ describe('FakeRequest', function() {
       expect(this.fakeEventBus.trigger).toHaveBeenCalledWith('readystatechange');
     });
 
-    it('has a ready state of 2, then 4 (loaded) when responding', function() {
+    it('has a ready state of 2, then 4 (done) when responding', function() {
       this.request.open();
       this.request.send();
       this.fakeEventBus.trigger.calls.reset();
