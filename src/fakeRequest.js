@@ -107,6 +107,14 @@ getJasmineRequireObj().AjaxFakeRequest = function(eventBusFactory) {
       return null;
     }
 
+extend(FakeXMLHttpRequest, {
+        UNSENT: 0,
+        OPENED: 1,
+        HEADERS_RECEIVED: 2,
+        LOADING: 3,
+        DONE: 4
+    });
+
     var iePropertiesThatCannotBeCopied = ['responseBody', 'responseText', 'responseXML', 'status', 'statusText', 'responseTimeout', 'responseURL'];
     extend(FakeXMLHttpRequest.prototype, new global.XMLHttpRequest(), iePropertiesThatCannotBeCopied);
     extend(FakeXMLHttpRequest.prototype, {
@@ -115,7 +123,7 @@ getJasmineRequireObj().AjaxFakeRequest = function(eventBusFactory) {
         this.url = arguments[1];
         this.username = arguments[3];
         this.password = arguments[4];
-        this.readyState = 1;
+        this.readyState = FakeXMLHttpRequest.OPENED;
         this.requestHeaders = {};
         this.eventBus.trigger('readystatechange');
       },
@@ -133,7 +141,7 @@ getJasmineRequireObj().AjaxFakeRequest = function(eventBusFactory) {
       },
 
       abort: function() {
-        this.readyState = 0;
+        this.readyState = FakeXMLHttpRequest.UNSENT;
         this.status = 0;
         this.statusText = "abort";
         this.eventBus.trigger('readystatechange');
@@ -142,7 +150,7 @@ getJasmineRequireObj().AjaxFakeRequest = function(eventBusFactory) {
         this.eventBus.trigger('loadend');
       },
 
-      readyState: 0,
+      readyState: FakeXMLHttpRequest.UNSENT,
 
       onloadstart: null,
       onprogress: null,
@@ -226,7 +234,7 @@ getJasmineRequireObj().AjaxFakeRequest = function(eventBusFactory) {
           case null:
           case "":
           case "text":
-            return this.readyState >= 3 ? this.responseText : "";
+            return this.readyState >= FakeXMLHttpRequest.LOADING ? this.responseText : "";
           case "json":
             return JSON.parse(this.responseText);
           case "arraybuffer":
@@ -240,20 +248,20 @@ getJasmineRequireObj().AjaxFakeRequest = function(eventBusFactory) {
 
 
       respondWith: function(response) {
-        if (this.readyState === 4) {
+        if (this.readyState === FakeXMLHttpRequest.DONE) {
           throw new Error("FakeXMLHttpRequest already completed");
         }
 
         this.status = response.status;
         this.statusText = response.statusText || "";
         this.responseHeaders = normalizeHeaders(response.responseHeaders, response.contentType);
-        this.readyState = 2;
+        this.readyState = FakeXMLHttpRequest.HEADERS_RECEIVED;
         this.eventBus.trigger('readystatechange');
 
         this.responseText = response.responseText || "";
         this.responseType = response.responseType || "";
         this.responseURL = response.responseURL || null;
-        this.readyState = 4;
+        this.readyState = FakeXMLHttpRequest.DONE;
         this.responseXML = getResponseXml(response.responseText, this.getResponseHeader('content-type') || '');
         if (this.responseXML) {
           this.responseType = 'document';
@@ -272,10 +280,10 @@ getJasmineRequireObj().AjaxFakeRequest = function(eventBusFactory) {
       },
 
       responseTimeout: function() {
-        if (this.readyState === 4) {
+        if (this.readyState === FakeXMLHttpRequest.DONE) {
           throw new Error("FakeXMLHttpRequest already completed");
         }
-        this.readyState = 4;
+        this.readyState = FakeXMLHttpRequest.DONE;
         jasmine.clock().tick(30000);
         this.eventBus.trigger('readystatechange');
         this.eventBus.trigger('progress');
@@ -284,10 +292,10 @@ getJasmineRequireObj().AjaxFakeRequest = function(eventBusFactory) {
       },
 
       responseError: function() {
-        if (this.readyState === 4) {
+        if (this.readyState === FakeXMLHttpRequest.DONE) {
           throw new Error("FakeXMLHttpRequest already completed");
         }
-        this.readyState = 4;
+        this.readyState = FakeXMLHttpRequest.DONE;
         this.eventBus.trigger('readystatechange');
         this.eventBus.trigger('progress');
         this.eventBus.trigger('error');
