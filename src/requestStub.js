@@ -1,7 +1,8 @@
 getJasmineRequireObj().AjaxRequestStub = function() {
   var RETURN = 0,
       ERROR = 1,
-      TIMEOUT = 2;
+      TIMEOUT = 2,
+      CALL = 3;
 
   function RequestStub(url, stubData, method) {
     var normalizeQuery = function(query) {
@@ -49,6 +50,15 @@ getJasmineRequireObj().AjaxRequestStub = function() {
 
     this.isTimeout = function() {
       return this.action === TIMEOUT;
+    };
+
+    this.andCallFunction = function(functionToCall) {
+      this.action = CALL;
+      this.functionToCall = functionToCall;
+    };
+
+    this.isCallFunction = function() {
+      return this.action === CALL;
     };
 
     this.matches = function(fullUrl, data, method) {

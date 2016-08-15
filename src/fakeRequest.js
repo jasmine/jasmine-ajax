@@ -168,6 +168,11 @@ getJasmineRequireObj().AjaxFakeRequest = function(eventBusFactory) {
         this.eventBus.trigger('loadstart');
 
         var stub = stubTracker.findStub(this.url, data, this.method);
+
+        this.dispatchStub(stub);
+      },
+
+      dispatchStub: function(stub) {
         if (stub) {
           if (stub.isReturn()) {
             this.respondWith(stub);
@@ -175,6 +180,8 @@ getJasmineRequireObj().AjaxFakeRequest = function(eventBusFactory) {
             this.responseError();
           } else if (stub.isTimeout()) {
             this.responseTimeout();
+          } else if (stub.isCallFunction()) {
+            this.responseCallFunction(stub);
           }
         }
       },
@@ -292,6 +299,12 @@ getJasmineRequireObj().AjaxFakeRequest = function(eventBusFactory) {
         this.eventBus.trigger('progress');
         this.eventBus.trigger('error');
         this.eventBus.trigger('loadend');
+      },
+
+      responseCallFunction: function(stub) {
+        stub.action = undefined;
+        stub.functionToCall(stub, this);
+        this.dispatchStub(stub);
       }
     });
 
