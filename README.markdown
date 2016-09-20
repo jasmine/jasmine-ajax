@@ -25,7 +25,7 @@ Download [mock-ajax.js](https://raw.github.com/jasmine/jasmine-ajax/master/lib/m
 
 Setup
 -----
-Using the library in your Jasmine specs consists of four parts:
+Using the library in your Jasmine specs consists of five parts:
 
 1. Defining test responses
 2. Installing the mock
