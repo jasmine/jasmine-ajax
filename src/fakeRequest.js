@@ -199,8 +199,8 @@ getJasmineRequireObj().AjaxFakeRequest = function(eventBusFactory) {
       },
 
       getResponseHeader: function(name) {
+        var resultHeader = null;
         name = name.toLowerCase();
-        var resultHeader;
         for(var i = 0; i < this.responseHeaders.length; i++) {
           var header = this.responseHeaders[i];
           if (name === header.name.toLowerCase()) {
