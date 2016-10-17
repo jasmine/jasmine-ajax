@@ -69,47 +69,61 @@ describe('FakeRequest', function() {
     expect(request.overriddenMimeType).toBe('application/text; charset: utf-8');
   });
 
-  it('saves request headers', function() {
-    var request = new this.FakeRequest();
+  describe('when the request is not yet opened', function () {
 
-    request.setRequestHeader('X-Header-1', 'value1');
-    request.setRequestHeader('X-Header-2', 'value2');
+    it('should throw an error', function () {
+      var request = new this.FakeRequest();
 
-    expect(request.requestHeaders).toEqual({
-      'X-Header-1': 'value1',
-      'X-Header-2': 'value2'
+      expect(function () {
+        request.setRequestHeader('X-Header-1', 'value1');
+      }).toThrowError('DOMException: Failed to execute "setRequestHeader" on "XMLHttpRequest": The object\'s state must be OPENED.');
     });
   });
 
-  it('combines request headers with the same header name', function() {
-    var request = new this.FakeRequest();
+  describe('when the request is opened', function () {
 
-    request.setRequestHeader('X-Header', 'value1');
-    request.setRequestHeader('X-Header', 'value2');
+    var request;
 
-    expect(request.requestHeaders['X-Header']).toEqual('value1, value2');
-  });
+    beforeEach(function () {
+      request = new this.FakeRequest();
 
-  it('finds the content-type request header', function() {
-    var request = new this.FakeRequest();
+      request.open('METHOD', 'URL');
+    });
 
-    request.setRequestHeader('ContEnt-tYPe', 'application/text+xml');
+    it('saves request headers', function() {
+      request.setRequestHeader('X-Header-1', 'value1');
+      request.setRequestHeader('X-Header-2', 'value2');
 
-    expect(request.contentType()).toEqual('application/text+xml');
-  });
+      expect(request.requestHeaders).toEqual({
+        'X-Header-1': 'value1',
+        'X-Header-2': 'value2'
+      });
+    });
 
-  it('clears the request headers when opened', function() {
-    // Requirement #14 https://www.w3.org/TR/XMLHttpRequest/#the-open()-method
-    var request = new this.FakeRequest();
+    it('combines request headers with the same header name', function() {
+      request.setRequestHeader('X-Header', 'value1');
+      request.setRequestHeader('X-Header', 'value2');
 
-    request.setRequestHeader('X-Header1', 'value1');
+      expect(request.requestHeaders['X-Header']).toEqual('value1, value2');
+    });
 
-    expect(request.requestHeaders['X-Header1']).toEqual('value1');
+    it('finds the content-type request header', function() {
+      request.setRequestHeader('ContEnt-tYPe', 'application/text+xml');
 
-    request.open();
+      expect(request.contentType()).toEqual('application/text+xml');
+    });
 
-    expect(request.requestHeaders['X-Header1']).not.toBeDefined();
-    expect(request.requestHeaders).toEqual({});
+    it('clears the request headers when opened', function() {
+      // Requirement #14 https://www.w3.org/TR/XMLHttpRequest/#the-open()-method
+      request.setRequestHeader('X-Header1', 'value1');
+
+      expect(request.requestHeaders['X-Header1']).toEqual('value1');
+
+      request.open();
+
+      expect(request.requestHeaders['X-Header1']).not.toBeDefined();
+      expect(request.requestHeaders).toEqual({});
+    });
   });
 
   describe('managing readyState', function() {
