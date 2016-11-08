@@ -321,6 +321,10 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
         expect(response.getResponseHeader('X-Header')).toBe('header value 1, header value 2');
       });
 
+      it("returns null, if header does not exist", function() {
+        expect(response.getResponseHeader('X-Does-Not-Exist')).toBe(null);
+      });
+
       it("getAllResponseHeaders should return all values", function () {
         expect(response.getAllResponseHeaders()).toBe([
           "X-Header: header value 1",
