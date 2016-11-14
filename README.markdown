@@ -242,7 +242,7 @@ beforeEach(function(){
   // first install the mock
   jasmine.Ajax.install();
 
-  // Than register a request to which automatically will be responded
+  // then register a request to which automatically will be responded
   jasmine.Ajax.stubRequest(
     'https://soap.domain.tld/ws/UserManager',
     /.*\<registrationRequest\>.*/
@@ -273,7 +273,7 @@ beforeEach(function(){
   // first install the mock
   jasmine.Ajax.install();
 
-  // Than register a request to which automatically will be responded
+  // then register a request to which automatically will be responded
   jasmine.Ajax.stubRequest(
     /.*\/ws\/UserManager/,
     /.*\<registrationRequest\>.*/
