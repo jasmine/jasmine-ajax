@@ -42,6 +42,7 @@ module.exports = function( grunt ) {
       },
       all: ['Gruntfile.js', 'src/**/*.js', 'lib/**/*.js', 'spec/**/*.js']
     },
+    packageVersion: packageVersion(),
     shell: {
       ctags: {
         command: 'ctags -R lib'
