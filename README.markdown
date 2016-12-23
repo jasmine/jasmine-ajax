@@ -116,6 +116,12 @@ beforeEach(function() {
   jasmine.Ajax.install();
   ...
 });
+
+// don't forget to uninstall as well...
+afterEach(function() {
+  jasmine.Ajax.uninstall();
+  ...
+});
 ```
 After this, all Ajax requests will be captured by jasmine-ajax. If you want to do things like load fixtures, do it before you install the mock (see below).
 
