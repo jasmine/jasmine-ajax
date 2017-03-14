@@ -22,7 +22,7 @@ Installing
 Install `jasmine-ajax` from NPM via  `npm install --save-dev jasmine-ajax`; you can then `require('jasmine-ajax')` inside your test-suite and access it via the `jasmine` global.
 
 #### Browser ####
-Download [mock-ajax.js](https://raw.github.com/jasmine/jasmine-ajax/master/lib/mock-ajax.js) and add it to your project. If you are using the jasmine gem, be sure the location you put mock-ajax.js is included in your src_files path in jasmine.yml. If you are using Jasmine standalone, make sure you add it to your spec runner.
+Download [mock-ajax.js](https://raw.github.com/jasmine/jasmine-ajax/master/lib/mock-ajax.js) and add it to your project. If you are using the jasmine gem, be sure the location you put mock-ajax.js is included in your `helpers` path in jasmine.yml. If you are using Jasmine standalone, make sure you add it to your spec runner.
 
 Setup
 -----
