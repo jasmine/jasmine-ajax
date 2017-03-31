@@ -126,16 +126,6 @@ describe('FakeRequest', function() {
     });
   });
 
-  it('getResponseHeader returns null, if no response has been received', function() {
-    var request = new this.FakeRequest();
-    expect(request.getResponseHeader('XY')).toBe(null);
-  });
-
-  it('getAllResponseHeaders returns null, if no response has been received', function() {
-    var request = new this.FakeRequest();
-    expect(request.getAllResponseHeaders()).toBe(null);
-  });
-
   describe('managing readyState', function() {
     beforeEach(function() {
       this.request = new this.FakeRequest();
