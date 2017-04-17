@@ -13,6 +13,10 @@ getJasmineRequireObj().AjaxRequestTracker = function() {
     this.count = function() {
       return requests.length;
     };
+    
+    this.remove = function(index) {
+      requests.splice(index, 1);
+    };    
 
     this.reset = function() {
       requests = [];
