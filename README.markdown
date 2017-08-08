@@ -295,6 +295,6 @@ beforeEach(function(){
 
 Jasmine
 -------
-http://github.com/jasmine/jasmine
+http://jasmine.github.io
 
-Copyright (c) 2015 Pivotal Labs. This software is licensed under the MIT License.
+Copyright (c) 2010-2017 Pivotal Labs. This software is licensed under the MIT License.
