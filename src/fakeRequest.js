@@ -306,7 +306,10 @@ extend(FakeXMLHttpRequest, {
         this.eventBus.trigger('loadend');
       },
 
-      responseError: function(response = {}) {
+      responseError: function(response) {
+        if (!response) {
+          response = {};
+        }
         if (this.readyState === FakeXMLHttpRequest.DONE) {
           throw new Error("FakeXMLHttpRequest already completed");
         }
