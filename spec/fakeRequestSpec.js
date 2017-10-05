@@ -500,6 +500,29 @@ describe('FakeRequest', function() {
     expect(request.statusText).toBe('OK');
   });
 
+  it('has a status from the response when there is an error', function() {
+    var request = new this.FakeRequest();
+    request.open();
+    request.send();
+
+    request.responseError({ status: 500 });
+
+    expect(request.status).toBe(500);
+    expect(request.statusText).toBe('');
+  });
+
+  it('has a statusText from the response when there is an error', function() {
+    var request = new this.FakeRequest();
+    request.open();
+    request.send();
+
+    request.responseError({ status: 500, statusText: 'Internal Server Error' });
+
+    expect(request.status).toBe(500);
+    expect(request.statusText).toBe('Internal Server Error');
+  });
+
+
   it('saves off any data sent to the server', function() {
     var request = new this.FakeRequest();
     request.open();
