@@ -36,8 +36,12 @@ getJasmineRequireObj().AjaxRequestStub = function() {
       return this.action === RETURN;
     };
 
-    this.andError = function() {
+    this.andError = function(options) {
+      if (!options) {
+        options = {};
+      }
       this.action = ERROR;
+      this.status = options.status || 500;
     };
 
     this.isError = function() {

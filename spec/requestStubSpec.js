@@ -69,4 +69,36 @@ describe('RequestStub', function() {
     expect(stub).toMatchRequest('/foo', 'baz=quux');
     expect(stub).not.toMatchRequest('/foo', 'foo=bar');
   });
+
+  describe('when returning successfully', function() {
+    it('isReturn', function() {
+      var stub = new this.RequestStub('/foo');
+      stub.andReturn({});
+
+      expect(stub.isReturn()).toBe(true);
+    });
+
+    it('defaults to status 200', function() {
+      var stub = new this.RequestStub('/foo');
+      stub.andReturn({});
+
+      expect(stub.status).toBe(200);
+    });
+  });
+
+  describe('when erroring', function() {
+    it('isReturn', function() {
+      var stub = new this.RequestStub('/foo');
+      stub.andError({});
+
+      expect(stub.isError()).toBe(true);
+    });
+
+    it('defaults to status 500', function() {
+      var stub = new this.RequestStub('/foo');
+      stub.andError({});
+
+      expect(stub.status).toBe(500);
+    });
+  });
 });

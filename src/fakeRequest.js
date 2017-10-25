@@ -189,7 +189,7 @@ extend(FakeXMLHttpRequest, {
           if (stub.isReturn()) {
             this.respondWith(stub);
           } else if (stub.isError()) {
-            this.responseError();
+            this.responseError(stub);
           } else if (stub.isTimeout()) {
             this.responseTimeout();
           } else if (stub.isCallFunction()) {
@@ -306,10 +306,15 @@ extend(FakeXMLHttpRequest, {
         this.eventBus.trigger('loadend');
       },
 
-      responseError: function() {
+      responseError: function(response) {
+        if (!response) {
+          response = {};
+        }
         if (this.readyState === FakeXMLHttpRequest.DONE) {
           throw new Error("FakeXMLHttpRequest already completed");
         }
+        this.status = response.status;
+        this.statusText = response.statusText || "";
         this.readyState = FakeXMLHttpRequest.DONE;
         this.eventBus.trigger('readystatechange');
         this.eventBus.trigger('progress');
