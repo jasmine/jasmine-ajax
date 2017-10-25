@@ -12,6 +12,12 @@ requests made by your application, specify per spec which response should be
 used, and keep track of the Ajax requests you make so you can make assertions
 about the results.
 
+Contributing
+------------
+Please read the main Jasmine [contributors' guide](https://github.com/jasmine/jasmine/blob/master/.github/CONTRIBUTING.md).
+
+When submitting a pull request, run `grunt build` and commit the changes to the generated file `lib/mock-ajax.js` in order for the build's automated tests to pass.
+
 Libraries Supported
 -------------------
 jasmine-ajax is currently compatible with any library that uses XMLHttpRequest. Tested with jQuery and Zepto.
