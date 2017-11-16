@@ -22,7 +22,7 @@ getJasmineRequireObj().MockAjax = function($ajax) {
       this.reset();
     };
 
-    this.uninstall = function() {
+    this.reset = function() {
       this.stubs.reset();
       this.requests.reset();
       paramParser.reset();
