@@ -84,6 +84,13 @@ describe('RequestStub', function() {
 
       expect(stub.status).toBe(200);
     });
+
+    it('allows setting a response code of 0', function() {
+      var stub = new this.RequestStub('/foo');
+      stub.andReturn({status: 0});
+
+      expect(stub.status).toBe(0);
+    });
   });
 
   describe('when erroring', function() {
