@@ -90,7 +90,7 @@ describe('RequestStub', function() {
       stub.andReturn({status: 0});
 
       expect(stub.status).toBe(0);
-    })
+    });
   });
 
   describe('when erroring', function() {
