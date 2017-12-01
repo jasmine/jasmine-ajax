@@ -16,7 +16,7 @@ GEM
       jasmine (~> 2.0.0.alpha)
       sauce-connect
       selenium-webdriver (~> 2.35)
-    json (1.8.1)
+    json (1.8.6)
     mime-types (1.25.1)
     multi_json (1.10.1)
     net-http-persistent (2.9.4)
@@ -68,4 +68,4 @@ DEPENDENCIES
   rake
 
 BUNDLED WITH
-   1.10.1
+   1.16.0
