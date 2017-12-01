@@ -23,7 +23,7 @@ getJasmineRequireObj().AjaxRequestStub = function() {
 
     this.andReturn = function(options) {
       this.action = RETURN;
-      this.status = options.status !== undefined ? options.status : 200;
+      this.status = (typeof options.status !== 'undefined') ? options.status : 200;
 
       this.contentType = options.contentType;
       this.response = options.response;
