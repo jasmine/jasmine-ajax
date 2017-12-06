@@ -1,9 +1,7 @@
 [![Build Status](https://travis-ci.org/jasmine/jasmine-ajax.png?branch=master)](https://travis-ci.org/jasmine/jasmine-ajax)
 [![Code Climate](https://codeclimate.com/github/jasmine/jasmine-ajax/badges/gpa.svg)](https://codeclimate.com/github/jasmine/jasmine-ajax)
 
-If you are using the updated version of this library, there is some additional documentation located at [jasmine.github.io](http://jasmine.github.io/2.0/ajax.html) that is up-to-date.
-
-This branch is now version 2.0, if you need jasmine-ajax for Jasmine 1.3.x please use the [1.3.1 release](https://github.com/jasmine/jasmine-ajax/releases/tag/v1.3.1)
+If you are using the updated version of this library, there is some additional documentation located at [jasmine.github.io](http://jasmine.github.io/edge/ajax.html) that is up-to-date.
 
 jasmine-ajax - Faking Ajax responses in your Jasmine suite.
 ============
@@ -14,13 +12,13 @@ about the results.
 
 Contributing
 ------------
-Please read the main Jasmine [contributors' guide](https://github.com/jasmine/jasmine/blob/master/.github/CONTRIBUTING.md).
+Please read the main Jasmine [contributors' guide](https://github.com/jasmine/jasmine/blob/master/.github/CONTRIBUTING.md) and [specifics for Jasmine Ajax](https://github.com/jasmine/jasmine-ajax/blob/master/.github/CONTRIBUTING.md).
 
 When submitting a pull request, run `grunt build` and commit the changes to the generated file `lib/mock-ajax.js` in order for the build's automated tests to pass.
 
 Libraries Supported
 -------------------
-jasmine-ajax is currently compatible with any library that uses XMLHttpRequest. Tested with jQuery and Zepto.
+jasmine-ajax is currently compatible with any library that uses XMLHttpRequest.
 
 Installing
 ----------
