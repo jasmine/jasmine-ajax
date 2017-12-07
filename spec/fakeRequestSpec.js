@@ -752,6 +752,16 @@ describe('FakeRequest', function() {
     }
   });
 
+  it('stringifies responseJSON into responseText', function() {
+    var request = new this.FakeRequest();
+    request.open();
+    request.send();
+
+    request.respondWith({ status: 200, responseJSON: {'foo': 'bar'} });
+
+    expect(request.response).toEqual('{"foo":"bar"}');
+  });
+
   it('defaults the response attribute to the responseText', function() {
     var request = new this.FakeRequest();
     request.open();
