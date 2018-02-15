@@ -7,8 +7,8 @@ getJasmineRequireObj().MockAjax = function($ajax) {
       mockAjaxFunction = $ajax.fakeRequest(global, requestTracker, stubTracker, paramParser);
 
     this.install = function() {
-      if (global.XMLHttpRequest === mockAjaxFunction) {
-        throw "MockAjax is already installed.";
+      if (global.XMLHttpRequest !== realAjaxFunction) {
+        throw new Error("Jasmine Ajax was unable to install over a custom XMLHttpRequest. Is Jasmine Ajax already installed?");
       }
 
       global.XMLHttpRequest = mockAjaxFunction;
@@ -16,7 +16,7 @@ getJasmineRequireObj().MockAjax = function($ajax) {
 
     this.uninstall = function() {
       if (global.XMLHttpRequest !== mockAjaxFunction) {
-        throw "MockAjax not installed.";
+        throw new Error("MockAjax not installed.");
       }
       global.XMLHttpRequest = realAjaxFunction;
 
