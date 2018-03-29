@@ -61,6 +61,14 @@ describe('FakeRequest', function() {
     expect(request.password).toEqual('PASSWORD');
   });
 
+  it('converts the url to a string', function() {
+    var request = new this.FakeRequest();
+    request.open('METHOD', undefined);
+
+    expect(request.method).toEqual('METHOD');
+    expect(request.url).toEqual('undefined');
+  });
+
   it('saves an override mime type', function() {
     var request = new this.FakeRequest();
 

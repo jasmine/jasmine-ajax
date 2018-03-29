@@ -120,7 +120,7 @@ extend(FakeXMLHttpRequest, {
     extend(FakeXMLHttpRequest.prototype, {
       open: function() {
         this.method = arguments[0];
-        this.url = arguments[1];
+        this.url = arguments[1] + '';
         this.username = arguments[3];
         this.password = arguments[4];
         this.readyState = FakeXMLHttpRequest.OPENED;
