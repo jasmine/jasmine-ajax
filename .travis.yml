@@ -2,7 +2,9 @@ script: bash travis-script.sh
 language: ruby
 cache: bundler
 rvm: 2.5
-before_install: npm install
+before_install:
+  - npm install
+  - gem update --system
 addons:
   sauce_connect: true
 env:
