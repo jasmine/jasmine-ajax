@@ -84,6 +84,16 @@ describe("Webmock style mocking", function() {
     expect(response.getResponseHeader('X-Custom')).toEqual('header value');
   });
 
+  it("shoiuld set the status info", function() {
+    mockAjax.stubRequest("http://example.com/someApi").andReturn({
+      status: 201,
+      statusText: 'HTTP/1.1 201 CREATED'
+    });
+    sendRequest(fakeGlobal);
+    expect(response.status).toEqual(201);
+    expect(response.statusText).toEqual('HTTP/1.1 201 CREATED');
+  });
+
   describe("with another stub for the same url", function() {
     beforeEach(function() {
       mockAjax.stubRequest("http://example.com/someApi").andReturn({responseText: "no", status: 403});
