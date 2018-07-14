@@ -889,4 +889,76 @@ describe('FakeRequest', function() {
       expect(calls).toBe(2);
     });
   });
+
+  describe('stream response', function() {
+    it('can return a response', function() {
+      var request = new this.FakeRequest();
+      request.open();
+      request.send();
+
+      request.startStream();
+
+      expect(request.readyState).toBe(this.FakeRequest.LOADING);
+      expect(request.responseText).toBe('');
+    });
+
+    it('can finish request', function() {
+      var request = new this.FakeRequest();
+      request.open();
+      request.send();
+
+      request.startStream();
+      request.completeStream();
+
+      expect(request.readyState).toBe(this.FakeRequest.DONE);
+      expect(request.responseText).toBe('');
+      expect(request.status).toBe(200);
+    });
+
+    it('can cancel request', function() {
+      var request = new this.FakeRequest();
+      request.open();
+      request.send();
+
+      request.startStream();
+      expect(request.status).toBe(200);
+
+      request.cancelStream();
+
+      expect(request.readyState).toBe(this.FakeRequest.DONE);
+      expect(request.responseText).toBe('');
+      expect(request.status).toBe(0);
+    });
+
+    it('can send part of data as response', function() {
+      var request = new this.FakeRequest();
+      request.open();
+      request.send();
+
+      request.startStream();
+      request.streamData('text\n');
+
+      expect(request.readyState).toBe(this.FakeRequest.LOADING);
+      expect(request.responseText).toBe('text\n');
+
+      request.streamData('text2\n');
+
+      expect(request.responseText).toBe('text\ntext2\n');
+
+      request.completeStream();
+    });
+
+    it('thrown an error if finish request and then try to cancel', function() {
+      var request = new this.FakeRequest();
+      request.open();
+      request.send();
+
+      request.startStream();
+      request.completeStream();
+
+      expect(function() {
+        request.cancelStream();
+      }).toThrowError();
+    });
+  });
 });
