@@ -329,6 +329,72 @@ extend(FakeXMLHttpRequest, {
         stub.action = undefined;
         stub.functionToCall(stub, this);
         this.dispatchStub(stub);
+      },
+
+      startStream: function(options) {
+        if (!options) {
+          options = {};
+        }
+
+        if (this.readyState >= FakeXMLHttpRequest.LOADING) {
+          throw new Error("FakeXMLHttpRequest already loading or finished");
+        }
+
+        this.status = 200;
+        this.responseText = "";
+        this.statusText = "";
+
+        this.responseHeaders = normalizeHeaders(options.responseHeaders, options.contentType);
+        this.readyState = FakeXMLHttpRequest.HEADERS_RECEIVED;
+        this.eventBus.trigger('readystatechange');
+
+        this.responseType = options.responseType || "";
+        this.responseURL = options.responseURL || null;
+        this.readyState = FakeXMLHttpRequest.LOADING;
+        this.eventBus.trigger('readystatechange');
+      },
+
+      streamData: function(data) {
+        if (this.readyState !== FakeXMLHttpRequest.LOADING) {
+          throw new Error("FakeXMLHttpRequest is not loading yet");
+        }
+
+        this.responseText += data;
+        this.responseXML = getResponseXml(this.responseText, this.getResponseHeader('content-type') || '');
+        if (this.responseXML) {
+          this.responseType = 'document';
+        }
+
+        this.response = this.responseValue();
+
+        this.eventBus.trigger('readystatechange');
+        this.eventBus.trigger('progress');
+      },
+
+      cancelStream: function () {
+        if (this.readyState === FakeXMLHttpRequest.DONE) {
+          throw new Error("FakeXMLHttpRequest already completed");
+        }
+
+        this.status = 0;
+        this.statusText = "";
+        this.readyState = FakeXMLHttpRequest.DONE;
+        this.eventBus.trigger('readystatechange');
+        this.eventBus.trigger('progress');
+        this.eventBus.trigger('loadend');
+      },
+
+      completeStream: function(status) {
+        if (this.readyState === FakeXMLHttpRequest.DONE) {
+          throw new Error("FakeXMLHttpRequest already completed");
+        }
+
+        this.status = status || 200;
+        this.statusText = "";
+        this.readyState = FakeXMLHttpRequest.DONE;
+        this.eventBus.trigger('readystatechange');
+        this.eventBus.trigger('progress');
+        this.eventBus.trigger('loadend');
       }
     });
 
