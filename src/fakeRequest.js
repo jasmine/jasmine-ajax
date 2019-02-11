@@ -180,21 +180,8 @@ extend(FakeXMLHttpRequest, {
         this.eventBus.trigger('loadstart');
 
         var stub = stubTracker.findStub(this.url, data, this.method);
-
-        this.dispatchStub(stub);
-      },
-
-      dispatchStub: function(stub) {
         if (stub) {
-          if (stub.isReturn()) {
-            this.respondWith(stub);
-          } else if (stub.isError()) {
-            this.responseError(stub);
-          } else if (stub.isTimeout()) {
-            this.responseTimeout();
-          } else if (stub.isCallFunction()) {
-            this.responseCallFunction(stub);
-          }
+          stub.handleRequest(this);
         }
       },
 
@@ -323,12 +310,6 @@ extend(FakeXMLHttpRequest, {
         this.eventBus.trigger('progress');
         this.eventBus.trigger('error');
         this.eventBus.trigger('loadend');
-      },
-
-      responseCallFunction: function(stub) {
-        stub.action = undefined;
-        stub.functionToCall(stub, this);
-        this.dispatchStub(stub);
       },
 
       startStream: function(options) {

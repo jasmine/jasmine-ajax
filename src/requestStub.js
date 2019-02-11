@@ -8,6 +8,10 @@ getJasmineRequireObj().AjaxRequestStub = function() {
     return query ? query.split('&').sort().join('&') : undefined;
   };
 
+  var timeoutRequest = function(request) {
+    request.responseTimeout();
+  };
+
   function RequestStub(url, stubData, method) {
     if (url instanceof RegExp) {
       this.url = url;
@@ -24,48 +28,30 @@ getJasmineRequireObj().AjaxRequestStub = function() {
 
   RequestStub.prototype = {
     andReturn: function(options) {
-      this.action = RETURN;
-      this.status = (typeof options.status !== 'undefined') ? options.status : 200;
-      this.statusText = options.statusText;
-
-      this.contentType = options.contentType;
-      this.response = options.response;
-      this.responseText = options.responseText;
-      this.responseHeaders = options.responseHeaders;
-      this.responseURL = options.responseURL;
-    },
-
-    isReturn: function() {
-      return this.action === RETURN;
+      options.status = (typeof options.status !== 'undefined') ? options.status : 200;
+      this.handleRequest = function(request) {
+        request.respondWith(options);
+      };
     },
 
     andError: function(options) {
       if (!options) {
         options = {};
       }
-      this.action = ERROR;
-      this.status = options.status || 500;
-    },
-
-    isError: function() {
-      return this.action === ERROR;
+      options.status = options.status || 500;
+      this.handleRequest = function(request) {
+        request.responseError(options);
+      };
     },
 
     andTimeout: function() {
-      this.action = TIMEOUT;
-    },
-
-    isTimeout: function() {
-      return this.action === TIMEOUT;
+      this.handleRequest = timeoutRequest;
     },
 
     andCallFunction: function(functionToCall) {
-      this.action = CALL;
-      this.functionToCall = functionToCall;
-    },
-
-    isCallFunction: function() {
-      return this.action === CALL;
+      this.handleRequest = function(request) {
+        functionToCall(request);
+      };
     },
 
     matches: function(fullUrl, data, method) {

@@ -71,41 +71,103 @@ describe('RequestStub', function() {
   });
 
   describe('when returning successfully', function() {
-    it('isReturn', function() {
+    it('passes response information to the request', function() {
       var stub = new this.RequestStub('/foo');
-      stub.andReturn({});
+      stub.andReturn({
+        status: 300,
+        statusText: 'hi there',
+        contentType: 'text/plain',
+        extra: 'stuff'
+      });
+      var fakeRequest = { respondWith: jasmine.createSpy('respondWith') };
 
-      expect(stub.isReturn()).toBe(true);
+      stub.handleRequest(fakeRequest);
+
+      expect(fakeRequest.respondWith).toHaveBeenCalledWith({
+        status: 300,
+        statusText: 'hi there',
+        contentType: 'text/plain',
+        extra: 'stuff'
+      });
     });
 
     it('defaults to status 200', function() {
       var stub = new this.RequestStub('/foo');
       stub.andReturn({});
+      var fakeRequest = { respondWith: jasmine.createSpy('respondWith') };
 
-      expect(stub.status).toBe(200);
+      stub.handleRequest(fakeRequest);
+
+      expect(fakeRequest.respondWith).toHaveBeenCalledWith(jasmine.objectContaining({
+        status: 200
+      }));
     });
 
     it('allows setting a response code of 0', function() {
       var stub = new this.RequestStub('/foo');
       stub.andReturn({status: 0});
+      var fakeRequest = { respondWith: jasmine.createSpy('respondWith') };
 
-      expect(stub.status).toBe(0);
+      stub.handleRequest(fakeRequest);
+
+      expect(fakeRequest.respondWith).toHaveBeenCalledWith(jasmine.objectContaining({
+        status: 0
+      }));
     });
   });
 
   describe('when erroring', function() {
-    it('isReturn', function() {
+    it('passes error information to request', function() {
       var stub = new this.RequestStub('/foo');
-      stub.andError({});
+      stub.andError({
+        status: 502,
+        extra: 'stuff'
+      });
 
-      expect(stub.isError()).toBe(true);
+      var fakeRequest = { responseError: jasmine.createSpy('responseError') };
+      stub.handleRequest(fakeRequest);
+
+      expect(fakeRequest.responseError).toHaveBeenCalledWith({
+        status: 502,
+        extra: 'stuff'
+      });
     });
 
     it('defaults to status 500', function() {
       var stub = new this.RequestStub('/foo');
       stub.andError({});
 
-      expect(stub.status).toBe(500);
+      var fakeRequest = { responseError: jasmine.createSpy('responseError') };
+      stub.handleRequest(fakeRequest);
+
+      expect(fakeRequest.responseError).toHaveBeenCalledWith(jasmine.objectContaining({
+        status: 500
+      }));
+    });
+  });
+
+  describe('when timing out', function() {
+    it('tells the request to time out', function() {
+      var stub = new this.RequestStub('/foo');
+      stub.andTimeout();
+
+      var fakeRequest = { responseTimeout: jasmine.createSpy('responseTimeout') };
+      stub.handleRequest(fakeRequest);
+
+      expect(fakeRequest.responseTimeout).toHaveBeenCalled();
+    });
+  });
+
+  describe('when calling a function', function() {
+    it('invokes the function with the request', function() {
+      var stub = new this.RequestStub('/foo');
+      var callback = jasmine.createSpy('callback').and.returnValue({ status: 201 });
+      stub.andCallFunction(callback);
+
+      var fakeRequest = { things: 'stuff' };
+      stub.handleRequest(fakeRequest);
+
+      expect(callback).toHaveBeenCalledWith(fakeRequest);
     });
   });
 });
