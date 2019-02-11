@@ -4,11 +4,11 @@ getJasmineRequireObj().AjaxRequestStub = function() {
       TIMEOUT = 2,
       CALL = 3;
 
-  function RequestStub(url, stubData, method) {
-    var normalizeQuery = function(query) {
-      return query ? query.split('&').sort().join('&') : undefined;
-    };
+  var normalizeQuery = function(query) {
+    return query ? query.split('&').sort().join('&') : undefined;
+  };
 
+  function RequestStub(url, stubData, method) {
     if (url instanceof RegExp) {
       this.url = url;
       this.query = undefined;
@@ -20,8 +20,10 @@ getJasmineRequireObj().AjaxRequestStub = function() {
 
     this.data = (stubData instanceof RegExp) ? stubData : normalizeQuery(stubData);
     this.method = method;
+  }
 
-    this.andReturn = function(options) {
+  RequestStub.prototype = {
+    andReturn: function(options) {
       this.action = RETURN;
       this.status = (typeof options.status !== 'undefined') ? options.status : 200;
       this.statusText = options.statusText;
@@ -31,42 +33,42 @@ getJasmineRequireObj().AjaxRequestStub = function() {
       this.responseText = options.responseText;
       this.responseHeaders = options.responseHeaders;
       this.responseURL = options.responseURL;
-    };
+    },
 
-    this.isReturn = function() {
+    isReturn: function() {
       return this.action === RETURN;
-    };
+    },
 
-    this.andError = function(options) {
+    andError: function(options) {
       if (!options) {
         options = {};
       }
       this.action = ERROR;
       this.status = options.status || 500;
-    };
+    },
 
-    this.isError = function() {
+    isError: function() {
       return this.action === ERROR;
-    };
+    },
 
-    this.andTimeout = function() {
+    andTimeout: function() {
       this.action = TIMEOUT;
-    };
+    },
 
-    this.isTimeout = function() {
+    isTimeout: function() {
       return this.action === TIMEOUT;
-    };
+    },
 
-    this.andCallFunction = function(functionToCall) {
+    andCallFunction: function(functionToCall) {
       this.action = CALL;
       this.functionToCall = functionToCall;
-    };
+    },
 
-    this.isCallFunction = function() {
+    isCallFunction: function() {
       return this.action === CALL;
-    };
+    },
 
-    this.matches = function(fullUrl, data, method) {
+    matches: function(fullUrl, data, method) {
       var urlMatches = false;
       fullUrl = fullUrl.toString();
       if (this.url instanceof RegExp) {
@@ -84,8 +86,8 @@ getJasmineRequireObj().AjaxRequestStub = function() {
         dataMatches = !this.data || this.data === normalizeQuery(data);
       }
       return urlMatches && dataMatches && (!this.method || this.method === method);
-    };
-  }
+    }
+  };
 
   return RequestStub;
 };
