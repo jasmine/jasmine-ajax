@@ -1,25 +1,25 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    childprocess (0.8.0)
+    childprocess (0.9.0)
       ffi (~> 1.0, >= 1.0.11)
-    ffi (1.9.23)
-    jasmine (3.0.0)
-      jasmine-core (= 3.0.0)
+    ffi (1.10.0)
+    jasmine (3.3.0)
+      jasmine-core (~> 3.3.0)
       phantomjs
       rack (>= 1.2.1)
       rake
-    jasmine-core (3.0.0)
+    jasmine-core (3.3.0)
     jasmine_selenium_runner (3.0.0)
       jasmine (~> 3.0)
       selenium-webdriver (~> 3.8)
     phantomjs (2.1.1.0)
-    rack (2.0.4)
-    rake (12.3.0)
-    rubyzip (1.2.1)
-    selenium-webdriver (3.9.0)
+    rack (2.0.6)
+    rake (12.3.2)
+    rubyzip (1.2.2)
+    selenium-webdriver (3.141.0)
       childprocess (~> 0.5)
-      rubyzip (~> 1.2)
+      rubyzip (~> 1.2, >= 1.2.2)
 
 PLATFORMS
   ruby
