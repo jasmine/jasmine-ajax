@@ -12,7 +12,7 @@ GEM
       jasmine (~> 3.0)
       selenium-webdriver (~> 3.8)
     phantomjs (2.1.1.0)
-    rack (2.0.6)
+    rack (2.0.8)
     rake (12.3.2)
     rubyzip (2.0.0)
     selenium-webdriver (3.142.6)
