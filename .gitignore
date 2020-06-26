@@ -1,8 +1,0 @@
-.idea/
-.tmp/
-.rvmrc
-*.swp
-bower_components
-node_modules
-package-lock.json
-.ruby-version

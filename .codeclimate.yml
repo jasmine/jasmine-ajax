@@ -1,6 +1,0 @@
-languages:
-  JavaScript: true
-exclude_paths:
-- "lib/*"
-- "grunt/*"
-- "node_modules/*"
