@@ -1,7 +1,7 @@
 script: bash travis-script.sh
 language: ruby
 cache: bundler
-rvm: 2.5
+rvm: 2.6
 before_install:
   - npm install
   - gem update --system
