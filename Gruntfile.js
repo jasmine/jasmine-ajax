@@ -50,7 +50,7 @@ module.exports = function( grunt ) {
       release: {
         command: [
           'git tag v<%= packageVersion %>',
-          'git push origin master --tags',
+          'git push origin main --tags',
           'npm publish'
         ].join('&&')
       }

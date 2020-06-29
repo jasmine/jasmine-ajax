@@ -17,7 +17,7 @@ git clone git@github.com:yourUserName/jasmine-ajax.git              # Clone your
 cd jasmine-ajax                                                     # Change directory
 git remote add upstream https://github.com/jasmine/jasmine-ajax.git # Assign original repository to a remote named 'upstream'
 git fetch upstream                                                  # Fetch changes not present in your local repository
-git merge upstream/master                                           # Sync local master with upstream repository
+git merge upstream/main                                           # Sync local main with upstream repository
 git checkout -b my-new-feature                                      # Create your feature branch
 git commit -am 'Add some feature'                                   # Commit your changes
 git push origin my-new-feature                                      # Push to the branch
