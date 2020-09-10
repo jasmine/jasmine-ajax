@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/jasmine/jasmine-ajax.png?branch=main)](https://travis-ci.org/jasmine/jasmine-ajax)
+[![Build Status](https://travis-ci.org/jasmine/jasmine-ajax.svg?branch=main)](https://travis-ci.org/jasmine/jasmine-ajax)
 [![Code Climate](https://codeclimate.com/github/jasmine/jasmine-ajax/badges/gpa.svg)](https://codeclimate.com/github/jasmine/jasmine-ajax)
 
 If you are using the updated version of this library, there is some additional documentation located at [jasmine.github.io](https://jasmine.github.io/tutorials/mocking_ajax) that is up-to-date.
