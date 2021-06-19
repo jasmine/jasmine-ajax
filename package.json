@@ -14,13 +14,14 @@
     "type": "git",
     "url": "https://github.com/jasmine/jasmine-ajax"
   },
-  "dependencies": {},
   "devDependencies": {
+    "fast-glob": "^3.2.5",
     "grunt": "~0.4.0",
     "grunt-cli": "~0.1.13",
-    "grunt-contrib-jshint": "~0.1.1",
+    "grunt-contrib-jshint": "^3.0.0",
     "grunt-includes": "^0.5.1",
     "grunt-shell": "~0.2.1",
-    "grunt-template": "^0.2.3"
+    "grunt-template": "^0.2.3",
+    "jasmine-browser-runner": "github:jasmine/jasmine-browser"
   }
 }

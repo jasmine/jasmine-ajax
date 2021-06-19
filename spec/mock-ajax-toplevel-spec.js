@@ -1,4 +1,5 @@
 /*global sharedAjaxResponseBehaviorForZepto_Failure: true, sharedAjaxResponseBehaviorForZepto_Success: true */
+// jshint latedef: nofunc
 
 describe("Jasmine Mock Ajax (for toplevel)", function() {
   var request, anotherRequest, response;
