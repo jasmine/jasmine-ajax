@@ -1,4 +1,5 @@
-[![Build Status](https://travis-ci.com/jasmine/jasmine-ajax.svg?branch=main)](https://travis-ci.com/jasmine/jasmine-ajax)
+[![Build Status](https://circleci.com/gh/jasmine/jasmine-ajax.svg?style=shield)](https://circleci.com/gh/jasmine/jasmine-ajax)
+
 
 If you are using the updated version of this library, there is some additional documentation located at [jasmine.github.io](https://jasmine.github.io/tutorials/mocking_ajax) that is up-to-date.
 
