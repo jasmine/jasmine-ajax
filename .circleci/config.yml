@@ -6,26 +6,22 @@ executors:
   ruby_2_7:
     docker:
     - image: circleci/ruby:2.7-browsers-legacy
+  node:
+    docker:
+      - image: circleci/node:14
 
 jobs:
-  test:
-    executor: ruby_2_7
+  # jasmine-selenium-runner doesn't work with current Sauce Connect,
+  # so use jasmine-browser-runner for everything but PhantomJS.
+  test_real_browsers:
+    executor: node
     environment:
       USE_SAUCE: "true"
     steps:
     - checkout
     - run:
-        name: Install Node
-        command: sudo apt-get install nodejs npm
-    - run:
-        name: Install bundler
-        command: gem install bundler
-    - run:
         name: Report versions
-        command: "echo 'Ruby version:' && ruby -v && echo 'Bundler version:' && bundle -v && echo 'Node version:' && node -v"
-    - run:
-        name: Install gems
-        command: "bundle install"
+        command: "echo 'Node version:' && node -v && echo 'NPM version:' && npm -v"
     - run:
         name: Install NPM packages
         command: "npm install"
@@ -42,11 +38,34 @@ jobs:
         name: Run tests
         command: scripts/ci.sh
 
+  # PhantomJS isn't supported by jasmine-browser-runner,
+  # so use jasmine-selenium-runner for that.
+  test_phantom:
+    executor: ruby_2_7
+    environment:
+      JASMINE_BROWSER: phantomjs
+      JASMINE_CONFIG_PATH: spec/support/jasmine_combined.yml
+    steps:
+    - checkout
+    - run:
+        name: Install bundler
+        command: gem install bundler
+    - run:
+        name: Report versions
+        command: "echo 'Ruby version:' && ruby -v && echo 'Bundler version:' && bundle -v"
+    - run:
+        name: Install gems
+        command: "bundle install"
+    - run:
+        name: Run tests
+        command: bundle exec rake jasmine:ci
+
 workflows:
   version: 2
   push: &push_workflow
     jobs:
-    - test
+    - test_phantom
+    - test_real_browsers
   cron:
     <<: *push_workflow
     triggers:
