@@ -22,6 +22,7 @@
     "grunt-includes": "^0.5.1",
     "grunt-shell": "^3.0.1",
     "grunt-template": "^1.0.0",
-    "jasmine-browser-runner": "^0.6.0"
+    "jasmine-browser-runner": "^1.0.0",
+    "jasmine-core": "^4.0.0"
   }
 }
