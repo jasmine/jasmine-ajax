@@ -3,12 +3,9 @@ orbs:
   ruby: circleci/ruby@1.1.2
 
 executors:
-  ruby_2_7:
-    docker:
-    - image: circleci/ruby:2.7-browsers-legacy
   node:
     docker:
-      - image: circleci/node:14
+      - image: cimg/node:16.14.0 # Latest 17.x
 
 jobs:
   test_browsers:
