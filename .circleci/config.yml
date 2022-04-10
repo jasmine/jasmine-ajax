@@ -24,10 +24,10 @@ jobs:
         name: Install Sauce Connect
         command: |
           cd /tmp
-          curl https://saucelabs.com/downloads/sc-4.6.4-linux.tar.gz | tar zxf -
-          chmod +x sc-4.6.4-linux/bin/sc
+          curl https://saucelabs.com/downloads/sc-4.7.1-linux.tar.gz | tar zxf -
+          chmod +x sc-4.7.1-linux/bin/sc
           mkdir ~/bin
-          cp sc-4.6.4-linux/bin/sc ~/bin
+          cp sc-4.7.1-linux/bin/sc ~/bin
           ~/bin/sc --version
     - run:
         name: Run tests
