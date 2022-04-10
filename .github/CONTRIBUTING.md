@@ -37,17 +37,7 @@ Once you've pushed a feature branch to your forked repo, you're ready to open a 
 
 ### Install Dependencies
 
-Jasmine Ajax relies on Ruby and Node.js.
-
-To install the Ruby dependencies, you will need Ruby, Rubygems, and Bundler available. Then:
-
-    $ bundle
-
-...will install all of the Ruby dependencies. If the ffi gem fails to build its native extensions, you may need to manually install some system dependencies. On Ubuntu:
-
-    $ apt-get install gcc ruby ruby-dev libxml2 libxml2-dev libxslt1-dev
-
-...should get you to the point that `bundle` can install everything.
+Jasmine Ajax relies on Node.js.
 
 To install the Node dependencies, you will need Node.js, Npm, and [Grunt](http://gruntjs.com/), the [grunt-cli](https://github.com/gruntjs/grunt-cli) and ensure that `grunt` is on your path.
 
@@ -73,27 +63,18 @@ Follow these tips and your pull request, patch, or suggestion is much more likel
 
 ### Running Specs
 
-Jasmine Ajax uses the [Jasmine Ruby gem](http://github.com/jasmine/jasmine-gem) to test itself in browser.
+Jasmine Ajax uses [jasmine-browser-runner](http://github.com/jasmine/jasmine-browser-runner) to test itself in browser.
 
-    $ bundle exec rake jasmine
+    $ npx jasmine-browser-runner
 
 ...and then visit `http://localhost:8888` to run specs.
-
-The easiest way to run the tests in **Internet Explorer** is to run a VM that has IE installed. It's easy to do this with VirtualBox.
-
-1. Download and install [VirtualBox](https://www.virtualbox.org/wiki/Downloads).
-1. Download a VM image [from Microsoft](https://developer.microsoft.com/en-us/microsoft-edge/tools/vms/). Select "VirtualBox" as the platform.
-1. Unzip the downloaded archive. There should be an OVA file inside.
-1. In VirtualBox, choose `File > Import Appliance` and select the OVA file. Accept the default settings in the dialog that appears. Now you have a Windows VM!
-1. Run the VM and start IE.
-1. With `bundle exec rake jasmine` running on your host machine, navigate to `http://10.0.2.2:8888` in IE.
 
 ## Before Committing or Submitting a Pull Request
 
 1. Ensure all specs are green in browser
 1. Ensure JSHint is green with `grunt jshint`
 1. Build `mock-ajax.js` with `grunt build`
-1. Run tests against source and compiled versions with `JASMINE_BROWSER=phantomjs bash travis-script.sh`
+1. Make sure the tests pass
 
-Note that we use Travis for Continuous Integration. We only accept green pull requests.
+Note that we use Circle for Continuous Integration. We only accept green pull requests.
 
