@@ -1,20 +1,9 @@
-[![Build Status](https://circleci.com/gh/jasmine/jasmine-ajax.svg?style=shield)](https://circleci.com/gh/jasmine/jasmine-ajax)
-
-
-If you are using the updated version of this library, there is some additional documentation located at [jasmine.github.io](https://jasmine.github.io/tutorials/mocking_ajax) that is up-to-date.
-
 jasmine-ajax - Faking Ajax responses in your Jasmine suite.
 ============
 jasmine-ajax is a library that lets you define a set of fake responses for Ajax
 requests made by your application, specify per spec which response should be
 used, and keep track of the Ajax requests you make so you can make assertions
 about the results.
-
-Contributing
-------------
-Please read the main Jasmine [contributors' guide](https://github.com/jasmine/jasmine/blob/main/.github/CONTRIBUTING.md) and [specifics for Jasmine Ajax](https://github.com/jasmine/jasmine-ajax/blob/main/.github/CONTRIBUTING.md).
-
-When submitting a pull request, run `grunt build` and commit the changes to the generated file `lib/mock-ajax.js` in order for the build's automated tests to pass.
 
 Libraries Supported
 -------------------
@@ -26,7 +15,10 @@ Installing
 Install `jasmine-ajax` from NPM via  `npm install --save-dev jasmine-ajax`; you can then `require('jasmine-ajax')` inside your test-suite and access it via the `jasmine` global.
 
 #### Browser ####
-Download [mock-ajax.js](https://raw.github.com/jasmine/jasmine-ajax/main/lib/mock-ajax.js) and add it to your project. If you are using the jasmine gem, be sure the location you put mock-ajax.js is included in your `helpers` path in jasmine.yml. If you are using Jasmine standalone, make sure you add it to your spec runner.
+Download [mock-ajax.js](https://raw.github.com/jasmine/jasmine-ajax/main/lib/mock-ajax.js) and add it to your project. If you are using 
+jasmine-browser-runner, be sure the location you put mock-ajax.js is included 
+in your `helpers` path in jasmine-browser.json. If you are using Jasmine 
+standalone, make sure you add it to your spec runner.
 
 Setup
 -----
@@ -296,6 +288,18 @@ beforeEach(function(){
   });
 });
 ```
+
+[Additional documentation is available at the Jasmine docs site](https://jasmine.github.io/tutorials/mocking_ajax).
+
+Contributing
+------------
+Please read the main Jasmine [contributors' guide](https://github.com/jasmine/jasmine/blob/main/.github/CONTRIBUTING.md) and 
+[specifics for Jasmine Ajax](https://github.com/jasmine/jasmine-ajax/blob/main/.github/CONTRIBUTING.md).
+
+When submitting a pull request, run `grunt build` and commit the changes to the
+generated file `lib/mock-ajax.js` in order for the build's automated tests to 
+pass.
+
 
 Jasmine
 -------
