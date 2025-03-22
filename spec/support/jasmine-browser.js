@@ -14,16 +14,19 @@ module.exports = {
   random: true,
   browser: {
     name: process.env.JASMINE_BROWSER || 'firefox',
-    useSauce: process.env.USE_SAUCE === 'true',
-    sauce: {
-      name: `jasmine-ajax ${new Date().toISOString()}`,
-      os: process.env.SAUCE_OS,
+    useRemoteSeleniumGrid: process.env.USE_SAUCE === 'true',
+    remoteSeleniumGrid: {
+      url: 'https://ondemand.saucelabs.com/wd/hub',
       browserVersion: process.env.SAUCE_BROWSER_VERSION,
-      build: `jasmine-ajax ${process.env.CIRCLE_WORKFLOW_ID || 'Ran locally'}`,
-      tags: ['jasmine-ajax'],
-      tunnelIdentifier: process.env.SAUCE_TUNNEL_IDENTIFIER,
-      username: process.env.SAUCE_USERNAME,
-      accessKey: process.env.SAUCE_ACCESS_KEY
+      platformName: process.env.SAUCE_OS,
+      'sauce:options': {
+        name: `jasmine-ajax ${new Date().toISOString()}`,
+        build: `jasmine-ajax ${process.env.CIRCLE_WORKFLOW_ID || 'Ran locally'}`,
+        tags: ['jasmine-ajax'],
+        tunnelName: process.env.SAUCE_TUNNEL_NAME,
+        username: process.env.SAUCE_USERNAME,
+        accessKey: process.env.SAUCE_ACCESS_KEY
+      }
     }
   }
 };
