@@ -35,16 +35,6 @@ jobs:
 
 workflows:
   version: 2
-  push: &push_workflow
+  push:
     jobs:
     - test_browsers
-  cron:
-    <<: *push_workflow
-    triggers:
-    - schedule:
-        # Times are UTC.
-        cron: "0 10 * * 1"
-        filters:
-          branches:
-            only:
-            - main
