@@ -5,6 +5,11 @@ requests made by your application, specify per spec which response should be
 used, and keep track of the Ajax requests you make so you can make assertions
 about the results.
 
+Development Status
+-------------------
+jasmine-ajax is finished software. There will be no further releases unless new
+bugs are found or fixes for existing bugs are contributed.
+
 Libraries Supported
 -------------------
 jasmine-ajax is currently compatible with any library that uses XMLHttpRequest.
