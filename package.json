@@ -3,6 +3,12 @@
   "description": "A library for faking Ajax responses in your Jasmine suite",
   "version": "4.0.0",
   "main": "lib/mock-ajax.js",
+  "files": [
+    "MIT.LICENSE",
+    "README.markdown",
+    "package.json",
+    "lib/mock-ajax.js"
+  ],
   "license": "MIT",
   "url": "https://github.com/jasmine/jasmine-ajax",
   "contributors": [
