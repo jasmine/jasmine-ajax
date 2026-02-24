@@ -11,6 +11,7 @@ const configs = [
         template: 'src/licenseBanner.ejs',
         data: {
           packageVersion: pkg.version,
+          currentYear: new Date(Date.now()).getFullYear()
         }
       },
       'src/requireAjax.js',

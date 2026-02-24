@@ -311,5 +311,5 @@ Jasmine
 http://jasmine.github.io
 
 Copyright (c) 2010-2019 Pivotal Labs.<br>
-Copyright (c) 2012-2024 The Jasmine developers.<br>
+Copyright (c) 2012-2026 The Jasmine developers.<br>
 This software is licensed under the MIT License.
