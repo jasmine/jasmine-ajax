@@ -8,7 +8,7 @@ set -e
 export SAUCE_TUNNEL_NAME=$CIRCLE_WORKFLOW_JOB_ID
 scripts/start-sauce-connect
 set +o errexit
-scripts/run-all-browsers
+scripts/run-sauce-browsers
 exitcode=$?
 set -o errexit
 scripts/stop-sauce-connect
