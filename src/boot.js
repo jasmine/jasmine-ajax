@@ -32,17 +32,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 //Module wrapper to support both browser and CommonJS environment
 (function (root, factory) {
-    // if (typeof exports === 'object' && typeof exports.nodeName !== 'string') {
-        // // CommonJS
-        // var jasmineRequire = require('jasmine-core');
-        // module.exports = factory(root, function() {
-            // return jasmineRequire;
-        // });
-    // } else {
-        // Browser globals
-        window.MockAjax = factory(root, getJasmineRequireObj);
-    // }
-}(typeof window !== 'undefined' ? window : global, function (global, getJasmineRequireObj) {
+    window.MockAjax = factory(root, getJasmineRequireObj);
+}(window, function (global, getJasmineRequireObj) {
 
 // <% files.forEach(function(filename) { %>
 //  include "<%= filename %>";<% }); %>
