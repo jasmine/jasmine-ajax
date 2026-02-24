@@ -33,13 +33,11 @@ Once you've pushed a feature branch to your forked repo, you're ready to open a 
 
 Jasmine Ajax relies on Node.js.
 
-To install the Node dependencies, you will need Node.js, Npm, and [Grunt](http://gruntjs.com/), the [grunt-cli](https://github.com/gruntjs/grunt-cli) and ensure that `grunt` is on your path.
-
     $ npm install --local
 
 ...will install all of the node modules locally. Now run
 
-    $ grunt
+    $ npm run lint
 
 ...if you see that JSHint runs, your system is ready.
 
@@ -59,15 +57,15 @@ Follow these tips and your pull request, patch, or suggestion is much more likel
 
 Jasmine Ajax uses [jasmine-browser-runner](http://github.com/jasmine/jasmine-browser-runner) to test itself in browser.
 
-    $ npx jasmine-browser-runner
+    $ npm t
 
 ...and then visit `http://localhost:8888` to run specs.
 
 ## Before Committing or Submitting a Pull Request
 
 1. Ensure all specs are green in browser
-1. Ensure JSHint is green with `grunt jshint`
-1. Build `mock-ajax.js` with `grunt build`
+1. Ensure JSHint is green with `npm run lint`
+1. Build `mock-ajax.js` with `npm run build`
 1. Make sure the tests pass
 
 Note that we use Circle for Continuous Integration. We only accept green pull requests.

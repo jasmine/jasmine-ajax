@@ -1,7 +1,7 @@
 #!/bin/bash -e
 
 set -e
-./node_modules/.bin/grunt jshint
+npm run lint
 
 # Run tests against all supported browsers that are available on Saucelabs
 # (see run-sauce-browsers for the list)

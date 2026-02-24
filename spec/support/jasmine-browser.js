@@ -2,9 +2,8 @@
 module.exports = {
   srcDir: 'src',
   srcFiles: [
-      'requireAjax.js',
-      '[^b]*.js',
-      'boot.js'
+    '*.js',
+    'boot/suffix.js'
   ],
   specDir: 'spec',
   specFiles: ['**/*[Ss]pec.js'],

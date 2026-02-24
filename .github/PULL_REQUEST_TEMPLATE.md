@@ -25,7 +25,7 @@
 - [ ] My change requires a change to the documentation.
 - [ ] I have updated the documentation accordingly.
 - [ ] I have read the **CONTRIBUTING** document.
-- [ ] I have generated the `mock-ajax.js` file with `grunt build`
+- [ ] I have generated the `mock-ajax.js` file with `npm run build`
 - [ ] I have added tests to cover my changes.
 - [ ] All new and existing tests passed.
 

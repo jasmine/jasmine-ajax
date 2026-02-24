@@ -21,16 +21,14 @@
     "url": "https://github.com/jasmine/jasmine-ajax"
   },
   "scripts": {
-    "build": "grunt build"
+    "build": "node scripts/buildDistribution.js",
+    "lint": "jshint src/**/*.js",
+    "test": "jasmine-browser-runner"
   },
   "devDependencies": {
-    "fast-glob": "^3.2.5",
-    "grunt": "^1.4.1",
-    "grunt-cli": "~0.1.13",
-    "grunt-contrib-jshint": "^3.0.0",
-    "grunt-includes": "^0.5.1",
-    "grunt-shell": "^3.0.1",
-    "grunt-template": "^1.0.0",
-    "jasmine-browser-runner": "^3.0.0"
+    "ejs": "^4.0.1",
+    "glob": "^13.0.6",
+    "jasmine-browser-runner": "^3.0.0",
+    "jshint": "^2.13.6"
   }
 }

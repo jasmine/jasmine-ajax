@@ -301,7 +301,7 @@ Contributing
 Please read the main Jasmine [contributors' guide](https://github.com/jasmine/jasmine/blob/main/.github/CONTRIBUTING.md) and 
 [specifics for Jasmine Ajax](https://github.com/jasmine/jasmine-ajax/blob/main/.github/CONTRIBUTING.md).
 
-When submitting a pull request, run `grunt build` and commit the changes to the
+When submitting a pull request, run `npm run build` and commit the changes to the
 generated file `lib/mock-ajax.js` in order for the build's automated tests to 
 pass.
 

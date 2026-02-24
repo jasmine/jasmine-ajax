@@ -1,0 +1,27 @@
+{
+  "boss": true,
+  "browser": true,
+  "curly": true,
+  "eqeqeq": true,
+  "eqnull": true,
+  "immed": true,
+  "latedef": true,
+  "newcap": true,
+  "noarg": true,
+  "sub": true,
+  "undef": true,
+  "globals": {
+    "global": true,
+    "jasmine": false,
+    "module": false,
+    "exports": true,
+    "describe": false,
+    "it": false,
+    "expect": false,
+    "beforeEach": false,
+    "afterEach": false,
+    "spyOn": false,
+    "getJasmineRequireObj": false,
+    "require": false
+  }
+}
