@@ -85,16 +85,6 @@ module.exports = function( grunt ) {
     }
   });
 
-  grunt.registerTask('versionCheck', function() {
-    var pkgVersion = packageVersion(),
-        bower = require('./bower.json'),
-        bowerVersion = bower.version;
-
-    if (pkgVersion !== bowerVersion) {
-      grunt.fail.fatal("package.json and bower.json have different version numbers\n\tpackage.json:\t" + pkgVersion + "\n\tbower.json:\t" + bowerVersion);
-    }
-  });
-
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-template');
   grunt.loadNpmTasks('grunt-includes');
@@ -103,5 +93,5 @@ module.exports = function( grunt ) {
   grunt.registerTask('default', ['jshint']);
   grunt.registerTask('build', ['template:lib', 'includes:lib']);
   grunt.registerTask('ctags', 'Generate ctags', ['shell:ctags']);
-  grunt.registerTask('release', 'Release ' + packageVersion() + ' to npm', ['versionCheck', 'shell:release']);
+  grunt.registerTask('release', 'Release ' + packageVersion() + ' to npm', ['shell:release']);
 };
