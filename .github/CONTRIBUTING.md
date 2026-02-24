@@ -2,12 +2,6 @@
 
 We welcome your contributions! Thanks for helping make Jasmine a better project for everyone. Please review the backlog and discussion lists before starting work.  What you're looking for may already have been done. If it hasn't, the community can help make your contribution better. If you want to contribute but don't know what to work on, [issues tagged ready for work](https://github.com/jasmine/jasmine-ajax/labels/ready%20for%20work) should have enough detail to get started.
 
-## Links
-
-- [Jasmine Google Group](http://groups.google.com/group/jasmine-js)
-- [Jasmine-dev Google Group](http://groups.google.com/group/jasmine-js-dev)
-- [Jasmine on PivotalTracker](https://www.pivotaltracker.com/n/projects/10606)
-
 ## General Workflow
 
 Please submit pull requests via feature branches using the semi-standard workflow of:
