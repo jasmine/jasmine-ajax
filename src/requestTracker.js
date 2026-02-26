@@ -1,4 +1,4 @@
-getJasmineRequireObj().AjaxRequestTracker = function() {
+getAjaxRequireObj().AjaxRequestTracker = function() {
   function RequestTracker() {
     var requests = [];
 

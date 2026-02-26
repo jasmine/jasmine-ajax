@@ -1,6 +1,6 @@
 describe('RequestTracker', function() {
   beforeEach(function() {
-    var Constructor = getJasmineRequireObj().AjaxRequestTracker();
+    var Constructor = getAjaxRequireObj().AjaxRequestTracker();
     this.tracker = new Constructor();
   });
 

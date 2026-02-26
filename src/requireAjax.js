@@ -1,4 +1,11 @@
-getJasmineRequireObj().ajax = function(jRequire) {
+var getAjaxRequireObj = (function() {
+  var r = {};
+  return function() {
+    return r;
+  }
+})();
+
+getAjaxRequireObj().ajax = function(jRequire) {
   var $ajax = {};
 
   $ajax.RequestStub = jRequire.AjaxRequestStub();

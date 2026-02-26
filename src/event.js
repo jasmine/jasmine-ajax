@@ -1,4 +1,4 @@
-getJasmineRequireObj().AjaxEvent = function() {
+getAjaxRequireObj().AjaxEvent = function() {
   function now() {
     return new Date().getTime();
   }

@@ -1,6 +1,6 @@
 describe('Event', function() {
   beforeEach(function() {
-    this.eventFactory = getJasmineRequireObj().AjaxEvent();
+    this.eventFactory = getAjaxRequireObj().AjaxEvent();
     this.xhr = jasmine.createSpy('xhr');
   });
 

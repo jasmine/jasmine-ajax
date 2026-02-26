@@ -1,6 +1,6 @@
 describe('RequestStub', function() {
   beforeEach(function() {
-    this.RequestStub = getJasmineRequireObj().AjaxRequestStub();
+    this.RequestStub = getAjaxRequireObj().AjaxRequestStub();
 
     jasmine.addMatchers({
       toMatchRequest: function() {

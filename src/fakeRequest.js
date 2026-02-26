@@ -1,5 +1,5 @@
 // jshint latedef: nofunc
-getJasmineRequireObj().AjaxFakeRequest = function(eventBusFactory) {
+getAjaxRequireObj().AjaxFakeRequest = function(eventBusFactory) {
   function extend(destination, source, propertiesToSkip) {
     propertiesToSkip = propertiesToSkip || [];
     for (var property in source) {

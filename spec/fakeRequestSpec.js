@@ -19,7 +19,7 @@ describe('FakeRequest', function() {
       DOMParser: window.DOMParser,
       ActiveXObject: window.ActiveXObject
     };
-    this.FakeRequest = getJasmineRequireObj().AjaxFakeRequest(this.eventBusFactory)(this.fakeGlobal, this.requestTracker, this.stubTracker, this.paramParser);
+    this.FakeRequest = getAjaxRequireObj().AjaxFakeRequest(this.eventBusFactory)(this.fakeGlobal, this.requestTracker, this.stubTracker, this.paramParser);
   });
 
   it('extends from the global XMLHttpRequest', function() {
@@ -30,7 +30,7 @@ describe('FakeRequest', function() {
 
   it('skips XMLHttpRequest attributes that IE does not want copied', function() {
     // use real window here so it will correctly go red on IE if it breaks
-    var FakeRequest = getJasmineRequireObj().AjaxFakeRequest(this.eventBusFactory)(window, this.requestTracker, this.stubTracker, this.paramParser);
+    var FakeRequest = getAjaxRequireObj().AjaxFakeRequest(this.eventBusFactory)(window, this.requestTracker, this.stubTracker, this.paramParser);
     var request = new FakeRequest();
 
     expect(request.responseBody).toBeUndefined();
@@ -458,17 +458,27 @@ describe('FakeRequest', function() {
     });
   });
 
-  it('ticks the jasmine clock on timeout', function() {
-    var clock = { tick: jasmine.createSpy('tick') };
-    spyOn(jasmine, 'clock').and.returnValue(clock);
+  describe('Clock integration', function() {
+    beforeEach(function() {
+      jasmine.clock().install();
+    });
 
-    var request = new this.FakeRequest();
-    request.open();
-    request.send();
+    afterEach(function() {
+      jasmine.clock().uninstall();
+    });
 
-    request.responseTimeout();
+    it('ticks the jasmine clock on timeout', function () {
+      var sentinel = jasmine.createSpy('sentinel');
+      setTimeout(sentinel, 30_000);
 
-    expect(clock.tick).toHaveBeenCalledWith(30000);
+      var request = new this.FakeRequest();
+      request.open();
+      request.send();
+
+      request.responseTimeout();
+
+      expect(sentinel).toHaveBeenCalled();
+    });
   });
 
   it('has an initial status of null', function() {

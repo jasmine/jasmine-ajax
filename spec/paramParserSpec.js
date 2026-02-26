@@ -1,6 +1,6 @@
 describe('ParamParser', function() {
   beforeEach(function() {
-    var Constructor = getJasmineRequireObj().AjaxParamParser();
+    var Constructor = getAjaxRequireObj().AjaxParamParser();
     expect(Constructor).toEqual(jasmine.any(Function));
     this.parser = new Constructor();
   });

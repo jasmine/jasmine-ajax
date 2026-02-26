@@ -28,7 +28,13 @@
   "devDependencies": {
     "ejs": "^4.0.1",
     "glob": "^13.0.6",
-    "jasmine-browser-runner": "^3.0.0",
+    "jasmine-browser-runner": "^4.0.0",
+    "jasmine-core": "7.0.0-pre.0",
     "jshint": "^2.13.6"
+  },
+  "overrides": {
+    "jasmine-browser-runner": {
+      "jasmine-core": "7.0.0-pre.0"
+    }
   }
 }

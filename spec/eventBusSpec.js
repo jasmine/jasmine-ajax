@@ -18,7 +18,7 @@ describe('EventBus', function() {
     };
 
     this.xhr = jasmine.createSpy('xhr');
-    this.bus = getJasmineRequireObj().AjaxEventBus(eventFactory)(this.xhr);
+    this.bus = getAjaxRequireObj().AjaxEventBus(eventFactory)(this.xhr);
   });
 
   it('calls an event listener with event object', function() {

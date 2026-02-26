@@ -2,6 +2,7 @@
 module.exports = {
   srcDir: 'src',
   srcFiles: [
+    'requireAjax.js',
     '*.js',
     'boot/suffix.js'
   ],

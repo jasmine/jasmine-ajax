@@ -1,4 +1,4 @@
-getJasmineRequireObj().AjaxParamParser = function() {
+getAjaxRequireObj().AjaxParamParser = function() {
   function ParamParser() {
     var defaults = [
       {

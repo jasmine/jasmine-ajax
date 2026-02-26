@@ -1,4 +1,4 @@
-getJasmineRequireObj().AjaxEventBus = function(eventFactory) {
+getAjaxRequireObj().AjaxEventBus = function(eventFactory) {
   function EventBus(source) {
     this.eventList = {};
     this.source = source;

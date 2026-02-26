@@ -21,7 +21,7 @@
     "beforeEach": false,
     "afterEach": false,
     "spyOn": false,
-    "getJasmineRequireObj": false,
+    "getAjaxRequireObj": false,
     "require": false
   }
 }

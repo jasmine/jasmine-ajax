@@ -7,6 +7,7 @@ const pkg = JSON.parse(fs.readFileSync('package.json'));
 const configs = [
   {
     src: [
+      { literal: '(function() {' },
       {
         template: 'src/licenseBanner.ejs',
         data: {
@@ -17,6 +18,7 @@ const configs = [
       'src/requireAjax.js',
       'src/*.js',
       'src/boot/suffix.js',
+      { literal: '})()' },
     ],
     dest: 'lib/mock-ajax.js',
   }

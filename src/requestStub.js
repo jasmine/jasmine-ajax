@@ -1,4 +1,4 @@
-getJasmineRequireObj().AjaxRequestStub = function() {
+getAjaxRequireObj().AjaxRequestStub = function() {
   var RETURN = 0,
       ERROR = 1,
       TIMEOUT = 2,
