@@ -726,14 +726,8 @@ describe('FakeRequest', function() {
 
     request.respondWith({ status: 200, contentType: 'text/xml', responseText: '<dom><stuff/></dom>' });
 
-    if (typeof window.Document !== 'undefined') {
-      expect(request.responseXML instanceof window.Document).toBe(true);
-      expect(request.response instanceof window.Document).toBe(true);
-    } else {
-      // IE 8
-      expect(request.responseXML instanceof window.ActiveXObject).toBe(true);
-      expect(request.response instanceof window.ActiveXObject).toBe(true);
-    }
+    expect(request.responseXML instanceof window.Document).toBe(true);
+    expect(request.response instanceof window.Document).toBe(true);
   });
 
   it('parses an application/xml document into responseXML', function() {
@@ -743,14 +737,8 @@ describe('FakeRequest', function() {
 
     request.respondWith({ status: 200, contentType: 'application/xml', responseText: '<dom><stuff/></dom>' });
 
-    if (typeof window.Document !== 'undefined') {
-      expect(request.responseXML instanceof window.Document).toBe(true);
-      expect(request.response instanceof window.Document).toBe(true);
-    } else {
-      // IE 8
-      expect(request.responseXML instanceof window.ActiveXObject).toBe(true);
-      expect(request.response instanceof window.ActiveXObject).toBe(true);
-    }
+    expect(request.responseXML instanceof window.Document).toBe(true);
+    expect(request.response instanceof window.Document).toBe(true);
   });
 
   it('parses a custom blah+xml document into responseXML', function() {
@@ -760,14 +748,8 @@ describe('FakeRequest', function() {
 
     request.respondWith({ status: 200, contentType: 'application/text+xml', responseText: '<dom><stuff/></dom>' });
 
-    if (typeof window.Document !== 'undefined') {
-      expect(request.responseXML instanceof window.Document).toBe(true);
-      expect(request.response instanceof window.Document).toBe(true);
-    } else {
-      // IE 8
-      expect(request.responseXML instanceof window.ActiveXObject).toBe(true);
-      expect(request.response instanceof window.ActiveXObject).toBe(true);
-    }
+    expect(request.responseXML instanceof window.Document).toBe(true);
+    expect(request.response instanceof window.Document).toBe(true);
   });
 
   it('stringifies responseJSON into responseText', function() {

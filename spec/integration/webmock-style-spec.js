@@ -6,7 +6,7 @@ describe("Webmock style mocking", function() {
     method = method || 'GET';
     var xhr = new fakeGlobal.XMLHttpRequest();
     xhr.onreadystatechange = function(args) {
-      if (this.readyState === (this.DONE || 4)) { // IE 8 doesn't support DONE
+      if (this.readyState === (XMLHttpRequest.DONE)) {
         response = this;
         successSpy();
       }
