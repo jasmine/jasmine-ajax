@@ -2,20 +2,11 @@ getAjaxRequireObj().AjaxFakeRequest = function(eventBusFactory) {
   function extend(destination, source, propertiesToSkip) {
     propertiesToSkip = propertiesToSkip || [];
     for (var property in source) {
-      if (!arrayContains(propertiesToSkip, property)) {
+      if (!propertiesToSkip.includes(property)) {
         destination[property] = source[property];
       }
     }
     return destination;
-  }
-
-  function arrayContains(arr, item) {
-    for (var i = 0; i < arr.length; i++) {
-      if (arr[i] === item) {
-        return true;
-      }
-    }
-    return false;
   }
 
   function wrapProgressEvent(xhr, eventName) {
@@ -99,7 +90,7 @@ getAjaxRequireObj().AjaxFakeRequest = function(eventBusFactory) {
     var xmlParsables = ['text/xml', 'application/xml'];
 
     function getResponseXml(responseText, contentType) {
-      if (arrayContains(xmlParsables, contentType.toLowerCase())) {
+      if (xmlParsables.includes(contentType.toLowerCase())) {
         return parseXml(responseText, contentType);
       } else if (contentType.match(/\+xml$/)) {
         return parseXml(responseText, 'text/xml');
