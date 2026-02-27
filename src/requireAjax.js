@@ -1,8 +1,9 @@
+// eslint-disable-next-line no-redeclare
 var getAjaxRequireObj = (function() {
   var r = {};
   return function() {
     return r;
-  }
+  };
 })();
 
 getAjaxRequireObj().ajax = function(jRequire) {

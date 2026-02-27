@@ -1,9 +1,4 @@
 getAjaxRequireObj().AjaxRequestStub = function() {
-  var RETURN = 0,
-      ERROR = 1,
-      TIMEOUT = 2,
-      CALL = 3;
-
   var normalizeQuery = function(query) {
     return query ? query.split('&').sort().join('&') : undefined;
   };
@@ -55,7 +50,7 @@ getAjaxRequireObj().AjaxRequestStub = function() {
     },
 
     matches: function(fullUrl, data, method) {
-      var urlMatches = false;
+      var urlMatches;
       fullUrl = fullUrl.toString();
       if (this.url instanceof RegExp) {
         urlMatches = this.url.test(fullUrl);
@@ -65,7 +60,7 @@ getAjaxRequireObj().AjaxRequestStub = function() {
             query = urlSplit[1];
         urlMatches = this.url === url && this.query === normalizeQuery(query);
       }
-      var dataMatches = false;
+      var dataMatches;
       if (this.data instanceof RegExp) {
         dataMatches = this.data.test(data);
       } else {

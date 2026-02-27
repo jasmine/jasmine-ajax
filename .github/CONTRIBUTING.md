@@ -39,7 +39,7 @@ Jasmine Ajax relies on Node.js.
 
     $ npm run lint
 
-...if you see that JSHint runs, your system is ready.
+...if you see that eslint runs, your system is ready.
 
 ### How to write new Jasmine Ajax code
 
@@ -49,7 +49,7 @@ Or, How to make a successful pull request
 * _Be browser agnostic_ - if you must rely on browser-specific functionality, please write it in a way that degrades gracefully
 * _Write specs_ - Jasmine's a testing framework; don't add functionality without test-driving it
 * _Write code in the style of the rest of the repo_ - Jasmine should look like a cohesive whole
-* _Ensure the *entire* test suite is green_ in all the big browsers and JSHint - your contribution shouldn't break Jasmine for other users
+* _Ensure the *entire* test suite is green_ in all the big browsers and eslint - your contribution shouldn't break Jasmine for other users
 
 Follow these tips and your pull request, patch, or suggestion is much more likely to be integrated.
 
@@ -64,7 +64,7 @@ Jasmine Ajax uses [jasmine-browser-runner](http://github.com/jasmine/jasmine-bro
 ## Before Committing or Submitting a Pull Request
 
 1. Ensure all specs are green in browser
-1. Ensure JSHint is green with `npm run lint`
+1. Ensure eslint is green with `npm run lint`
 1. Build `mock-ajax.js` with `npm run build`
 1. Make sure the tests pass
 

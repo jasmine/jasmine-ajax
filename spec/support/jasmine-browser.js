@@ -1,4 +1,3 @@
-// jshint ignore:start
 module.exports = {
   srcDir: 'src',
   srcFiles: [

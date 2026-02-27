@@ -1,4 +1,3 @@
-// jshint latedef: nofunc
 getAjaxRequireObj().AjaxFakeRequest = function(eventBusFactory) {
   function extend(destination, source, propertiesToSkip) {
     propertiesToSkip = propertiesToSkip || [];
@@ -74,7 +73,7 @@ getAjaxRequireObj().AjaxFakeRequest = function(eventBusFactory) {
           headers = rawHeaders;
         } else {
           for (var headerName in rawHeaders) {
-            if (rawHeaders.hasOwnProperty(headerName)) {
+            if (Object.hasOwn(rawHeaders, headerName)) {
               headers.push({ name: headerName, value: rawHeaders[headerName] });
             }
           }
@@ -134,7 +133,7 @@ extend(FakeXMLHttpRequest, {
           throw new Error('DOMException: Failed to execute "setRequestHeader" on "XMLHttpRequest": The object\'s state must be OPENED.');
         }
 
-        if(this.requestHeaders.hasOwnProperty(header)) {
+        if (Object.hasOwn(this.requestHeaders, header)) {
           this.requestHeaders[header] = [this.requestHeaders[header], value].join(', ');
         } else {
           this.requestHeaders[header] = value;

@@ -1,6 +1,5 @@
 #!/bin/bash -e
 
-set -e
 npm run lint
 
 # Run tests against all supported browsers that are available on Saucelabs

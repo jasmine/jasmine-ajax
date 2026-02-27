@@ -1,6 +1,3 @@
-/*global sharedAjaxResponseBehaviorForZepto_Failure: true, sharedAjaxResponseBehaviorForZepto_Success: true */
-// jshint latedef: nofunc
-
 describe("Jasmine Mock Ajax (for toplevel)", function() {
   var request, anotherRequest, response;
   var success, error, complete;
@@ -482,73 +479,72 @@ describe("Jasmine Mock Ajax (for toplevel)", function() {
       expect(complete).toHaveBeenCalled();
     });
   });
+
+  function sharedAjaxResponseBehaviorForZepto_Success(context) {
+    describe("the success response", function () {
+      var xhr;
+      beforeEach(function() {
+        xhr = context.responseCallback.calls.mostRecent().args[2];
+      });
+
+      it("should have the expected status code", function() {
+        expect(xhr.status).toEqual(context.status);
+      });
+
+      it("should have the expected content type", function() {
+        expect(xhr.getResponseHeader('Content-Type')).toEqual(context.contentType);
+      });
+
+      it("should have the expected xhr2 response", function() {
+        var expected = context.response || context.responseType === 'json' ? JSON.parse(context.responseText) : context.responseText;
+        expect(xhr.response).toEqual(expected);
+      });
+
+      it("should have the expected response text", function() {
+        expect(xhr.responseText).toEqual(context.responseText);
+      });
+
+      it("should have the expected status text", function() {
+        expect(xhr.statusText).toEqual(context.statusText);
+      });
+
+      it("should have the expected response URL", function() {
+        expect(xhr.responseURL).toEqual(context.responseURL || null);
+      });
+    });
+  }
+
+  function sharedAjaxResponseBehaviorForZepto_Failure(context) {
+    describe("the failure response", function () {
+      var xhr;
+      beforeEach(function() {
+        xhr = context.responseCallback.calls.mostRecent().args[0];
+      });
+
+      it("should have the expected status code", function() {
+        expect(xhr.status).toEqual(context.status);
+      });
+
+      it("should have the expected content type", function() {
+        expect(xhr.getResponseHeader('Content-Type')).toEqual(context.contentType);
+      });
+
+      it("should have the expected xhr2 response", function() {
+        var expected = context.response || xhr.responseType === 'json' ? JSON.parse(xhr.responseText) : xhr.responseText;
+        expect(xhr.response).toEqual(expected);
+      });
+
+      it("should have the expected response text", function() {
+        expect(xhr.responseText).toEqual(context.responseText);
+      });
+
+      it("should have the expected status text", function() {
+        expect(xhr.statusText).toEqual(context.statusText);
+      });
+
+      it("should have the expected response URL", function() {
+        expect(xhr.responseURL).toEqual(context.responseURL || null);
+      });
+    });
+  }
 });
-
-
-function sharedAjaxResponseBehaviorForZepto_Success(context) {
-  describe("the success response", function () {
-    var xhr;
-    beforeEach(function() {
-      xhr = context.responseCallback.calls.mostRecent().args[2];
-    });
-
-    it("should have the expected status code", function() {
-      expect(xhr.status).toEqual(context.status);
-    });
-
-    it("should have the expected content type", function() {
-      expect(xhr.getResponseHeader('Content-Type')).toEqual(context.contentType);
-    });
-
-    it("should have the expected xhr2 response", function() {
-      var expected = context.response || context.responseType === 'json' ? JSON.parse(context.responseText) : context.responseText;
-      expect(xhr.response).toEqual(expected);
-    });
-
-    it("should have the expected response text", function() {
-      expect(xhr.responseText).toEqual(context.responseText);
-    });
-
-    it("should have the expected status text", function() {
-      expect(xhr.statusText).toEqual(context.statusText);
-    });
-
-    it("should have the expected response URL", function() {
-      expect(xhr.responseURL).toEqual(context.responseURL || null);
-    });
-  });
-}
-
-function sharedAjaxResponseBehaviorForZepto_Failure(context) {
-  describe("the failure response", function () {
-    var xhr;
-    beforeEach(function() {
-      xhr = context.responseCallback.calls.mostRecent().args[0];
-    });
-
-    it("should have the expected status code", function() {
-      expect(xhr.status).toEqual(context.status);
-    });
-
-    it("should have the expected content type", function() {
-      expect(xhr.getResponseHeader('Content-Type')).toEqual(context.contentType);
-    });
-
-    it("should have the expected xhr2 response", function() {
-      var expected = context.response || xhr.responseType === 'json' ? JSON.parse(xhr.responseText) : xhr.responseText;
-      expect(xhr.response).toEqual(expected);
-    });
-
-    it("should have the expected response text", function() {
-      expect(xhr.responseText).toEqual(context.responseText);
-    });
-
-    it("should have the expected status text", function() {
-      expect(xhr.statusText).toEqual(context.statusText);
-    });
-
-    it("should have the expected response URL", function() {
-      expect(xhr.responseURL).toEqual(context.responseURL || null);
-    });
-  });
-}
