@@ -25,7 +25,7 @@ jobs:
           cd "$tmpdir"
           curl https://saucelabs.com/downloads/sauce-connect/5.2.2/sauce-connect-5.2.2_linux.x86_64.tar.gz | tar zxf -
           chmod +x sc
-          mkdir ~/bin
+          mkdir -p ~/bin
           cp sc ~/bin
           echo "Sauce Connect version info:"
           ~/bin/sc version
