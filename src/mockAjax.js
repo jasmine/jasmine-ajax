@@ -34,9 +34,15 @@ getAjaxRequireObj().MockAjax = function($ajax) {
     this.withMock = function(closure) {
       this.install();
       try {
-        closure();
-      } finally {
+        var result = closure();
+        if (result && typeof result.then === 'function') {
+          return result.finally(() => this.uninstall());
+        }
         this.uninstall();
+        return result;
+      } catch (e) {
+        this.uninstall();
+        throw e;
       }
     };
 

@@ -104,4 +104,15 @@ describe("mockAjax", function() {
     mockAjax.requests.reset();
     expect(mockAjax.requests.count()).toBe(0);
   });
+
+  it("supports asynchronous closures in withMock", async function() {
+    var fakeGlobal = { XMLHttpRequest: function() {} },
+        originalXHR = fakeGlobal.XMLHttpRequest,
+        mockAjax = new window.MockAjax(fakeGlobal);
+
+    await mockAjax.withMock(async function() {
+      expect(fakeGlobal.XMLHttpRequest).not.toBe(originalXHR);
+    });
+    expect(fakeGlobal.XMLHttpRequest).toBe(originalXHR);
+  });
 });
