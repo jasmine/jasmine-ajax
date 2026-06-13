@@ -18,7 +18,7 @@
   "private": false,
   "repository": {
     "type": "git",
-    "url": "https://github.com/jasmine/jasmine-ajax"
+    "url": "git+https://github.com/jasmine/jasmine-ajax.git"
   },
   "scripts": {
     "build": "node scripts/buildDistribution.js",
