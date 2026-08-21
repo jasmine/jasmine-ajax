@@ -2,4 +2,5 @@
 .tmp/
 *.swp
 node_modules
-.ruby-version
+package-lock.json
+.DS_Store
