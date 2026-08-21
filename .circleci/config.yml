@@ -41,4 +41,6 @@ workflows:
   version: 2
   push:
     jobs:
-    - test_browsers
+    - test_browsers:
+        context:
+        - saucelabs
